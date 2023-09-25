@@ -106,13 +106,13 @@ exports.userLogin = (req, res) => {
 // Show list of users
 exports.listAllUsers = (req, res) => {
     db("user")
-    .select("*")
-    .then(data => res.status(200).json({data}))
-    .catch(error => {
-        res.status(401);
-        console.log(error);
-        res.json({message: "Server error"});
-    });   
+        .select("*")
+        .then(data => res.status(200).json({data}))
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({message: "Server error"});
+        });   
 }
 
 // Get the user's information
@@ -120,20 +120,20 @@ exports.getUserById = (req, res) => {
     const id = req.params.userId;
 
     db("user")
-    .select("*")
-    .then(data => {
-        if(id === data.id) {
-            res.status(200);
-            res.json({message: `User found`, user: data});
-        }
-        else {
-            res.status(500);
-            res.json({message: "User not found"});
-        }
-    })
-    .catch(error => {
-        res.status(401);
-        console.log(error);
-        res.json({message: "Server error"});
-    });   
+        .select("*")
+        .then(data => {
+            if(id === data.id) {
+                res.status(200);
+                res.json({message: `User found`, user: data});
+            }
+            else {
+                res.status(500);
+                res.json({message: "User not found"});
+            }
+        })
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({message: "Server error"});
+        });   
 }
