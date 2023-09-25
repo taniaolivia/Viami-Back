@@ -13,5 +13,6 @@ server.route("/users")
 server.route("/users/:userId")
 .get(jwtMiddleware.authenticateUser, cors(), userController.getUserById)
 .patch(jwtMiddleware.authenticateUser, cors(), userController.updateUserPasswordById)
+.delete(jwtMiddleware.authenticateUser, cors(), userController.deleteUserById);
 
 }

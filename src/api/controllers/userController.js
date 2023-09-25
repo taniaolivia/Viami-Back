@@ -158,6 +158,21 @@ exports.getUserById = (req, res) => {
         });   
 }
 
+// Delete user by id
+exports.deleteUserById =(req,res) => {
+    const userId = req.params.userId;
+    const deleteQuery = `DELETE FROM user 
+                        WHERE id = ?`;
+    db.raw(deleteQuery, [userId])
+      .then(() => {
+        res.status(200).json({ message: ` The user with ID ${userId} has been deleted ` });
+      })
+      .catch((error) => {
+        console.error('Deletion error :', error);
+        res.status(500).json({ message: 'Server error' });
+      });
+}
+
 // Update user's password
 exports.updateUserPasswordById = (req, res) => {
     const id = req.params.userId;
