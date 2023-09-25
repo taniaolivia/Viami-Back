@@ -96,3 +96,24 @@ exports.listAllUsers = (req, res) => {
         res.json({message: "Erreur serveur"});
     });   
 }
+
+// User Logout 
+exports.userLogout = (req, res) => {
+    const userId = req.user.id;
+    const currentTime = new Date();
+  
+    const updateQuery = `
+      UPDATE user
+      SET connected = 1, lastConnection = ?
+      WHERE id = ?`;
+  
+    db.raw(updateQuery, [currentTime, userId])
+      .then(() => {
+        res.status(200).json({ message: `Utilisateur ${userId}  déconnecté` });
+      })
+      .catch((error) => {
+        console.error('Erreur lors de la déconnexion :', error);
+        res.status(500).json({ message: 'Erreur serveur' });
+      });
+  };
+  
