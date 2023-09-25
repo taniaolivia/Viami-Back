@@ -38,6 +38,7 @@ services:
     env_file: ./src/.env
     volumes:
       - db:/var/lib/mysql
+      - ./src/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
       - viami_back
 
