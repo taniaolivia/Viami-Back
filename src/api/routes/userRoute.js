@@ -11,4 +11,7 @@ server.route("/users")
 server.post("/user/logout/:userId", cors(), userController.userLogout);
 
 
+server.route("/users/:userId")
+.get(jwtMiddleware.authenticateUser, cors(), userController.getUserById);
+
 }
