@@ -8,6 +8,8 @@ server.post("/user/login", cors(), userController.userLogin);
 
 server.route("/users")
 .get(jwtMiddleware.authenticateUser, cors(), userController.listAllUsers);
+server.post("/user/logout/:userId", cors(), userController.userLogout);
+
 
 server.route("/users/:userId")
 .get(jwtMiddleware.authenticateUser, cors(), userController.getUserById);

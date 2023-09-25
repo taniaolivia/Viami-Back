@@ -106,13 +106,33 @@ exports.userLogin = (req, res) => {
 // Show list of users
 exports.listAllUsers = (req, res) => {
     db("user")
-        .select("*")
-        .then(data => res.status(200).json({data}))
-        .catch(error => {
-            res.status(401);
-            console.log(error);
-            res.json({message: "Server error"});
-        });   
+    .select("*")
+    .then(data => res.status(200).json({data}))
+    .catch(error => {
+        res.status(401);
+        console.log(error);
+        res.json({message: "Server error"});
+    });   
+}
+
+// User Logout 
+exports.userLogout = (req, res) => {
+    const userId = req.params.userId;
+    const currentTime = new Date();
+  
+    const updateQuery = `
+      UPDATE user
+      SET connected = "0", lastConnection = ?
+      WHERE id = ?`;
+  
+    db.raw(updateQuery, [currentTime, userId])
+      .then(() => {
+        res.status(200).json({ message: `Disconnected user :  ${userId}` });
+      })
+      .catch((error) => {
+        console.error('Error disconnecting :', error);
+        res.status(500).json({ message: 'Server error' });
+      });
 }
 
 // Get the user's information
