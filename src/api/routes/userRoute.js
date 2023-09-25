@@ -12,6 +12,7 @@ server.post("/user/logout/:userId", cors(), userController.userLogout);
 
 
 server.route("/users/:userId")
-.get(jwtMiddleware.authenticateUser, cors(), userController.getUserById);
+.get(jwtMiddleware.authenticateUser, cors(), userController.getUserById)
+.put(jwtMiddleware.authenticateUser, cors(), userController.updateUserById);
 
 }

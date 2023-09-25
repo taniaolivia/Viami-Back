@@ -152,8 +152,57 @@ exports.getUserById = (req, res) => {
             }
         })
         .catch(error => {
-            res.status(401);
-            console.log(error);
+            res.status(500);
             res.json({message: "Server error"});
         });   
+}
+
+// Update the user's information
+exports.updateUserById = (req, res) => {
+    const id = req.params.userId;
+    const newData = req.body;
+
+    db("user")
+        .select("*")
+        .where("id", id)
+        .then((user) => {
+            bcrypt.hash(newData.password, 10, (error, hash) => {
+                if(error){
+                    res.status(401);
+                    console.log(error);
+                    res.json({message: "Impossible to encrypt the password"});
+                }
+                else{
+                    db("user")
+                        .update({
+                            firstName: newData.firstName !== null ? newData.firstName : user[0].firstName, 
+                            lastName: newData.lastName !== null ? newData.firstName : user[0].firstName, 
+                            email: newData.email !== null ? newData.email : user[0].email, 
+                            password: newData.password !== null ? hash : user[0].password,
+                            interest: newData.interest !== null ? newData.interest : user[0].interest,
+                            location: newData.location !== null ? newData.firstName : user[0].firstName,
+                            description: newData.description !== null ? newData.description : user[0].description,
+                            phoneNumber: newData.phoneNumber !== null ? newData.phoneNumber : user[0].phoneNumber,
+                            age: newData.age !== null ? newData.age : user[0].age,
+                            sex: newData.sex !== null ? newData.sex : user[0].sex,
+                            lastConnection: user[0].lastConnection,
+                            connected: user[0].connected
+                        })
+                        .where("id", id)
+                        .then(data => {
+                            res.status(200);
+                            res.json({message: `User's data is being updated successfully`});
+                        })
+                        .catch(error => {
+                            res.status(500);
+                            res.json({message: "User not found"});
+                        });   
+                }
+            })
+        })
+        .catch(error => {
+            res.status(500);
+            res.json({message: "User not found"});
+        });   
+    
 }
