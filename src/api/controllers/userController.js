@@ -157,3 +157,17 @@ exports.getUserById = (req, res) => {
             res.json({message: "Server error"});
         });   
 }
+
+exports.deleteUserById =(req,res) => {
+    const userId = req.params.userId;
+    const deleteQuery = `DELETE FROM user 
+                        WHERE id = ?`;
+    db.raw(deleteQuery, [userId])
+    .then(() => {
+      res.status(200).json({ message: ` The user with ID ${userId} has been deleted ` });
+    })
+    .catch((error) => {
+      console.error('Deletion error :', error);
+      res.status(500).json({ message: 'Server error' });
+    });
+}
