@@ -103,18 +103,6 @@ exports.userLogin = (req, res) => {
         });
 }
 
-// Show list of users
-exports.listAllUsers = (req, res) => {
-    db("user")
-    .select("*")
-    .then(data => res.status(200).json({data}))
-    .catch(error => {
-        res.status(401);
-        console.log(error);
-        res.json({message: "Server error"});
-    });   
-}
-
 // User Logout 
 exports.userLogout = (req, res) => {
     const userId = req.params.userId;
@@ -135,6 +123,18 @@ exports.userLogout = (req, res) => {
       });
 }
 
+// Show list of users
+exports.listAllUsers = (req, res) => {
+    db("user")
+    .select("*")
+    .then(data => res.status(200).json({data}))
+    .catch(error => {
+        res.status(401);
+        console.log(error);
+        res.json({message: "Server error"});
+    });   
+}
+
 // Get the user's information
 exports.getUserById = (req, res) => {
     const id = req.params.userId;
@@ -142,7 +142,7 @@ exports.getUserById = (req, res) => {
     db("user")
         .select("*")
         .then(data => {
-            if(id === data.id) {
+            if(id === data[0].id) {
                 res.status(200);
                 res.json({message: `User found`, user: data});
             }
@@ -155,5 +155,24 @@ exports.getUserById = (req, res) => {
             res.status(401);
             console.log(error);
             res.json({message: "Server error"});
+        });   
+}
+
+// Update user's password
+exports.updateUserPasswordById = (req, res) => {
+    const id = req.params.userId;
+    const password = req.body.password;
+
+    db("user")
+        .update("password", password)
+        .where("id", id)
+        .then(data => {
+            res.status(200);
+            res.json({message: `User's password is updated successfully'`});
+        })
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({message: "User not founs"});
         });   
 }
