@@ -96,3 +96,26 @@ exports.listAllUsers = (req, res) => {
         res.json({message: "Erreur serveur"});
     });   
 }
+
+// Get the user's information
+exports.getUserById = (req, res) => {
+    const id = req.params.id;
+
+    db("user")
+    .select("*")
+    .then(data => {
+        if(id === data.id) {
+            res.status(200);
+            res.json({message: `User found`, user: data});
+        }
+        else {
+            res.status(500);
+            res.json({message: "User not found"});
+        }
+    })
+    .catch(error => {
+        res.status(401);
+        console.log(error);
+        res.json({message: "Server error"});
+    });   
+}
