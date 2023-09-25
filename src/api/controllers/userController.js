@@ -22,12 +22,30 @@ exports.userRegister = (req, res) => {
                     .then((user) => {
                         if(user.length > 0) {
                             res.status(401);
-                            res.json({message: "User is already existed"});
+                            res.json({message: "User already exists"});
                         }
                         else {
                              db("user")
-                                .insert({id: uuid(), email: newUser.email, password: hash})
-                                .then(data => res.status(200).json({message: `User created : ${newUser.email}`}))
+                                .insert({
+                                    id: uuid(), 
+                                    firstName: newUser.firstName, 
+                                    lastName: newUser.lastName, 
+                                    email: newUser.email, 
+                                    password: hash,
+                                    interest: newUser.interest !== null ? newUser.interest : null,
+                                    location: newUser.location,
+                                    description: newUser.description !== null ? newUser.description : null,
+                                    phoneNumber: newUser.phoneNumber,
+                                    age: newUser.age,
+                                    sex: newUser.sex,
+                                    lastConnection: newUser.lastConnection !== null ? newUser.lastConnection : null,
+                                    connected: "0"
+                                })
+                                .then(data => {
+                                    res.status(200).json({
+                                        message: `User created : ${newUser.email}`
+                                    })
+                                })
                                 .catch(error => {
                                     res.status(401);
                                     console.log(error);
@@ -41,7 +59,7 @@ exports.userRegister = (req, res) => {
     else{
         res.status(401);
         console.log(error);
-        res.json({message: "Mot de passe est vide"});
+        res.json({message: "Missing password"});
     }
 }
 
@@ -55,7 +73,7 @@ exports.userLogin = (req, res) => {
                 if(error){
                     res.status(401);
                     console.log(error);
-                    res.json({message: "Mot de passe incorrect"})
+                    res.json({message: "Incorrect password"})
                 }
                 else{
                     let userData = {
@@ -68,11 +86,11 @@ exports.userLogin = (req, res) => {
                         if(error){
                             res.status(500);
                             console.log(error);
-                            res.json({message: "Impossible de générer le token"})
+                            res.json({message: "Impossible to generate a token"})
                         }
                         else{
                             res.status(200);
-                            res.json({message: `Utilisateur connecté : ${user[0].email}`, token, user: userData});
+                            res.json({message: `Connected user : ${user[0].email}`, token, user: userData});
                         }
                     });
                 }
@@ -81,7 +99,7 @@ exports.userLogin = (req, res) => {
         .catch((error) => {
             res.status(500);
             console.log(error);
-            res.json({message: "Utilisateur non trouvé"});
+            res.json({message: "User not found"});
         });
 }
 
@@ -93,6 +111,6 @@ exports.listAllUsers = (req, res) => {
     .catch(error => {
         res.status(401);
         console.log(error);
-        res.json({message: "Erreur serveur"});
+        res.json({message: "Server error"});
     });   
 }
