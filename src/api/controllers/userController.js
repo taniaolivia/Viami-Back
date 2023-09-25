@@ -122,7 +122,7 @@ exports.userLogout = (req, res) => {
   
     const updateQuery = `
       UPDATE user
-      SET connected = 0, lastConnection = ?
+      SET connected = "0", lastConnection = ?
       WHERE id = ?`;
   
     db.raw(updateQuery, [currentTime, userId])
