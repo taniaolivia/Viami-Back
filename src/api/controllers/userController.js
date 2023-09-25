@@ -127,11 +127,11 @@ exports.userLogout = (req, res) => {
   
     db.raw(updateQuery, [currentTime, userId])
       .then(() => {
-        res.status(200).json({ message: `Utilisateur ${userId}  déconnecté` });
+        res.status(200).json({ message: `Disconnected user :  ${userId}` });
       })
       .catch((error) => {
-        console.error('Erreur lors de la déconnexion :', error);
-        res.status(500).json({ message: 'Erreur serveur' });
+        console.error('Error disconnecting :', error);
+        res.status(500).json({ message: 'Server error' });
       });
   };
   
