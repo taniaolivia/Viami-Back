@@ -9,4 +9,7 @@ server.post("/user/login", cors(), userController.userLogin);
 server.route("/users")
 .get(jwtMiddleware.authenticateUser, cors(), userController.listAllUsers);
 
+server.route("/users/:userId")
+.get(jwtMiddleware.authenticateUser, cors(), userController.getUserById);
+
 }
