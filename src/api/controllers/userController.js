@@ -117,7 +117,7 @@ exports.listAllUsers = (req, res) => {
 
 // Get the user's information
 exports.getUserById = (req, res) => {
-    const id = req.params.id;
+    const id = req.params.userId;
 
     db("user")
     .select("*")
