@@ -99,7 +99,7 @@ exports.listAllUsers = (req, res) => {
 
 // User Logout 
 exports.userLogout = (req, res) => {
-    const userId = req.user.id;
+    const userId = req.params.userId;
     const currentTime = new Date();
   
     const updateQuery = `
