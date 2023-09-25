@@ -5,14 +5,15 @@ module.exports = (server) => {
 
 server.post("/user/register", cors(), userController.userRegister);
 server.post("/user/login", cors(), userController.userLogin);
+server.post("/user/logout/:userId", cors(), userController.userLogout);
 
 server.route("/users")
 .get(jwtMiddleware.authenticateUser, cors(), userController.listAllUsers);
-server.post("/user/logout/:userId", cors(), userController.userLogout);
-
 
 server.route("/users/:userId")
 .get(jwtMiddleware.authenticateUser, cors(), userController.getUserById)
-.put(jwtMiddleware.authenticateUser, cors(), userController.updateUserById);
+.put(jwtMiddleware.authenticateUser, cors(), userController.updateUserById)
+.patch(jwtMiddleware.authenticateUser, cors(), userController.updateUserPasswordById)
+.delete(jwtMiddleware.authenticateUser, cors(), userController.deleteUserById);
 
 }
