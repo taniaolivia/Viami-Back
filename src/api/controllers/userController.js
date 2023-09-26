@@ -72,25 +72,32 @@ exports.userLogin = (req, res) => {
             bcrypt.compare(req.body.password, user[0].password, (error, result) => {
                 if(error){
                     res.status(401);
-                    console.log(error);
                     res.json({message: "Incorrect password"})
                 }
                 else{
                     let userData = {
                         id: user[0].id,
                         email: user[0].email,
-                        password: user[0].password
+                        password: user[0].password,
                     }
 
-                    jwt.sign(userData, process.env.JWT_KEY, {expiresIn: "30 days"}, (error, token) => {
+                    jwt.sign(userData, process.env.JWT_KEY, {expiresIn: "14 days"}, (error, token) => {
                         if(error){
                             res.status(500);
-                            console.log(error);
-                            res.json({message: "Impossible to generate a token"})
+                            res.json({message: "Impossible to generate a token"});
                         }
                         else{
-                            res.status(200);
-                            res.json({message: `Connected user : ${user[0].email}`, token, user: userData});
+                            db("user")
+                                .update({connected: "1"})
+                                .where("id", user[0].id)
+                                .then(() => {
+                                    res.status(200);
+                                    res.json({message: `Connected user : ${user[0].email}`, token, user: userData});
+                                })
+                                .catch((error) => {
+                                    res.status(500);
+                                    res.json({message: "Impossible to generate a token"});
+                                })
                         }
                     });
                 }
