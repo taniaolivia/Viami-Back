@@ -141,15 +141,13 @@ exports.getUserById = (req, res) => {
 
     db("user")
         .select("*")
-        .then(data => {
-            if(id === data[0].id) {
-                res.status(200);
-                res.json({message: `User found`, user: data});
-            }
-            else {
-                res.status(500);
-                res.json({message: "User not found"});
-            }
+        .then(datas => {
+            datas.map((data) => {
+                 if(id === data.id) {
+                    res.status(200);
+                    res.json({message: `User found`, user: data});
+                }
+            })
         })
         .catch(error => {
             res.status(500);
