@@ -3,14 +3,14 @@ module.exports = (server) => {
     const jwtMiddleware = require("../middlewares/jwtMiddleware");
     const cors = require('cors');
 
-server.post("/user/register", cors(), userController.userRegister);
-server.post("/user/login", cors(), userController.userLogin);
-server.post("/user/logout/:userId", cors(), userController.userLogout);
+server.post("/api/register", cors(), userController.userRegister);
+server.post("/api/login", cors(), userController.userLogin);
+server.post("/api/logout/:userId", cors(), userController.userLogout);
 
-server.route("/users")
+server.route("/api/users")
 .get(jwtMiddleware.authenticateUser, cors(), userController.listAllUsers);
 
-server.route("/users/:userId")
+server.route("/api/users/:userId")
 .get(jwtMiddleware.authenticateUser, cors(), userController.getUserById)
 .put(jwtMiddleware.authenticateUser, cors(), userController.updateUserById)
 .patch(jwtMiddleware.authenticateUser, cors(), userController.updateUserPasswordById)
