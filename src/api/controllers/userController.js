@@ -2,11 +2,12 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const db = require("../knex");
 const { uuid } = require('uuidv4');
+let { AgeFromDateString } = require('age-calculator');
 
 // Register new user
 exports.userRegister = (req, res) => {
     let newUser = req.body;
-
+    
     if(newUser.password){
 
         bcrypt.hash(newUser.password, 10, (error, hash) => {
@@ -35,7 +36,8 @@ exports.userRegister = (req, res) => {
                                     location: newUser.location,
                                     description: newUser.description !== null ? newUser.description : null,
                                     phoneNumber: newUser.phoneNumber,
-                                    age: newUser.age,
+                                    birthday: newUser.birthday,
+                                    age: new AgeFromDateString(newUser.birthday).age,
                                     sex: newUser.sex,
                                     lastConnection: newUser.lastConnection !== null ? newUser.lastConnection : null,
                                     connected: "0"
