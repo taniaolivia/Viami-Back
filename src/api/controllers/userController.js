@@ -2,11 +2,12 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const db = require("../knex");
 const { uuid } = require('uuidv4');
+let { AgeFromDateString } = require('age-calculator');
 
 // Register new user
 exports.userRegister = (req, res) => {
     let newUser = req.body;
-
+    
     if(newUser.password){
 
         bcrypt.hash(newUser.password, 10, (error, hash) => {
@@ -32,18 +33,19 @@ exports.userRegister = (req, res) => {
                                     lastName: newUser.lastName, 
                                     email: newUser.email, 
                                     password: hash,
-                                    interest: newUser.interest !== null ? newUser.interest : null,
                                     location: newUser.location,
                                     description: newUser.description !== null ? newUser.description : null,
                                     phoneNumber: newUser.phoneNumber,
-                                    age: newUser.age,
+                                    birthday: newUser.birthday,
+                                    age: new AgeFromDateString(newUser.birthday).age,
                                     sex: newUser.sex,
                                     lastConnection: newUser.lastConnection !== null ? newUser.lastConnection : null,
                                     connected: "0"
                                 })
                                 .then(data => {
                                     res.status(200).json({
-                                        message: `User created : ${newUser.email}`
+                                        message: `User created : ${newUser.email}`,
+                                        user: newUser
                                     })
                                 })
                                 .catch(error => {
@@ -59,7 +61,7 @@ exports.userRegister = (req, res) => {
     else{
         res.status(401);
         console.log(error);
-        res.json({message: "Missing password"});
+        res.json({message: "Missing password", error: req.body});
     }
 }
 
@@ -184,7 +186,6 @@ exports.updateUserById = (req, res) => {
                             lastName: newData.lastName !== null ? newData.firstName : user[0].firstName, 
                             email: newData.email !== null ? newData.email : user[0].email, 
                             password: newData.password !== null ? hash : user[0].password,
-                            interest: newData.interest !== null ? newData.interest : user[0].interest,
                             location: newData.location !== null ? newData.firstName : user[0].firstName,
                             description: newData.description !== null ? newData.description : user[0].description,
                             phoneNumber: newData.phoneNumber !== null ? newData.phoneNumber : user[0].phoneNumber,
