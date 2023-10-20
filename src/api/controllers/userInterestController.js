@@ -49,3 +49,59 @@ exports.getInterestUsersById = (req, res) => {
             res.json({message: "Server error"});
         });
 }
+
+// Add interest to user's data
+exports.addUserInterest = (req, res) => {
+    let interest = req.body.interestId;
+    let user = req.params.userId;
+
+    db("user_interest")
+        .insert({
+            interestId: interest,
+            userId: user
+        })
+        .then(data => {
+            db("user")
+                .select("*")
+                .where({id: user})
+                .then(userData => {
+                    db("interest")
+                        .select("*")
+                        .where({id: interest})
+                        .then(interestData => {
+                            res.status(200).json({
+                                message: `Interest is added to user's data`,
+                                user: userData,
+                                interest: interestData
+                            })
+                    })
+                })
+        })
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({message: "Invalid request"});
+        })
+}
+
+// Delete an interest in user's data
+exports.deleteUserInterest = (req, res) => {
+    let interest = req.body.interestId;
+    let user = req.params.userId;
+
+    db("user_interest")
+        .delete({
+            interestId: interest,
+            userId: user
+        })
+        .then(data => {
+            res.status(200).json({
+                message: `Interest is added to user's data`,
+            });
+        })
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({message: "Invalid request"});
+        })
+}
