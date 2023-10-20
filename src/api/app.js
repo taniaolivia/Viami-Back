@@ -20,4 +20,10 @@ server.use(cors());
 const userRoute = require("./routes/userRoute");
 userRoute(server);
 
+const interestRoute = require("./routes/interestRoute");
+interestRoute(server);
+
+const userInterestRoute = require("./routes/userInterestRoute");
+userInterestRoute(server);
+
 server.listen(port, hostname);
