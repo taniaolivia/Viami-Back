@@ -90,13 +90,14 @@ exports.deleteUserInterest = (req, res) => {
     let user = req.params.userId;
 
     db("user_interest")
-        .delete({
+        .delete("*")
+        .where({
             interestId: interest,
             userId: user
         })
         .then(data => {
             res.status(200).json({
-                message: `Interest is added to user's data`,
+                message: `Interest is deleted from user's data`,
             });
         })
         .catch(error => {
