@@ -30,3 +30,22 @@ exports.getUserInterestsById = (req, res) => {
             res.json({message: "Server error"});
         });
 }
+
+// Get all users with the same interest by id
+exports.getInterestUsersById = (req, res) => {
+    let id = req.params.interestId;
+
+    db("user_interest")
+        .select("*")
+        .where({interestId: id})
+        .join("user", "user.id", "=", "user_interest.userId")
+        .join("interest", "interest.id", "=", "user_interest.interestId")
+        .then(data =>
+             res.status(200).json({data}
+        ))
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({message: "Server error"});
+        });
+}
