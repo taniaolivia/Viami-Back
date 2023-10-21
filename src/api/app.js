@@ -26,4 +26,10 @@ interestRoute(server);
 const userInterestRoute = require("./routes/userInterestRoute");
 userInterestRoute(server);
 
+const languageRoute = require("./routes/languageRoute");
+languageRoute(server);
+
+const userLanguageRoute = require("./routes/userLanguageRoute");
+userLanguageRoute(server);
+
 server.listen(port, hostname);
