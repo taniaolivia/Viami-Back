@@ -32,4 +32,10 @@ languageRoute(server);
 const userLanguageRoute = require("./routes/userLanguageRoute");
 userLanguageRoute(server);
 
+const imageRoute = require("./routes/imageRoute");
+imageRoute(server);
+
+const userImageRoute = require("./routes/userImageRoute");
+userImageRoute(server);
+
 server.listen(port, hostname);
