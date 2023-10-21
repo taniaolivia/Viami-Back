@@ -136,6 +136,7 @@ exports.userLogout = (req, res) => {
 exports.listAllUsers = (req, res) => {
     db("user")
     .select("*")
+    .orderBy("firstName", "asc")
     .then(data => res.status(200).json({data}))
     .catch(error => {
         res.status(401);

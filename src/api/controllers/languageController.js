@@ -4,6 +4,7 @@ const db = require("../knex");
 exports.listAllLanguages = (req, res) => {
     db("language")
         .select("*")
+        .orderBy("language", "asc")
         .then(data => res.status(200).json({"languages": data}))
         .catch(error => {
             res.status(401);
