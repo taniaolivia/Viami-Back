@@ -23,7 +23,7 @@ exports.getUserInterestsById = (req, res) => {
         .where({userId: id})
         .join("user", "user.id", "=", "user_interest.userId")
         .join("interest", "interest.id", "=", "user_interest.interestId")
-        .then(data => res.status(200).json({data}))
+        .then(data => res.status(200).json({"userInterests": data}))
         .catch(error => {
             res.status(401);
             console.log(error);
@@ -41,7 +41,7 @@ exports.getInterestUsersById = (req, res) => {
         .join("user", "user.id", "=", "user_interest.userId")
         .join("interest", "interest.id", "=", "user_interest.interestId")
         .then(data =>
-             res.status(200).json({data}
+             res.status(200).json({"userInterests": data}
         ))
         .catch(error => {
             res.status(401);

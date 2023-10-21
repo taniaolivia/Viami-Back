@@ -4,7 +4,7 @@ const db = require("../knex");
 exports.listAllInterests = (req, res) => {
     db("interest")
         .select("*")
-        .then(data => res.status(200).json({data}))
+        .then(data => res.status(200).json({"interests": data}))
         .catch(error => {
             res.status(401);
             console.log(error);
