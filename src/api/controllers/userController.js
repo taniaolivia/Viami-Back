@@ -236,10 +236,29 @@ exports.updateUserPasswordById = (req, res) => {
               .catch(error => {
                   res.status(401);
                   console.log(error);
-                  res.json({message: "User not founs"});
+                  res.json({message: "User not found"});
               });    
        }
     });
+}
+
+// Update user's description
+exports.updateUserDescriptionById = (req, res) => {
+    const id = req.params.userId;
+    const description = req.body.description;
+    
+    db("user")
+        .update("description", description)
+        .where("id", id)
+        .then(data => {
+            res.status(200);
+            res.json({message: `User's description is updated successfully'`});
+        })
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({message: "User not found"});
+        });
 }
 
 // Delete user by id
