@@ -16,4 +16,7 @@ server.route("/api/users/:userId")
 .patch(jwtMiddleware.authenticateUser, cors(), userController.updateUserPasswordById)
 .delete(jwtMiddleware.authenticateUser, cors(), userController.deleteUserById);
 
+server.route("/api/users/:userId/description")
+.patch(jwtMiddleware.authenticateUser, cors(), userController.updateUserDescriptionById)
+
 }
