@@ -20,4 +20,22 @@ server.use(cors());
 const userRoute = require("./routes/userRoute");
 userRoute(server);
 
+const interestRoute = require("./routes/interestRoute");
+interestRoute(server);
+
+const userInterestRoute = require("./routes/userInterestRoute");
+userInterestRoute(server);
+
+const languageRoute = require("./routes/languageRoute");
+languageRoute(server);
+
+const userLanguageRoute = require("./routes/userLanguageRoute");
+userLanguageRoute(server);
+
+const imageRoute = require("./routes/imageRoute");
+imageRoute(server);
+
+const userImageRoute = require("./routes/userImageRoute");
+userImageRoute(server);
+
 server.listen(port, hostname);
