@@ -23,6 +23,7 @@ DROP TABLE IF EXISTS `interest`;
 CREATE TABLE `interest` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `interest` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `imageName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -31,6 +32,7 @@ DROP TABLE IF EXISTS `language`;
 CREATE TABLE `language` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `language` varchar(100) NOT NULL,
+  `imageName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
