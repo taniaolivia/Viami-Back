@@ -33,36 +33,45 @@ exports.getUserImagesById = (req, res) => {
 
 // Add image to user's data
 exports.addUserImage = (req, res) => {
-    let image = req.body.imageId;
-    let user = req.params.userId;
+    let newImage = req.body.image;
+    let userId = req.params.userId;
 
-    db("user_image")
+    db("image")
         .insert({
-            imageId: image,
-            userId: user
+            image: newImage
         })
         .then(data => {
-            db("user")
-                .select("*")
-                .where({id: user})
-                .then(userData => {
-                    db("image")
+            db("user_image")
+                .insert({
+                    imageId: data[0],
+                    userId: userId
+                })
+                .then(userImage => {
+                    db("user")
                         .select("*")
-                        .where({id: image})
-                        .then(imageData => {
+                        .where({id: userId})
+                        .then(userData => {
                             res.status(200).json({
                                 message: `Image is added to user's data`,
                                 user: userData,
-                                image: imageData
-                            })
-                    })
+                                image: {
+                                    id: data[0],
+                                    image: newImage
+                                }
+                            }) 
+                        })
+                })
+                .catch(error => {
+                    res.status(401);
+                    console.log(error);
+                    res.json({message: "Invalid request"});
                 })
         })
         .catch(error => {
             res.status(401);
             console.log(error);
             res.json({message: "Invalid request"});
-        })
+        });
 }
 
 // Delete an image in user's data
@@ -77,9 +86,21 @@ exports.deleteUserImage = (req, res) => {
             userId: user
         })
         .then(data => {
-            res.status(200).json({
-                message: `Image is deleted from user's data`,
-            });
+            db("image")
+                .delete("*")
+                .where({
+                    id: image
+                })
+                .then(data => {
+                    res.status(200).json({
+                        message: `Image is deleted from user's data`,
+                    });
+                })
+                .catch(error => {
+                    res.status(401);
+                    console.log(error);
+                    res.json({message: "Invalid request"});
+                })
         })
         .catch(error => {
             res.status(401);
