@@ -7,7 +7,7 @@ USER root
 WORKDIR /app
 
 # Copiez le package.json dans le projet
-COPY src/api/package.json .
+COPY package.json .
 
 # Installez les dépendances
 RUN npm install -g npm@10.2.1
