@@ -1,16 +1,16 @@
 # Utilisez une image officielle de Node.js
 FROM node:lts
 
-USER root
+ENV NODE_ENV=production
 
 # Utilisez le répertoire comme répertoire de travail
 WORKDIR /app
 
 # Copiez le package.json dans le projet
-COPY package.json .
+COPY ["package.json", "package-lock.json*", "./"]
 
 # Installez les dépendances
-RUN npm install -g npm@10.2.1
+RUN npm install --production
 
 # Copiez code source
 COPY . .
@@ -19,4 +19,4 @@ COPY . .
 EXPOSE 3000
 
 # Lancez le projet
-CMD ["npm", "start"]
+CMD ["npm", "run", "watch"]
