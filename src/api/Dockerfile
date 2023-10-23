@@ -3,6 +3,8 @@ FROM node:lts
 
 ENV NODE_ENV=production
 
+USER root
+
 # Utilisez le répertoire comme répertoire de travail
 WORKDIR /app
 
@@ -11,6 +13,8 @@ COPY ["package.json", "package-lock.json*", "./"]
 
 # Installez les dépendances
 RUN npm install --production
+
+RUN npm install -g nodemon
 
 # Copiez code source
 COPY . .
