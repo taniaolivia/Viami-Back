@@ -97,8 +97,8 @@ CREATE TABLE `user_language` (
 
 -- 2023-10-21 21:44:35
 
-DROP TABLE IF EXISTS `voyage`;
-CREATE TABLE `voyage` (
+DROP TABLE IF EXISTS `travel`;
+CREATE TABLE `travel` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
