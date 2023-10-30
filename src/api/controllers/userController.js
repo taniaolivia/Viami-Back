@@ -47,7 +47,7 @@ exports.userRegister = (req, res) => {
                                     connected: "0",
                                     profileImage: null,
                                     verifyEmailToken: token,
-                                    emailVerified: false
+                                    emailVerified: "0"
                                 })
                                 .then(data => {
                                     exports.sendVerificationMail(newUser.email, token);
@@ -349,7 +349,7 @@ exports.verifiedEmailUserByToken = (req, res) => {
     const token = req.query.token;
     
     db("user")
-        .update("emailVerified", true)
+        .update("emailVerified", "1")
         .where("verifyEmailToken", token)
         .then(data => {
             db("user")
