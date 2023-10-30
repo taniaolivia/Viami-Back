@@ -407,13 +407,14 @@ exports.sendEmailVerified = async(to) =>{
                 <title>Viami</title>
             </head>
             <body>
-                <div style="font-family: Arial, sans-serif; text-align: justify; max-width: 600px; margin: 0 auto; background-color: #E5F3FF;">
+                <div style="font-family: Arial, sans-serif; text-align: justify; margin: 0 auto; background-color: #E5F3FF;">
                     <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white">
                         <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 250px; height: auto"/>
                     </div>
 
                     <div style="padding: 5px 20px;">
                         <h3>Bienvenue sur Viami !</h3> 
+                        <br>
                         <p>Merci d'avoir créé un compte Viami.</p>
                         <p>Pour obtenir de l'aide et du support, vous pouvez nous contacter à contact.viami@gmail.com</p>
                         <p>Merci pour votre particiaption à la communauté Viami.</p>
