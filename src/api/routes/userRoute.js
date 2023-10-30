@@ -19,4 +19,5 @@ server.route("/api/users/:userId")
 server.route("/api/users/:userId/description")
 .patch(jwtMiddleware.authenticateUser, cors(), userController.updateUserDescriptionById)
 
+server.post("/api/verifyEmail", cors(), userController.sendingMail);
 }

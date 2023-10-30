@@ -3,6 +3,8 @@ const bcrypt = require("bcryptjs");
 const db = require("../knex");
 const { uuid } = require('uuidv4');
 let { AgeFromDateString } = require('age-calculator');
+const nodemailer = require('nodemailer')
+const crypto = require('crypto');
 
 // Register new user
 exports.userRegister = (req, res) => {
@@ -275,3 +277,38 @@ exports.deleteUserById =(req,res) => {
         res.status(500).json({ message: 'Server error' });
       });
 }
+
+exports.sendingMail = async(req, res) =>{
+
+    const to = req.body.to;
+    const token = crypto.randomBytes(16).toString('hex');
+
+    let mailOptions = ({
+    from: process.env.VIAMI_EMAIL,
+    to,
+    subject: "Vérification des e-emails VIAMI",
+    html: `
+        <h1>Vérifiez votre adresse mail</h1>
+        <p>Merci d'avoir créé un compte sur Viami. Avant de commencer, nous devons simplement confimer qu'il s'agit bien de vous. Cliquez ci-dessous pour vérifier votre adresse e-mail :</p>
+        <a href="${process.env.API_URL}/verify?token=${token}>Vérifiez mon adresse e-mail</a>
+    `});
+   
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.VIAMI_EMAIL,
+          pass: process.env.VIAMI_PASSWORD,
+        },
+      });
+  
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.error(error);
+            res.send('Error sending verification email');
+        } else {
+            res.send('Verification email sent');
+        }
+    });
+     
+    
+  }
