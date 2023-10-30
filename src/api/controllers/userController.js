@@ -346,7 +346,7 @@ exports.sendVerificationMail = async(to, token) =>{
 
 // 
 exports.verifiedEmailUserByToken = (req, res) => {
-    const token = req.params.token;
+    const token = req.query.token;
     
     db("user")
         .update("emailVerified", true)
