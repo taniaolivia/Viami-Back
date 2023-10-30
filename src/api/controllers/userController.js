@@ -446,3 +446,112 @@ exports.sendEmailVerified = async(to) =>{
         }
     }); 
 }
+
+exports.forgetPassword = async(req, res) => {
+    const to = req.body.email;
+
+    let mailOptions = ({
+        from: process.env.VIAMI_EMAIL,
+        to: to,
+        subject: "Viami",
+        html: `
+            <!DOCTYPE html>
+            <html lang="fr">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Réinitialisation de votre mot de passe</title>
+            </head>
+            <body>
+                <div style="font-family: Arial, sans-serif; text-align: justify; margin: 0 auto; background-color: #E5F3FF;">
+                    <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white">
+                        <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 250px; height: auto"/>
+                    </div>
+
+                    <div style="padding: 5px 20px;">
+                        <h2>Bonjour,</h2> 
+                        <br>
+                        <p> Si vous avez bien demandé la réinitialisation de votre mot de passe, veuillez cliquer sur le bouton ci-dessous :</p>
+                        <a href="${process.env.API_URL}/forgetPassword?email=${to}" style="text-decoration: none;">
+                            <button style="margin: auto; color: white; background-color: #0081CF; border-radius: 10px; border: 1px solid #0081CF; padding: 10px 20px; font-weight: bold;">Réinitialiser le mot de passe</button>
+                        </a>
+                        <p> Si vous n'avez pas demandé la réinitialisation de votre mot de passe cette demande, vous pouvez ignorer cet e-mail !</p>
+                        <br>
+                        <p>Cordialement,</p>
+                        <p>L'équipe Viami</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `});
+   
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.VIAMI_EMAIL,
+          pass: process.env.VIAMI_PASSWORD,
+        },
+      });
+  
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.error(error);
+            res.status(401);
+            res.json({message: `Error sending email`});
+        } else {
+            res.status(200);
+            res.json({message: `Email sent`});
+        }
+    }); 
+}
+
+// Verified user's email by token
+exports.setNewPassword = (req, res) => {
+    const token = req.query.token;
+    
+    db("user")
+        .update("emailVerified", "1")
+        .where("verifyEmailToken", token)
+        .then(data => {
+            db("user")
+                .select("*")
+                .where("verifyEmailToken", token)
+                .then((user) => {
+                    exports.sendEmailVerified(user[0].email);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    res.status(401);
+                    res.json({message: "User not found"});
+                })
+        
+            const htmlResponse = `
+                <!DOCTYPE html>
+                <html lang="fr">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Réinitialisation de mot de passe</title>
+                </head>
+                <body>
+                    <div style="font-family: Arial, sans-serif; text-align: center; max-width: 600px; margin: auto;">
+                        <h1>Réinitialisation de mot de passe</h1>
+                        <p>Nouveau mot de passe : 
+                            <input type="password"/>
+                        </p>
+                        <p>Confirmation de mot de passe : 
+                            <input type="password"/>
+                        </p>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            res.send(htmlResponse);
+        })
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({message: "User not found"});
+        });
+}
