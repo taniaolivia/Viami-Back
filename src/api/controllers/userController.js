@@ -344,7 +344,7 @@ exports.sendVerificationMail = async(to, token) =>{
     }); 
 }
 
-// 
+// Verified user's email by token
 exports.verifiedEmailUserByToken = (req, res) => {
     const token = req.query.token;
     
@@ -352,10 +352,19 @@ exports.verifiedEmailUserByToken = (req, res) => {
         .update("emailVerified", true)
         .where("verifyEmailToken", token)
         .then(data => {
-            exports.sendEmailVerified(data.id);
+            
+            db("user")
+                .select("*")
+                .where("verifyEmailToken", token)
+                .then((user) => {
+                    exports.sendEmailVerified(user.id);
 
-            res.status(200);
-            res.json({message: `Email verified successfully`});
+                })
+                .catch((error) => {
+                    console.log(error);
+                    res.status(401);
+                    res.json({message: "User not found"});
+                })
         })
         .catch(error => {
             res.status(401);
