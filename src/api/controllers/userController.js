@@ -357,8 +357,8 @@ exports.verifiedEmailUserByToken = (req, res) => {
                 .select("*")
                 .where("verifyEmailToken", token)
                 .then((user) => {
-                    console.log(user)
-                    exports.sendEmailVerified(user.email);
+                    console.log(user[0].email)
+                    exports.sendEmailVerified(user[0].email);
                 })
                 .catch((error) => {
                     console.log(error);
