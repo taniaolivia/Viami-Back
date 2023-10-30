@@ -352,12 +352,12 @@ exports.verifiedEmailUserByToken = (req, res) => {
         .update("emailVerified", true)
         .where("verifyEmailToken", token)
         .then(data => {
-            
+            console.log(data)
             db("user")
                 .select("*")
                 .where("verifyEmailToken", token)
                 .then((user) => {
-                    exports.sendEmailVerified(user.id);
+                    exports.sendEmailVerified(user.email);
 
                 })
                 .catch((error) => {
