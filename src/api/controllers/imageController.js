@@ -27,7 +27,7 @@ exports.getImageById = (req, res) => {
         });
 }
 
-// Register new user
+// Add new image
 exports.addImage = (req, res) => {
     let newImage = req.body;
     
