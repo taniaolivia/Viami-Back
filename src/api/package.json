@@ -2,6 +2,7 @@
   "name": "viami",
   "version": "0.0.0",
   "private": true,
+  "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "watch": "nodemon app.js"

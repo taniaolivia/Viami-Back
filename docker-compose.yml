@@ -4,11 +4,11 @@ services:
     image: node:lts
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./src/api/Dockerfile
     env_file: ./src/.env
-    working_dir: /home/viami/app
+    working_dir: /home/node/app
     volumes:
-      - ./src/api:/home/viami/app
+      - ./src/api:/home/node/app
     command: > 
       bash -c 
         'npm i &&

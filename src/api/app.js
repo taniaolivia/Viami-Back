@@ -38,4 +38,10 @@ imageRoute(server);
 const userImageRoute = require("./routes/userImageRoute");
 userImageRoute(server);
 
+const commentRoute = require("./routes/commentRoute");
+commentRoute(server);
+
+const userCommentRoute = require("./routes/userCommentRoute");
+userCommentRoute(server);
+
 server.listen(port, hostname);
