@@ -303,7 +303,7 @@ exports.sendVerificationMail = async(to, token) =>{
                 <title>Vérifiez votre adresse e-mail</title>
             </head>
             <body>
-                <div style="font-family: Arial, sans-serif; text-align: justify; max-width: 600px; margin: 0 auto; background-color: #E5F3FF;">
+                <div style="font-family: Arial, sans-serif; text-align: justify; margin: 0 auto; background-color: #E5F3FF;">
                     <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white">
                         <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 250px; height: auto"/>
                     </div>
@@ -373,9 +373,10 @@ exports.verifiedEmailUserByToken = (req, res) => {
                     <title>Email Vérifié</title>
                 </head>
                 <body>
-                    <div style="font-family: Arial, sans-serif; text-align: center; max-width: 600px; margin: 0 auto;">
+                    <div style="font-family: Arial, sans-serif; text-align: center; max-width: 600px; margin: auto;">
                         <h1>Email Vérifié</h1>
                         <p>Votre adresse e-mail a été vérifiée avec succès.</p>
+                        <p>Vous pouvez maintenant accéder à votre compte.</p>
                     </div>
                 </body>
                 </html>
@@ -412,7 +413,17 @@ exports.sendEmailVerified = async(to) =>{
                     </div>
 
                     <div style="padding: 5px 20px;">
-                        <p>Bienvenue sur Viami. Merci d'avoir créé un compte Viami. Votre adresse e-mail a été vérifiée avec succès. Vous pouvez maintenant accéder à votre compte.</p>
+                        <h3>Bienvenue sur Viami !</h3> 
+                        <p>Merci d'avoir créé un compte Viami.</p>
+                        <br>
+                        <p>Pour obtenir de l'aide et du support, vous pouvez nous contacter à contact.viami@gmail.com</p>
+                        <br>
+                        <p>Merci pour votre particiaption à la communauté Viami.</p>
+                        <br>
+                        <br>
+                        <p>Sincèrement,</p>
+                        <br>
+                        <p>Équipe Viami</p>
                     </div>
                 </div>
             </body>
