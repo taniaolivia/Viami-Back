@@ -288,10 +288,24 @@ exports.sendingMail = async(req, res) =>{
     to,
     subject: "Vérification des e-emails VIAMI",
     html: `
-        <h1>Vérifiez votre adresse mail</h1>
-        <p>Merci d'avoir créé un compte sur Viami. Avant de commencer, nous devons simplement confimer qu'il s'agit bien de vous. Cliquez ci-dessous pour vérifier votre adresse e-mail :</p>
-        <a href="${process.env.API_URL}/verify?token=${token}>Vérifiez mon adresse e-mail</a>
-    `});
+        <!DOCTYPE html>
+        <html lang="fr">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Vérification de l'Adresse E-mail</title>
+        </head>
+        <body>
+            <div style="font-family: Arial, sans-serif; text-align: center; max-width: 600px; margin: 0 auto;">
+                <h1>Vérification de l'Adresse E-mail</h1>
+                <p>Merci de vous être inscrit sur Viami. Pour finaliser votre inscription, veuillez cliquer sur le bouton ci-dessous pour vérifier votre adresse e-mail.</p>
+                <a href="${process.env.API_URL}/verify?token=${token} style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;">Vérifier l'E-mail</a>
+                <p>Si le bouton ne fonctionne pas, vous pouvez également copier et coller l'URL suivante dans la barre d'adresse de votre navigateur web :</p>
+                <p><a href="${process.env.API_URL}/verify?token=${token}">${process.env.API_URL}/verify?token=${token}</a></p>
+            </div>
+        </body>
+        </html>
+        `});
    
     const transporter = nodemailer.createTransport({
         service: "gmail",
