@@ -357,8 +357,8 @@ exports.verifiedEmailUserByToken = (req, res) => {
                 .select("*")
                 .where("verifyEmailToken", token)
                 .then((user) => {
+                    console.log(user)
                     exports.sendEmailVerified(user.email);
-
                 })
                 .catch((error) => {
                     console.log(error);
@@ -414,10 +414,10 @@ exports.sendEmailVerified = async(to) =>{
         if (error) {
             console.error(error);
             res.status(401);
-            res.json({message: `Error sending verification email`});
+            res.json({message: `Error sending email`});
         } else {
             res.status(200);
-            res.json({message: `Verification email sent`});
+            res.json({message: `Email sent`});
         }
     }); 
 }
