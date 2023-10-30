@@ -298,15 +298,17 @@ exports.sendingMail = async(req, res) =>{
         <body>
             <div style="font-family: Arial, sans-serif; text-align: justify; max-width: 600px; margin: 0 auto; background-color: #E5F3FF;">
                 <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white">
-                    <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 120px; height: auto"/>
+                    <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 180px; height: auto"/>
                 </div>
 
                 <div style="padding: 5px 20px;">
                     <h3>Vérifiez votre adresse e-mail</h3>
                     <p>Merci de vous être inscrit sur Viami. Pour finaliser votre inscription, veuillez cliquer sur le bouton ci-dessous pour vérifier votre adresse e-mail.</p>
-                    <a href="${process.env.API_URL}/verify?token=${token} style="text-decoration: none;">
-                        <button style="margin: auto; color: white; background-color: #0081CF; border-radius: 10px; border: 1px solid #0081CF; padding: 10px 20px; font-weight: bold;">Vérifier mon e-mail</button>
-                    </a>
+                    <div style="margin: auto;">
+                        <a href="${process.env.API_URL}/verify?token=${token} style="text-decoration: none;">
+                            <button style="margin: auto; color: white; background-color: #0081CF; border-radius: 10px; border: 1px solid #0081CF; padding: 10px 20px; font-weight: bold;">Vérifier mon e-mail</button>
+                        </a>
+                    </div>
                     <p>Si le bouton ne fonctionne pas, vous pouvez également copier et coller l'URL suivante dans la barre d'adresse de votre navigateur web :</p>
                     <p><a href="${process.env.API_URL}/verify?token=${token}">${process.env.API_URL}/verify?token=${token}</a></p>
                 </div>
