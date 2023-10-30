@@ -415,14 +415,10 @@ exports.sendEmailVerified = async(to) =>{
                     <div style="padding: 5px 20px;">
                         <h3>Bienvenue sur Viami !</h3> 
                         <p>Merci d'avoir créé un compte Viami.</p>
-                        <br>
                         <p>Pour obtenir de l'aide et du support, vous pouvez nous contacter à contact.viami@gmail.com</p>
-                        <br>
                         <p>Merci pour votre particiaption à la communauté Viami.</p>
                         <br>
-                        <br>
                         <p>Sincèrement,</p>
-                        <br>
                         <p>Équipe Viami</p>
                     </div>
                 </div>
