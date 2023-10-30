@@ -352,12 +352,10 @@ exports.verifiedEmailUserByToken = (req, res) => {
         .update("emailVerified", true)
         .where("verifyEmailToken", token)
         .then(data => {
-            console.log(data)
             db("user")
                 .select("*")
                 .where("verifyEmailToken", token)
                 .then((user) => {
-                    console.log(user[0].email)
                     exports.sendEmailVerified(user[0].email);
                 })
                 .catch((error) => {
@@ -365,6 +363,25 @@ exports.verifiedEmailUserByToken = (req, res) => {
                     res.status(401);
                     res.json({message: "User not found"});
                 })
+        
+            const htmlResponse = `
+                <!DOCTYPE html>
+                <html lang="fr">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Email Vérifié</title>
+                </head>
+                <body>
+                    <div style="font-family: Arial, sans-serif; text-align: center; max-width: 600px; margin: 0 auto;">
+                        <h1>Email Vérifié</h1>
+                        <p>Votre adresse e-mail a été vérifiée avec succès.</p>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            res.send(htmlResponse);
         })
         .catch(error => {
             res.status(401);
