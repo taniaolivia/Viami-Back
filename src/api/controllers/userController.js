@@ -298,7 +298,7 @@ exports.sendingMail = async(req, res) =>{
         <body>
             <div style="font-family: Arial, sans-serif; text-align: justify; max-width: 600px; margin: 0 auto; background-color: #E5F3FF;">
                 <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white">
-                    <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 180px; height: auto"/>
+                    <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 250px; height: auto"/>
                 </div>
 
                 <div style="padding: 5px 20px;">
