@@ -294,14 +294,82 @@ exports.sendingMail = async(req, res) =>{
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Vérification de l'Adresse E-mail</title>
+            <style>
+                .button-85 {
+                    padding: 0.6em 2em;
+                    border: none;
+                    outline: none;
+                    color: rgb(255, 255, 255);
+                    background: #111;
+                    cursor: pointer;
+                    position: relative;
+                    z-index: 0;
+                    border-radius: 10px;
+                    user-select: none;
+                    -webkit-user-select: none;
+                    touch-action: manipulation;
+                }
+
+                .button-85:before {
+                    content: "";
+                    background: linear-gradient(
+                        45deg,
+                        #ff0000,
+                        #ff7300,
+                        #fffb00,
+                        #48ff00,
+                        #00ffd5,
+                        #002bff,
+                        #7a00ff,
+                        #ff00c8,
+                        #ff0000
+                    );
+                    position: absolute;
+                    top: -2px;
+                    left: -2px;
+                    background-size: 400%;
+                    z-index: -1;
+                    filter: blur(5px);
+                    -webkit-filter: blur(5px);
+                    width: calc(100% + 4px);
+                    height: calc(100% + 4px);
+                    animation: glowing-button-85 20s linear infinite;
+                    transition: opacity 0.3s ease-in-out;
+                    border-radius: 10px;
+                }
+
+                @keyframes glowing-button-85 {
+                    0% {
+                        background-position: 0 0;
+                    }
+                    50% {
+                        background-position: 400% 0;
+                    }
+                    100% {
+                        background-position: 0 0;
+                    }
+                }
+
+                .button-85:after {
+                    z-index: -1;
+                    content: "";
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    background: #222;
+                    left: 0;
+                    top: 0;
+                    border-radius: 10px;
+                }
+            </style>
         </head>
         <body>
             <div style="font-family: Arial, sans-serif; text-align: center; max-width: 600px; margin: 0 auto; background-color: white;">
-                <div style="background-color: #0081CF; text-align: center; padding: 10px">
-                    <h2>Vérification de l'Adresse E-mail</h2>
+                <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white">
+                    <h3>Vérification de l'Adresse E-mail</h3>
                 </div>
                 <p>Merci de vous être inscrit sur Viami. Pour finaliser votre inscription, veuillez cliquer sur le bouton ci-dessous pour vérifier votre adresse e-mail.</p>
-                <a href="${process.env.API_URL}/verify?token=${token} style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;"><button>Vérifier l'E-mail</button></a>
+                <a href="${process.env.API_URL}/verify?token=${token} style="text-decoration: none;"><button class="button-85" role="button">Vérifier l'E-mail</button></a>
                 <p>Si le bouton ne fonctionne pas, vous pouvez également copier et coller l'URL suivante dans la barre d'adresse de votre navigateur web :</p>
                 <p><a href="${process.env.API_URL}/verify?token=${token}">${process.env.API_URL}/verify?token=${token}</a></p>
             </div>
