@@ -4,6 +4,6 @@ module.exports = (server) => {
     const cors = require('cors');
 
 server.route("/api/travel/:travelId")
-.get(jwtMiddleware.authenticateUser, cors(), travelController.getTravelById)
+.get( cors(), travelController.getTravelById)
 
 }
