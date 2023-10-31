@@ -505,9 +505,9 @@ exports.forgetPassword = async(req, res) => {
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <title>Réinitialisation de votre mot de passe</title>
                 </head>
-                <body style="font-family: Arial, sans-serif; text-align: justify; background-color: #E5F3FF;">
-                    <div style="margin: 0 auto;">
-                        <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white; width: 100%;">
+                <body style="font-family: Arial, sans-serif; text-align: justify; background-color: #f1eee8; padding: 0; margin: 0;">
+                    <div style="margin: 0 auto;  background-color: #f1eee8; width: 100%">
+                        <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white;">
                             <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 250px; height: auto"/>
                         </div>
 
@@ -564,9 +564,11 @@ exports.newPasswordForm = (req, res) => {
                         <meta name="viewport" content="width=device-width, initial-scale=1.0">
                         <title>Réinitialisation de mot de passe</title>
                     </head>
-                    <body>
-                        <div style="font-family: Arial, sans-serif; text-align: center; max-width: 600px; margin: auto;">
-                            <h1>Réinitialisation de mot de passe</h1>
+                    <body style="font-family: Arial, sans-serif; text-align: center; width: 100%; background-color: #f1eee8;">
+                        <div style="max-width: 600px; margin: auto; background-color: #f1eee8;">
+                            <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white">
+                                <h1>Réinitialisation de mot de passe</h1>
+                            </div>
                             <form method="PATCH" action="${process.env.API_URL}/setNewPassword?email=${email}">
                                 <p>Nouveau mot de passe : 
                                     <input type="password" name="password"/>
