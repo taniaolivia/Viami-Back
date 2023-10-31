@@ -569,7 +569,7 @@ exports.newPasswordForm = (req, res) => {
                             <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white;">
                                 <h3>Réinitialisation de mot de passe</h3>
                             </div>
-                            <form method="PATCH" action="${process.env.API_URL}/setNewPassword" style="padding: 10px;">
+                            <form method="POST" action="${process.env.API_URL}/setNewPassword" style="padding: 10px;">
                                 <input type="hidden" name="email"/>
 
                                 <p>Nouveau mot de passe : 
