@@ -80,9 +80,9 @@ exports.userLogin = (req, res) => {
         .select("*")
         .where('email', req.body.email)
         .then((user) => {
-            if(req.body.password) {
+            if (req.body.password !== null && req.body.password !== "") {
                 bcrypt.compare(req.body.password, user[0].password, (error, result) => {
-                    console.log(user[0].password);
+                    console.log(req.body.password);
                     if(error){
                         res.status(401);
                         res.json({message: "Incorrect password"})
