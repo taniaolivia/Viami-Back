@@ -21,3 +21,17 @@ exports.getTravelById = (req, res) => {
             res.json({message: "Server error"});
         });   
 }
+
+
+//get all travel
+exports.listAllTravel = (req, res) => {
+    db("travel")
+    .select("*")
+    .orderBy("name", "asc")
+    .then(data => res.status(200).json({data}))
+    .catch(error => {
+        res.status(401);
+        console.log(error);
+        res.json({message: "Server error"});
+    });   
+}
