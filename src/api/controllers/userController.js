@@ -505,8 +505,8 @@ exports.forgetPassword = async(req, res) => {
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <title>Réinitialisation de votre mot de passe</title>
                 </head>
-                <body style="font-family: Arial, sans-serif; text-align: justify; background-color: #f1eee8; padding: 0; margin: 0;">
-                    <div style="margin: 0 auto;  background-color: #f1eee8; width: 100%">
+                <body style="font-family: Arial, sans-serif; text-align: justify; background-color: white; padding: 0; margin: 0;">
+                    <div style="margin: 0 auto;  background-color: #f1eee8; width: 100%; max-width: 600px;">
                         <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white;">
                             <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 250px; height: auto"/>
                         </div>
@@ -564,8 +564,8 @@ exports.newPasswordForm = (req, res) => {
                         <meta name="viewport" content="width=device-width, initial-scale=1.0">
                         <title>Réinitialisation de mot de passe</title>
                     </head>
-                    <body style="font-family: Arial, sans-serif; text-align: center; width: 100%; background-color: #f1eee8;">
-                        <div style="max-width: 600px; margin: auto; background-color: #f1eee8; padding: 20px;">
+                    <body style="font-family: Arial, sans-serif; text-align: center; width: 100%; background-color: white;">
+                        <div style="max-width: 600px; margin: auto; background-color: #f1eee8; padding: 20px; border: 1px solid #0081CF;">
                             <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white">
                                 <h3>Réinitialisation de mot de passe</h3>
                             </div>
