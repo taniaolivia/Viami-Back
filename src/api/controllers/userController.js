@@ -435,7 +435,7 @@ exports.sendEmailVerified = async(to) =>{
     let mailOptions = ({
         from: process.env.VIAMI_EMAIL,
         to: to,
-        subject: "Viami",
+        subject: "Bienvenue sur Viami !",
         html: `
             <!DOCTYPE html>
             <html lang="fr">
@@ -496,7 +496,7 @@ exports.forgetPassword = async(req, res) => {
     let mailOptions = ({
         from: process.env.VIAMI_EMAIL,
         to: to,
-        subject: "Viami",
+        subject: "Réinitialisation de votre mot de passe",
         html: `
             <!DOCTYPE html>
             <html lang="fr">
@@ -565,15 +565,15 @@ exports.newPasswordForm = (req, res) => {
                         <title>Réinitialisation de mot de passe</title>
                     </head>
                     <body style="font-family: Arial, sans-serif; text-align: center; width: 100%; background-color: #f1eee8;">
-                        <div style="max-width: 600px; margin: auto; background-color: #f1eee8;">
+                        <div style="max-width: 600px; margin: auto; background-color: #f1eee8; padding: 20px;">
                             <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white">
-                                <h1>Réinitialisation de mot de passe</h1>
+                                <h3>Réinitialisation de mot de passe</h3>
                             </div>
                             <form method="PATCH" action="${process.env.API_URL}/setNewPassword?email=${email}">
                                 <p>Nouveau mot de passe : 
                                     <input type="password" name="password"/>
                                 </p>
-                                <button style="margin: auto; color: white; background-color: #0081CF; border-radius: 10px; border: 1px solid #0081CF; padding: 10px 20px; font-weight: bold;">Réinitialiser le mot de passe</button>
+                                <button style="margin: auto; color: white; background-color: #0081CF; border-radius: 10px; border: 1px solid #0081CF; padding: 10px 20px; font-weight: bold;">Valider</button>
                             </form>
                         </div>
                     </body>
