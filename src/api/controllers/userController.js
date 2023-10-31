@@ -82,9 +82,7 @@ exports.userLogin = (req, res) => {
         .then((user) => {
             if (req.body.password !== null || req.body.password !== "") {
                 bcrypt.compare(req.body.password, user[0].password, (error, result) => {
-                    console.log(error);
-                    console.log(result)
-                    if(error){
+                    if(result === false){
                         res.status(401);
                         res.json({message: "Incorrect password"})
                     }
