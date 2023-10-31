@@ -505,15 +505,15 @@ exports.forgetPassword = async(req, res) => {
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <title>Réinitialisation de votre mot de passe</title>
                 </head>
-                <body>
-                    <div style="font-family: Arial, sans-serif; text-align: justify; margin: 0 auto; background-color: #E5F3FF;">
-                        <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white">
+                <body style="font-family: Arial, sans-serif; text-align: justify; background-color: #E5F3FF;">
+                    <div style="margin: 0 auto;">
+                        <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white; width: 100%;">
                             <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 250px; height: auto"/>
                         </div>
 
                         <div style="padding: 5px 20px;">
-                            <h2>Bonjour,</h2> 
-                            <br>
+                            <h3>Bonjour,</h3>
+                            <p></p>
                             <p> Si vous avez bien demandé la réinitialisation de votre mot de passe, veuillez cliquer sur le bouton ci-dessous :</p>
                             <a href="${process.env.API_URL}/newPasswordForm?email=${to}" style="text-decoration: none;">
                                 <button style="margin: auto; color: white; background-color: #0081CF; border-radius: 10px; border: 1px solid #0081CF; padding: 10px 20px; font-weight: bold;">Réinitialiser le mot de passe</button>
@@ -567,7 +567,7 @@ exports.newPasswordForm = (req, res) => {
                     <body>
                         <div style="font-family: Arial, sans-serif; text-align: center; max-width: 600px; margin: auto;">
                             <h1>Réinitialisation de mot de passe</h1>
-                            <form method="PATCH" action="${process.env.API_URL}/setNewPassword?email=${to}">
+                            <form method="PATCH" action="${process.env.API_URL}/setNewPassword?email=${email}">
                                 <p>Nouveau mot de passe : 
                                     <input type="password" name="password"/>
                                 </p>
