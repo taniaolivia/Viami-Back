@@ -47,7 +47,6 @@ exports.saveTravel = (req,res) => {
 
     db("travel")
         .insert({
-            id:uuid(),
             name:name,
             description:description,
             location:location,

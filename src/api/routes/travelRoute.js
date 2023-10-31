@@ -7,6 +7,8 @@ module.exports = (server) => {
 server.route("/api/travels")
 .get(jwtMiddleware.authenticateUser, cors(),  travelController.listAllTravel);
 
+server.post("/api/save/travel", cors(), travelController.saveTravel);
+
 server.route("/api/travel/:travelId")
 .get( cors(), travelController.getTravelById)
 
