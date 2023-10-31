@@ -38,4 +38,7 @@ imageRoute(server);
 const userImageRoute = require("./routes/userImageRoute");
 userImageRoute(server);
 
+const travelRoute = require("./routes/travelRoute");
+travelRoute(server);
+
 server.listen(port, hostname);

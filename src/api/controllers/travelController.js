@@ -1,4 +1,5 @@
 const db = require("../knex");
+const { uuid } = require('uuidv4');
 
 
 
@@ -36,4 +37,27 @@ exports.listAllTravel = (req, res) => {
     });   
 }
 
+exports.saveTravel = (req,res) => {
+    const {name, description, location, nbPepInt } = req.body;
 
+    
+    if (!name || !description || !location || !nbPepInt) {
+        return res.status(400).json({ message: "All fields are required." });
+    }
+
+    db("travel")
+        .insert({
+            id:uuid(),
+            name:name,
+            description:description,
+            location:location,
+            nbPepInt: nbPepInt  
+        })
+        .then(() => res.status(201).json({ message: "Travel record successfully saved." }))
+        .catch(error => {
+            console.error(error);
+            res.status(500).json({ message: "Error while saving the travel record." });
+        });
+
+
+}
