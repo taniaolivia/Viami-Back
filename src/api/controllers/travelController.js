@@ -35,3 +35,5 @@ exports.listAllTravel = (req, res) => {
         res.json({message: "Server error"});
     });   
 }
+
+
