@@ -40,5 +40,10 @@ userImageRoute(server);
 
 const travelRoute = require("./routes/travelRoute");
 travelRoute(server);
+const commentRoute = require("./routes/commentRoute");
+commentRoute(server);
+
+const userCommentRoute = require("./routes/userCommentRoute");
+userCommentRoute(server);
 
 server.listen(port, hostname);
