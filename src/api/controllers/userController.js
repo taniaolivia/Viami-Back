@@ -19,8 +19,8 @@ exports.userRegister = (req, res) => {
                 res.json({message: "Impossible to encrypt the password"});
             }
             else{
-                db.select("*")
-                    .from("user")
+                db("user")
+                    .select("*")
                     .where("email", "=", newUser.email)
                     .then((user) => {
                         if(user.length > 0) {
@@ -76,8 +76,8 @@ exports.userRegister = (req, res) => {
 
 // Login to an existing account
 exports.userLogin = (req, res) => {
-    db.select('*')
-        .from("user")
+    db("user")
+        .select("*")
         .where('email', req.body.email)
         .then((user) => {
             if(req.body.password) {
