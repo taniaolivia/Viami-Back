@@ -225,7 +225,7 @@ exports.updateUserById = (req, res) => {
     
 }
 
-// Update user's password
+// Update user's password by id
 exports.updateUserPasswordById = (req, res) => {
     const id = req.params.userId;
     const password = req.body.password;
@@ -253,7 +253,35 @@ exports.updateUserPasswordById = (req, res) => {
     });
 }
 
-// Update user's description
+// Update user's password by email
+exports.updateUserPasswordByEmail = (req, res) => {
+    const email = req.query.email;
+    const password = req.body.password;
+    
+    bcrypt.hash(password, 10, (error, hash) => {
+       if(error){
+          res.status(401);
+          console.log(error);
+          res.json({message: "Impossible to encrypt the password"});
+       }
+       else{
+          db("user")
+              .update("password", hash)
+              .where("email", email)
+              .then(data => {
+                  res.status(200);
+                  res.json({message: `User's password is updated successfully'`});
+              })
+              .catch(error => {
+                  res.status(401);
+                  console.log(error);
+                  res.json({message: "User not found"});
+              });    
+       }
+    });
+}
+
+// Update user's description by id
 exports.updateUserDescriptionById = (req, res) => {
     const id = req.params.userId;
     const description = req.body.description;
@@ -297,30 +325,40 @@ exports.sendVerificationMail = async(to, token) =>{
         html: `
             <!DOCTYPE html>
             <html lang="fr">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Vérifiez votre adresse e-mail</title>
-            </head>
-            <body>
-                <div style="font-family: Arial, sans-serif; text-align: justify; margin: 0 auto; background-color: #E5F3FF;">
-                    <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white">
-                        <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 250px; height: auto"/>
-                    </div>
-
-                    <div style="padding: 5px 20px;">
-                        <h3>Vérifiez votre adresse e-mail</h3>
-                        <p>Merci de vous être inscrit sur Viami. Pour finaliser votre inscription, veuillez cliquer sur le bouton ci-dessous pour vérifier votre adresse e-mail.</p>
-                        <div style="margin: auto;">
-                            <a href="${process.env.API_URL}/verify?token=${token}" style="text-decoration: none;">
-                                <button style="margin: auto; color: white; background-color: #0081CF; border-radius: 10px; border: 1px solid #0081CF; padding: 10px 20px; font-weight: bold;">Vérifier mon e-mail</button>
-                            </a>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Vérifiez votre adresse e-mail</title>
+                </head>
+                <body>
+                    <div style="font-family: Arial, sans-serif; text-align: justify; margin: 0 auto; background-color: #E5F3FF;">
+                        <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white">
+                            <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 250px; height: auto"/>
                         </div>
-                        <p>Si le bouton ne fonctionne pas, vous pouvez également copier et coller l'URL suivante dans la barre d'adresse de votre navigateur web :</p>
-                        <p><a href="${process.env.API_URL}/verify?token=${token}">${process.env.API_URL}/verify?token=${token}</a></p>
+
+                        <div style="padding: 5px 20px;">
+                            <h2>Prêt à embarquer ?</h2>
+                            <br>
+                            <p>
+                                Nous sommes ravis de vous accueillir sur Viami, l'application qui réunit les voyageurs solitaires en quête d'aventures et de découvertes ! 
+                                Pour finaliser votre inscription et commencer à vivre des expériences uniques, il est essentiel de vérifier votre adresse e-mail. 
+                                Cela nous permettra de garantir la sécurité de votre compte et de vous connecter avec d'autres voyageurs passionnés.
+                            </p>
+                            <p>Pour vérifier votre adresse e-mail et commencer votre voyage avec Viami, il vous suffit de cliquer sur le bouton ci-dessous :</p>
+                            <div style="margin: auto;">
+                                <a href="${process.env.API_URL}/verify?token=${token}" style="text-decoration: none;">
+                                    <button style="margin: auto; color: white; background-color: #0081CF; border-radius: 10px; border: 1px solid #0081CF; padding: 10px 20px; font-weight: bold;">Vérifier mon e-mail</button>
+                                </a>
+                            </div>
+                            <p>Si le bouton ne fonctionne pas, vous pouvez également copier et coller le lien suivant dans votre navigateur :</p>
+                            <p><a href="${process.env.API_URL}/verify?token=${token}">${process.env.API_URL}/verify?token=${token}</a></p>
+                            <p>Nous sommes impatients de vous voir embarquer pour cette incroyable aventure avec Viami, où chaque destination devient une opportunité de rencontres extraordinaires.</p>
+                            <br>
+                            <p>Cordialement,</p>
+                            <p>L'équipe Viami</p>
+                        </div>
                     </div>
-                </div>
-            </body>
+                </body>
             </html>
         `});
    
@@ -367,18 +405,18 @@ exports.verifiedEmailUserByToken = (req, res) => {
             const htmlResponse = `
                 <!DOCTYPE html>
                 <html lang="fr">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Email Vérifié</title>
-                </head>
-                <body>
-                    <div style="font-family: Arial, sans-serif; text-align: center; max-width: 600px; margin: auto;">
-                        <h1>Email Vérifié</h1>
-                        <p>Votre adresse e-mail a été vérifiée avec succès.</p>
-                        <p>Vous pouvez maintenant accéder à votre compte.</p>
-                    </div>
-                </body>
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Email Vérifié</title>
+                    </head>
+                    <body>
+                        <div style="font-family: Arial, sans-serif; text-align: center; max-width: 600px; margin: auto;">
+                            <h1>Email Vérifié</h1>
+                            <p>Votre adresse e-mail a été vérifiée avec succès.</p>
+                            <p>Vous pouvez maintenant accéder à votre compte.</p>
+                        </div>
+                    </body>
                 </html>
             `;
 
@@ -401,29 +439,34 @@ exports.sendEmailVerified = async(to) =>{
         html: `
             <!DOCTYPE html>
             <html lang="fr">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Viami</title>
-            </head>
-            <body>
-                <div style="font-family: Arial, sans-serif; text-align: justify; margin: 0 auto; background-color: #E5F3FF;">
-                    <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white">
-                        <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 250px; height: auto"/>
-                    </div>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Viami</title>
+                </head>
+                <body>
+                    <div style="font-family: Arial, sans-serif; text-align: justify; margin: 0 auto; background-color: #E5F3FF;">
+                        <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white">
+                            <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 250px; height: auto"/>
+                        </div>
 
-                    <div style="padding: 5px 20px;">
-                        <h3>Bienvenue sur Viami !</h3> 
-                        <br>
-                        <p>Merci d'avoir créé un compte Viami.</p>
-                        <p>Pour obtenir de l'aide et du support, vous pouvez nous contacter à contact.viami@gmail.com</p>
-                        <p>Merci pour votre particiaption à la communauté Viami.</p>
-                        <br>
-                        <p>Sincèrement,</p>
-                        <p>Équipe Viami</p>
+                        <div style="padding: 5px 20px;">
+                            <h3>Bienvenue sur Viami !</h3> 
+                            <br>
+                            <p>
+                                Nous sommes ravis de vous informer que votre adresse e-mail a été vérifiée avec succès. 
+                                Vous avez désormais franchi une étape cruciale pour profiter pleinement de votre expérience sur Viami, 
+                                l'application de rencontre entre voyageurs solitaires.
+                            </p>
+                            <p>Votre compte est désormais sécurisé, et vous êtes prêt(e) à vivre des aventures passionnantes avec d'autres voyageurs intrépides.</p>
+                            <p>Merci d'avoir choisi Viami pour vos voyages en solitaire. Nous sommes honorés de faire partie de vos expériences de voyage et avons hâte de voir où vous nous emmènerez !</p>
+                            <p>Bon voyage et à bientôt sur Viami !</p>
+                            <br>
+                            <p>Cordialement,</p>
+                            <p>L'équipe Viami</p>
+                        </div>
                     </div>
-                </div>
-            </body>
+                </body>
             </html>
         `});
    
@@ -457,31 +500,31 @@ exports.forgetPassword = async(req, res) => {
         html: `
             <!DOCTYPE html>
             <html lang="fr">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Réinitialisation de votre mot de passe</title>
-            </head>
-            <body>
-                <div style="font-family: Arial, sans-serif; text-align: justify; margin: 0 auto; background-color: #E5F3FF;">
-                    <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white">
-                        <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 250px; height: auto"/>
-                    </div>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Réinitialisation de votre mot de passe</title>
+                </head>
+                <body>
+                    <div style="font-family: Arial, sans-serif; text-align: justify; margin: 0 auto; background-color: #E5F3FF;">
+                        <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white">
+                            <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 250px; height: auto"/>
+                        </div>
 
-                    <div style="padding: 5px 20px;">
-                        <h2>Bonjour,</h2> 
-                        <br>
-                        <p> Si vous avez bien demandé la réinitialisation de votre mot de passe, veuillez cliquer sur le bouton ci-dessous :</p>
-                        <a href="${process.env.API_URL}/forgetPassword?email=${to}" style="text-decoration: none;">
-                            <button style="margin: auto; color: white; background-color: #0081CF; border-radius: 10px; border: 1px solid #0081CF; padding: 10px 20px; font-weight: bold;">Réinitialiser le mot de passe</button>
-                        </a>
-                        <p> Si vous n'avez pas demandé la réinitialisation de votre mot de passe cette demande, vous pouvez ignorer cet e-mail !</p>
-                        <br>
-                        <p>Cordialement,</p>
-                        <p>L'équipe Viami</p>
+                        <div style="padding: 5px 20px;">
+                            <h2>Bonjour,</h2> 
+                            <br>
+                            <p> Si vous avez bien demandé la réinitialisation de votre mot de passe, veuillez cliquer sur le bouton ci-dessous :</p>
+                            <a href="${process.env.API_URL}/newPasswordForm?email=${to}" style="text-decoration: none;">
+                                <button style="margin: auto; color: white; background-color: #0081CF; border-radius: 10px; border: 1px solid #0081CF; padding: 10px 20px; font-weight: bold;">Réinitialiser le mot de passe</button>
+                            </a>
+                            <p> Si vous n'avez pas demandé la réinitialisation de votre mot de passe cette demande, vous pouvez ignorer cet e-mail !</p>
+                            <br>
+                            <p>Cordialement,</p>
+                            <p>L'équipe Viami</p>
+                        </div>
                     </div>
-                </div>
-            </body>
+                </body>
             </html>
         `});
    
@@ -506,44 +549,32 @@ exports.forgetPassword = async(req, res) => {
 }
 
 // Verified user's email by token
-exports.setNewPassword = (req, res) => {
-    const token = req.query.token;
+exports.newPasswordForm = (req, res) => {
+    const email = req.query.email;
     
     db("user")
-        .update("emailVerified", "1")
-        .where("verifyEmailToken", token)
-        .then(data => {
-            db("user")
-                .select("*")
-                .where("verifyEmailToken", token)
-                .then((user) => {
-                    exports.sendEmailVerified(user[0].email);
-                })
-                .catch((error) => {
-                    console.log(error);
-                    res.status(401);
-                    res.json({message: "User not found"});
-                })
-        
+        .select("*")
+        .where("email", email)
+        .then(user => {
             const htmlResponse = `
                 <!DOCTYPE html>
                 <html lang="fr">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Réinitialisation de mot de passe</title>
-                </head>
-                <body>
-                    <div style="font-family: Arial, sans-serif; text-align: center; max-width: 600px; margin: auto;">
-                        <h1>Réinitialisation de mot de passe</h1>
-                        <p>Nouveau mot de passe : 
-                            <input type="password"/>
-                        </p>
-                        <p>Confirmation de mot de passe : 
-                            <input type="password"/>
-                        </p>
-                    </div>
-                </body>
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Réinitialisation de mot de passe</title>
+                    </head>
+                    <body>
+                        <div style="font-family: Arial, sans-serif; text-align: center; max-width: 600px; margin: auto;">
+                            <h1>Réinitialisation de mot de passe</h1>
+                            <form method="PATCH" action="${process.env.API_URL}/setNewPassword?email=${to}">
+                                <p>Nouveau mot de passe : 
+                                    <input type="password" name="password"/>
+                                </p>
+                                <button style="margin: auto; color: white; background-color: #0081CF; border-radius: 10px; border: 1px solid #0081CF; padding: 10px 20px; font-weight: bold;">Réinitialiser le mot de passe</button>
+                            </form>
+                        </div>
+                    </body>
                 </html>
             `;
 
