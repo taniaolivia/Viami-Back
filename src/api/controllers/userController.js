@@ -90,7 +90,7 @@ exports.userLogin = (req, res) => {
                             password: user[0].password,
                         }
 
-                        jwt.sign(userData, process.env.JWT_KEY, {expiresIn: "14 days"}, (error, token) => {
+                        jwt.sign(userData, process.env.JWT_KEY, {expiresIn: "30s"}, (error, token) => {
                             if(error){
                                 res.status(500);
                                 res.json({message: "Impossible to generate a token"});
