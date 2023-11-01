@@ -290,12 +290,12 @@ exports.updateUserPasswordByEmail = (req, res) => {
                                     <head>
                                         <meta charset="UTF-8">
                                         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                        <title>Email Vérifié</title>
+                                        <title>Mot de passe a été changé</title>
                                     </head>
                                     <body>
                                         <div style="font-family: Arial, sans-serif; text-align: center; max-width: 600px; margin: auto;">
-                                            <h1>Email Vérifié</h1>
-                                            <p>Votre adresse e-mail a été vérifiée avec succès.</p>
+                                            <h1>Mot de passe a été changé</h1>
+                                            <p>Votre mot de passe a été changé avec succès.</p>
                                             <p>Vous pouvez maintenant accéder à votre compte.</p>
                                         </div>
                                     </body>
