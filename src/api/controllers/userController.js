@@ -282,8 +282,27 @@ exports.updateUserPasswordByEmail = (req, res) => {
                         .update({password: hash})
                         .where("id", user[0].id)
                         .then(data => {
-                            res.status(200);
-                            res.json({message: `User's password is updated successfully'`});
+                            exports.passwordChangedSuccess(email);
+
+                            const htmlResponse = `
+                                <!DOCTYPE html>
+                                <html lang="fr">
+                                    <head>
+                                        <meta charset="UTF-8">
+                                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                        <title>Email Vérifié</title>
+                                    </head>
+                                    <body>
+                                        <div style="font-family: Arial, sans-serif; text-align: center; max-width: 600px; margin: auto;">
+                                            <h1>Email Vérifié</h1>
+                                            <p>Votre adresse e-mail a été vérifiée avec succès.</p>
+                                            <p>Vous pouvez maintenant accéder à votre compte.</p>
+                                        </div>
+                                    </body>
+                                </html>
+                            `;
+
+                            res.send(htmlResponse);
                         })
                         .catch(error => {
                             res.status(401);
@@ -601,4 +620,58 @@ exports.newPasswordForm = (req, res) => {
             console.log(error);
             res.json({message: "User not found"});
         });
+}
+
+exports.passwordChangedSuccess = async(req, res) => {
+    const to = req.body.email;
+
+    let mailOptions = ({
+        from: process.env.VIAMI_EMAIL,
+        to: to,
+        subject: "Votre mot de passe a été changé avec succès",
+        html: `
+            <!DOCTYPE html>
+            <html lang="fr">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Votre mot de passe a été changé avec succès</title>
+                </head>
+                <body style="font-family: Arial, sans-serif; text-align: justify; background-color: white; padding: 0; margin: 0;">
+                    <div style="margin: 0 auto;  background-color: #f1eee8; width: 100%; max-width: 600px;">
+                        <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white;">
+                            <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 250px; height: auto"/>
+                        </div>
+
+                        <div style="padding: 5px 20px;">
+                            <h3>Bonjour,</h3>
+                            <p></p>
+                            <p> Nous tenons à vous informer que votre demande de changement de mot de passe a été traitée avec succès. Votre nouveau mot de passe a été enregistré et vous pouvez désormais l'utiliser pour vous connecter à votre compte en toute sécurité.</p>
+                            <br>
+                            <p>Cordialement,</p>
+                            <p>L'équipe Viami</p>
+                        </div>
+                    </div>
+                </body>
+            </html>
+        `});
+   
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.VIAMI_EMAIL,
+          pass: process.env.VIAMI_PASSWORD,
+        },
+      });
+  
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.error(error);
+            res.status(401);
+            res.json({message: `Error sending email`});
+        } else {
+            res.status(200);
+            res.json({message: `Email sent`});
+        }
+    }); 
 }
