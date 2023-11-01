@@ -271,18 +271,19 @@ exports.updateUserPasswordByEmail = (req, res) => {
         .select("*")
         .where("email", email)
         .then((user) => {
-            bcrypt.hash(password, 10, (error, hash) => {
-                console.log(error);
+            bcrypt.hash(password, 10, (err, hash) => {
+                console.log(err);
                 console.log(password);
-                if(error){
+                console.log(user);
+                if(err){
                     res.status(401);
-                    console.log(error);
+                    console.log(err);
                     res.json({message: "Impossible to encrypt the password"});
                 }
                 else{
                     db("user")
                         .update({password: "test"})
-                        .where("id", user[0].id)
+                        .where("id", user.id)
                         .then(data => {
                             res.status(200);
                             res.json({message: `User's password is updated successfully'`});
