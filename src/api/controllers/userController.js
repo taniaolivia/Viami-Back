@@ -202,10 +202,10 @@ exports.updateUserById = (req, res) => {
                     db("user")
                         .update({
                             firstName: newData.firstName !== null ? newData.firstName : user[0].firstName, 
-                            lastName: newData.lastName !== null ? newData.firstName : user[0].firstName, 
+                            lastName: newData.lastName !== null ? newData.lastName : user[0].lastName, 
                             email: newData.email !== null ? newData.email : user[0].email, 
                             password: newData.password !== null ? hash : user[0].password,
-                            location: newData.location !== null ? newData.firstName : user[0].firstName,
+                            location: newData.location !== null ? newData.location : user[0].location,
                             description: newData.description !== null ? newData.description : user[0].description,
                             phoneNumber: newData.phoneNumber !== null ? newData.phoneNumber : user[0].phoneNumber,
                             age: newData.age !== null ? newData.age : user[0].age,
@@ -213,7 +213,7 @@ exports.updateUserById = (req, res) => {
                             lastConnection: user[0].lastConnection,
                             connected: user[0].connected,
                             verifyEmailToken: user[0].verifyEmailToken,
-                            emailVerified: user[0].em
+                            emailVerified: user[0].emailVerified
                         })
                         .where("id", id)
                         .then(data => {
@@ -267,27 +267,34 @@ exports.updateUserPasswordByEmail = (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
     
-    bcrypt.hash(password, 10, (error, hash) => {
-       if(error){
-          res.status(401);
-          console.log(error);
-          res.json({message: "Impossible to encrypt the password"});
-       }
-       else{
-          db("user")
-              .update("password", hash)
-              .where("email", email)
-              .then(data => {
-                  res.status(200);
-                  res.json({message: `User's password is updated successfully'`});
-              })
-              .catch(error => {
-                  res.status(401);
-                  console.log(error);
-                  res.json({message: "User not found"});
-              });    
-       }
-    });
+    db("user")
+        .select("*")
+        .where("email", email)
+        .then((user) => {
+            bcrypt.hash(password, 10, (error, hash) => {
+                if(error){
+                    res.status(401);
+                    console.log(error);
+                    res.json({message: "Impossible to encrypt the password"});
+                }
+                else{
+                    db("user")
+                        .update({
+                            password: hash
+                        })
+                        .where("email", email)
+                        .then(data => {
+                            res.status(200);
+                            res.json({message: `User's password is updated successfully'`});
+                        })
+                        .catch(error => {
+                            res.status(401);
+                            console.log(error);
+                            res.json({message: "User not found"});
+                        });    
+                }
+            });
+        });
 }
 
 // Update user's description by id
