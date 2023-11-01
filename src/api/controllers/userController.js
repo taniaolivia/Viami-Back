@@ -264,20 +264,21 @@ exports.updateUserPasswordById = (req, res) => {
 
 // Update user's password by email
 exports.updateUserPasswordByEmail = (req, res) => {
-    const email = req.body.email;
+    const email = req.query.email;
     const password = req.body.password;
     
     db("user")
         .select("*")
         .where("email", email)
         .then((user) => {
-            bcrypt.hash(password, 10, (err, hash) => {
-                console.log(err);
+            bcrypt.hash(password, 10, (error, hash) => {
+                console.log(error);
                 console.log(password);
                 console.log(user);
-                if(err){
+                console.log(email);
+                if(error){
                     res.status(401);
-                    console.log(err);
+                    console.log(error);
                     res.json({message: "Impossible to encrypt the password"});
                 }
                 else{
@@ -586,9 +587,7 @@ exports.newPasswordForm = (req, res) => {
                             <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white;">
                                 <h3>Réinitialisation de mot de passe</h3>
                             </div>
-                            <form method="POST" action="${process.env.API_URL}/setNewPassword" style="padding: 10px;">
-                                <input type="hidden" name="email"/>
-
+                            <form method="POST" action="${process.env.API_URL}/setNewPassword?email=${email}" style="padding: 10px;">
                                 <p>Nouveau mot de passe : 
                                     <input type="password" name="password"/>
                                 </p>
