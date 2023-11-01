@@ -247,7 +247,7 @@ exports.updateUserPasswordById = (req, res) => {
        }
        else{
           db("user")
-              .update("password", hash)
+              .update(password, "test")
               .where("id", id)
               .then(data => {
                   res.status(200);
@@ -280,7 +280,7 @@ exports.updateUserPasswordByEmail = (req, res) => {
                 }
                 else{
                     db("user")
-                        .update("password", hash)
+                        .update({"password": hash})
                         .where("id", user[0].id)
                         .then(data => {
                             res.status(200);
