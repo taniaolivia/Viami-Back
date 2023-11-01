@@ -274,7 +274,7 @@ exports.updateUserPasswordByEmail = (req, res) => {
             bcrypt.hash(password, 10, (error, hash) => {
                 console.log(error);
                 console.log(password);
-                console.log(user);
+                console.log(user[0].id);
                 console.log(email);
                 if(error){
                     res.status(401);
@@ -284,7 +284,7 @@ exports.updateUserPasswordByEmail = (req, res) => {
                 else{
                     db("user")
                         .update({password: "test"})
-                        .where("id", user.id)
+                        .where("id", user[0].id)
                         .then(data => {
                             res.status(200);
                             res.json({message: `User's password is updated successfully'`});
