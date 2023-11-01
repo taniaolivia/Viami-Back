@@ -247,7 +247,7 @@ exports.updateUserPasswordById = (req, res) => {
        }
        else{
           db("user")
-              .update(password, "test")
+              .update("password", hash)
               .where("id", id)
               .then(data => {
                   res.status(200);
@@ -273,6 +273,7 @@ exports.updateUserPasswordByEmail = (req, res) => {
         .then((user) => {
             bcrypt.hash(password, 10, (error, hash) => {
                 console.log(error);
+                console.log(password);
                 if(error){
                     res.status(401);
                     console.log(error);
@@ -280,7 +281,7 @@ exports.updateUserPasswordByEmail = (req, res) => {
                 }
                 else{
                     db("user")
-                        .update({"password": hash})
+                        .update({password: "test"})
                         .where("id", user[0].id)
                         .then(data => {
                             res.status(200);
