@@ -21,4 +21,8 @@ server.route("/api/users/:userId/description")
 
 server.get("/verify", cors(), userController.verifiedEmailUserByToken);
 
+server.post("/forgetPassword", cors(), userController.forgetPassword);
+server.post("/setNewPassword", cors(), userController.updateUserPasswordByEmail);
+server.get("/newPasswordForm", cors(), userController.newPasswordForm);
+
 }
