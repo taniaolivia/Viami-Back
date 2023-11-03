@@ -38,6 +38,8 @@ imageRoute(server);
 const userImageRoute = require("./routes/userImageRoute");
 userImageRoute(server);
 
+const travelRoute = require("./routes/travelRoute");
+travelRoute(server);
 const commentRoute = require("./routes/commentRoute");
 commentRoute(server);
 
