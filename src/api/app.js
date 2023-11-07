@@ -46,4 +46,7 @@ commentRoute(server);
 const userCommentRoute = require("./routes/userCommentRoute");
 userCommentRoute(server);
 
+const activityRoute = require("./routes/activityRoute");
+activityRoute(server);
+
 server.listen(port, hostname);
