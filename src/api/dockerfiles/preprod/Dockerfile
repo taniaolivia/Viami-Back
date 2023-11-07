@@ -7,8 +7,8 @@ ENV NODE_ENV=preproduction
 # Set the user as root
 USER root
 
-# Use the repository /app
-WORKDIR /app
+# Use the repository /app/preprod
+WORKDIR /app/preprod
 
 # Copy the package file to the project
 COPY ["package.json", "package-lock.json*", "./"]
