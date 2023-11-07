@@ -7,6 +7,10 @@ module.exports = (server) => {
 server.route("/api/activities")
 .get(jwtMiddleware.authenticateUser, cors(),  activityController.listAllActivities);
 
+server.post("/api/save/activity", cors(),activityController.saveActivity );
+
+
+
 
 
 }
