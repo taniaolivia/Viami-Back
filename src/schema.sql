@@ -124,13 +124,17 @@ CREATE TABLE `user_language` (
 
 DROP TABLE IF EXISTS `travel`;
 CREATE TABLE `travel` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(100) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `location` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `nbPepInt` int(100) DEFAULT NULL,
+  `isRecommended` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `travel` (`id`, `name`, `description`, `location`, `nbPepInt`, `isRecommended`) VALUES
+(1,	'Nusa Pedina',	'Nusa Pedina Nusa Pedina Nusa Pedina Nusa Pedina Nusa Pedina',	'italie',	3,	0);
 
 
 -- 2023-10-27 14:18:30
