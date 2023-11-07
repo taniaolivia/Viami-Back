@@ -12,6 +12,4 @@ server.route("/api/travels/:travelId/activities")
 .post(jwtMiddleware.authenticateUser, cors(), travelActivityController.addActivityToTravel)
 .delete(jwtMiddleware.authenticateUser, cors(), travelActivityController.deleteTravelActivity);
 
-
-
 }
