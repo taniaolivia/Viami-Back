@@ -20,7 +20,7 @@ RUN npm install --preproduction
 RUN npm install -g nodemon
 
 # Copy the source code
-COPY ./src/api .
+COPY . .
 
 # Expose the port 3000 for the application
 EXPOSE 3000
