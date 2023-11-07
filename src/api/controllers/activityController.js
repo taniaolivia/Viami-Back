@@ -31,3 +31,29 @@ exports.getActivityById = (req, res) => {
         });   
 }
 
+exports.saveActivity = (req,res) => {
+    const {name, imageName,  location,  } = req.body;
+
+    
+    if (!name || !imageName || !location ) {
+        return res.status(400).json({ message: "All fields are required." });
+    }
+
+    db("travel")
+        .insert({
+            name:name,
+            imageName:imageName,
+            location:location
+            
+        })
+        .then(() => res.status(201).json({ message: "Activity record successfully saved." }))
+        .catch(error => {
+            console.error(error);
+            res.status(500).json({ message: "Error while saving the Activity record." });
+        });
+
+
+}
+
+
+
