@@ -1,7 +1,4 @@
 const db = require("../knex");
-const { uuid } = require('uuidv4');
-
-
 
 // Get the travel information
 exports.getTravelById = (req, res) => {
@@ -23,8 +20,7 @@ exports.getTravelById = (req, res) => {
         });   
 }
 
-
-//get all travel
+// Get all travels
 exports.listAllTravel = (req, res) => {
     db("travel")
     .select("*")
@@ -37,26 +33,24 @@ exports.listAllTravel = (req, res) => {
     });   
 }
 
+// Add new travel
 exports.saveTravel = (req,res) => {
     const {name, description, location, nbPepInt } = req.body;
 
-    
-    if (!name || !description || !location || !nbPepInt) {
-        return res.status(400).json({ message: "All fields are required." });
+    if (!name || !description || !location) {
+        return res.status(400).json({ message: "Please fill all the required fields ! (name, description and location)" });
     }
 
     db("travel")
         .insert({
-            name:name,
-            description:description,
-            location:location,
-            nbPepInt: nbPepInt  
+            name: name,
+            description: description,
+            location: location,
+            nbPepInt: 0 
         })
-        .then(() => res.status(201).json({ message: "Travel record successfully saved." }))
+        .then(() => res.status(201).json({ message: "New travel is successfully saved." }))
         .catch(error => {
             console.error(error);
-            res.status(500).json({ message: "Error while saving the travel record." });
+            res.status(500).json({ message: "Error while saving the new travel." });
         });
-
-
 }
