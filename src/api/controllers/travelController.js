@@ -62,4 +62,16 @@ exports.saveTravel = (req,res) => {
 }
 
 
-
+// Get all recommended travels
+exports.listRecommendedTravel = (req, res) => {
+    db("travel")
+        .select("*")
+        .where({ isRecommended: 1 })  // Filtrer les voyages recommandés
+        .orderBy("name", "asc")
+        .then(data => res.status(200).json({ data }))
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({ message: "Server error" });
+        });
+}
