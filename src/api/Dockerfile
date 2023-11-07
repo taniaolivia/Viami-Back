@@ -1,17 +1,17 @@
 # User official image of Node.js
 FROM node:lts
 
-# Define the environnement as preproduction
-ENV NODE_ENV=preproduction
+# Define the environnement as production
+ENV NODE_ENV=production
 
 # Set the user as root
 USER root
 
-# Use the repository /app/preprod
+# Use the repository /app
 WORKDIR /app
 
 # Copy the package file to the project
-COPY ["../../api/package.json", "../../api/package-lock.json", "./"]
+COPY ["package.json", "package-lock.json", "./"]
 
 # Install all the dependencies needed 
 RUN npm install --production
@@ -27,3 +27,4 @@ EXPOSE 3000
 
 # Run and watch the project
 CMD ["npm", "run", "watch"]
+
