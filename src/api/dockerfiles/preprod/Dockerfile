@@ -8,10 +8,10 @@ ENV NODE_ENV=preproduction
 USER root
 
 # Use the repository /app/preprod
-WORKDIR /app/preprod
+WORKDIR /app
 
 # Copy the package file to the project
-COPY ["package.json", "package-lock.json*", "./"]
+COPY ["./src/api/package.json", "./src/api/package-lock.json", "./"]
 
 # Install all the dependencies needed 
 RUN npm install --preproduction
@@ -20,7 +20,7 @@ RUN npm install --preproduction
 RUN npm install -g nodemon
 
 # Copy the source code
-COPY . .
+COPY ./src/api .
 
 # Expose the port 3000 for the application
 EXPOSE 3000

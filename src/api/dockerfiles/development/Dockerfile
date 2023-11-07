@@ -11,7 +11,7 @@ USER root
 WORKDIR /app
 
 # Copy the package file to the project
-COPY ["package.json", "package-lock.json*", "./"]
+COPY ["./src/api/package.json", "./src/api/package-lock.json", "./"]
 
 # Install all the dependencies needed 
 RUN npm install --development
@@ -20,7 +20,7 @@ RUN npm install --development
 RUN npm install -g nodemon
 
 # Copy the source code
-COPY . .
+COPY ./src/api .
 
 # Expose the port 3000 for the application
 EXPOSE 3000
