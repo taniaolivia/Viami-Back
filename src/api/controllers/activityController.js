@@ -39,7 +39,7 @@ exports.saveActivity = (req,res) => {
         return res.status(400).json({ message: "All fields are required." });
     }
 
-    db("travel")
+    db("activity")
         .insert({
             name:name,
             imageName:imageName,
@@ -54,6 +54,8 @@ exports.saveActivity = (req,res) => {
 
 
 }
+
+
 
 
 

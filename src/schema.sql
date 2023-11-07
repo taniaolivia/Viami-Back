@@ -145,7 +145,7 @@ CREATE TABLE `activity` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
-DROP TABLE IF EXISTS `travel_actuvity`;
+DROP TABLE IF EXISTS `travel_activity`;
 CREATE TABLE `travel_actuvity` (
   `id` int(100) NOT NULL AUTO_INCREMENT,
   `idActivity` int(100) NOT NULL,
