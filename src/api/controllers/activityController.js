@@ -11,3 +11,23 @@ exports.listAllActivities = (req, res) => {
         res.json({message: "Server error"});
     });   
 }
+
+exports.getActivityById = (req, res) => {
+    const id = req.params.activityId;
+
+    db("activity")
+        .select("*")
+        .then(datas => {
+            datas.map((data) => {
+                 if(id === data.id) {
+                    res.status(200);
+                    res.json({message: `Activity found`, activity: data});
+                }
+            })
+        })
+        .catch(error => {
+            res.status(500);
+            res.json({message: "Server error"});
+        });   
+}
+
