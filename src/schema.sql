@@ -134,3 +134,24 @@ CREATE TABLE `travel` (
 
 
 -- 2023-10-27 14:18:30
+
+DROP TABLE IF EXISTS `activity`;
+CREATE TABLE `activity` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `imageName` varchar(200) NOT NULL,
+  `location` varchar(200) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+DROP TABLE IF EXISTS `travel_actuvity`;
+CREATE TABLE `travel_actuvity` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `idActivity` int(100) NOT NULL,
+  `idTravel` int(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+-- 2023-11-07 08:38:35
