@@ -3,7 +3,18 @@ const db = require("../knex");
 // Get all activities with their travel
 exports.getAllTravelsActivities = (req, res) => {
     db("travel_activity")
-        .select("*")
+        .select([
+            "travel_activity.id as id",
+            "travel_activity.idActivity as idActivity",
+            "travel_activity.idTravel as idTravel",
+            "travel.name as name",
+            "travel.description as travelDescription",
+            "travel.location as location",
+            "travel.nbPepInt as nbPepInt",
+            "activity.name as activityName",
+            "activity.imageName as imageName",
+            "activity.location as activityLocation"
+        ])
         .join("travel", "travel.id", "=", "travel_activity.idTravel")
         .join("activity", "activity.id", "=", "travel_activity.idActivity")
         .then(data => res.status(200).json({data}))
@@ -19,16 +30,28 @@ exports.getTravelActivitiesById = (req, res) => {
     let id = req.params.travelId;
 
     db("travel_activity")
-        .select("*")
-        .where({travelId: id})
-        .join("travel", "travel.id", "=", "travel_activity.travelId")
-        .join("activity", "activity.id", "=", "travel_activity.activityId")
-        .then(data => res.status(200).json({"travelActivities": data}))
-        .catch(error => {
-            res.status(401);
-            console.log(error);
-            res.json({message: "Server error"});
-        });
+    .select([
+        "travel_activity.id as id",
+        "travel_activity.idActivity as idActivity",
+        "travel_activity.idTravel as idTravel",
+        "travel.name as name",
+        "travel.description as travelDescription",
+        "travel.location as location",
+        "travel.nbPepInt as nbPepInt",
+        "activity.name as activityName",
+        "activity.imageName as imageName",
+        "activity.location as activityLocation"
+    ])
+    .where({idTravel: id})
+    .join("travel", "travel.id", "=", "travel_activity.idTravel")
+    .join("activity", "activity.id", "=", "travel_activity.idActivity")
+    .then(data => res.status(200).json({"travelActivities": data}))
+    .catch(error => {
+        res.status(401);
+        console.log(error);
+        res.json({message: "Server error"});
+    });
+
 }
 
 // Add activity to travel's data
@@ -46,8 +69,8 @@ exports.addActivityToTravel = (req, res) => {
         .then(data => {
             db("travel_activity")
                 .insert({
-                    activityId: data[0],
-                    travelId: travelId
+                    idActivity: data[0],
+                    idTravel: travelId
                 })
                 .then(travelActivity => {
                     db("travel")
@@ -87,8 +110,8 @@ exports.deleteTravelActivity = (req, res) => {
     db("travel_activity")
         .delete("*")
         .where({
-            activityId: activity,
-            travelId: travel
+            idActivity: activity,
+            idTravel: travel
         })
         .then(data => {
             db("activity")
