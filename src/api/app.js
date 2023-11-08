@@ -46,4 +46,10 @@ commentRoute(server);
 const userCommentRoute = require("./routes/userCommentRoute");
 userCommentRoute(server);
 
+const activityRoute = require("./routes/activityRoute");
+activityRoute(server);
+
+const travelActivityRoute = require("./routes/travelActivityRoute");
+travelActivityRoute(server);
+
 server.listen(port, hostname);
