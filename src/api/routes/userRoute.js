@@ -11,6 +11,24 @@ server.route("/api/users")
 .get(jwtMiddleware.authenticateUser, cors(), userController.listAllUsers);
 
 server.route("/api/users/:userId")
+/**
+ * @openapi
+ * paths:
+ *  /api/users/:userId:
+ *   get:
+ *     tags:
+ *       - User
+ *     description: get user by id
+ *     parameters:
+ *      - in: params
+ *        name: user id
+ *        description: user id
+ *        schema:
+ *          type: string
+ *     responses:
+ *       200:
+ *         description: Return wanted user.
+ */
 .get(jwtMiddleware.authenticateUser, cors(), userController.getUserById)
 .put(jwtMiddleware.authenticateUser, cors(), userController.updateUserById)
 .patch(jwtMiddleware.authenticateUser, cors(), userController.updateUserPasswordById)
