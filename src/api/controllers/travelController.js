@@ -25,7 +25,7 @@ exports.listAllTravel = (req, res) => {
     db("travel")
     .select("*")
     .orderBy("name", "asc")
-    .then(data => res.status(200).json({data}))
+    .then(data => res.status(200).json({"travels": data}))
     .catch(error => {
         res.status(401);
         console.log(error);
