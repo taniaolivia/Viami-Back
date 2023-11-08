@@ -6,14 +6,12 @@ exports.getTravelById = (req, res) => {
 
     db("travel")
         .select("*")
-        .then(datas => {
-            datas.map((data) => {
-                 if(id === data.id) {
-                    res.status(200);
+        .where("id", id)
+        .then(data => {
+                 res.status(200);
                     res.json({message: `Travel found`, travel: data});
-                }
+               
             })
-        })
         .catch(error => {
             res.status(500);
             res.json({message: "Server error"});
