@@ -68,7 +68,7 @@ exports.listRecommendedTravel = (req, res) => {
         .select("*")
         .where({ isRecommended: 1 })  // Filtrer les voyages recommandés
         .orderBy("name", "asc")
-        .then(data => res.status(200).json({ data }))
+        .then(data => res.status(200).json({'travels' : data }))
         .catch(error => {
             res.status(401);
             console.log(error);
