@@ -22,7 +22,7 @@ exports.getTravelById = (req, res) => {
 
 // Get list of travels compatible with searched demand
 exports.searchTravels = (req, res) => {
-    const location = req.body.location;
+    const location = req.query.location;
 
     db("travel")
         .select("*")
