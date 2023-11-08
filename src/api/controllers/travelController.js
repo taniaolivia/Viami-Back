@@ -20,6 +20,27 @@ exports.getTravelById = (req, res) => {
         });   
 }
 
+// Get list of travels compatible with searched demand
+exports.searchTravels = (req, res) => {
+    const location = req.body.location;
+
+    db("travel")
+        .select("*")
+        .where("location", location)
+        .then(datas => {
+            datas.map((data) => {
+                 if(id === data.id) {
+                    res.status(200);
+                    res.json({message: `List of travels found`, travels: data});
+                }
+            })
+        })
+        .catch(error => {
+            res.status(500);
+            res.json({message: "Server error"});
+        });   
+}
+
 // Get all travels
 exports.listAllTravel = (req, res) => {
     db("travel")
