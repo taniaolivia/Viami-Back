@@ -27,13 +27,9 @@ exports.searchTravels = (req, res) => {
     db("travel")
         .select("*")
         .where("location", location)
-        .then(datas => {
-            datas.map((data) => {
-                 if(id === data.id) {
-                    res.status(200);
-                    res.json({message: `List of travels found`, travels: data});
-                }
-            })
+        .then(data => {
+            res.status(200);
+            res.json({message: `List of travels found`, travels: data});
         })
         .catch(error => {
             res.status(500);
