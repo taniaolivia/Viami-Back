@@ -54,3 +54,18 @@ exports.saveTravel = (req,res) => {
             res.status(500).json({ message: "Error while saving the new travel." });
         });
 }
+
+
+// Get all recommended travels
+exports.listRecommendedTravel = (req, res) => {
+    db("travel")
+        .select("*")
+        .where({ isRecommended: 1 })  // Filtrer les voyages recommandés
+        .orderBy("name", "asc")
+        .then(data => res.status(200).json({'travels' : data }))
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({ message: "Server error" });
+        });
+}

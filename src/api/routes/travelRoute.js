@@ -10,6 +10,8 @@ server.route("/api/travels")
 server.post("/api/save/travel", cors(), travelController.saveTravel);
 
 server.route("/api/travel/:travelId")
-.get( cors(), travelController.getTravelById)
+.get( cors(), travelController.getTravelById);
+
+server.route("/api/recommended-travels").get(cors(),travelController.listRecommendedTravel)
 
 }
