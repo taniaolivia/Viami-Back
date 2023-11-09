@@ -61,6 +61,8 @@ CREATE TABLE `user` (
   `lastConnection` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `connected` enum('0','1') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `profileImage` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `verifyEmailToken` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `emailVerified` enum('0','1') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -133,10 +135,6 @@ CREATE TABLE `travel` (
   `isRecommended` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-INSERT INTO `travel` (`id`, `name`, `description`, `location`, `nbPepInt`, `isRecommended`) VALUES
-(1,	'Nusa Pedina',	'Nusa Pedina Nusa Pedina Nusa Pedina Nusa Pedina Nusa Pedina',	'italie',	3,	0);
-
 
 -- 2023-10-27 14:18:30
 
