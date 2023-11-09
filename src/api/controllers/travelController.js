@@ -55,12 +55,11 @@ exports.saveTravel = (req,res) => {
         });
 }
 
-
 // Get all recommended travels
 exports.listRecommendedTravel = (req, res) => {
     db("travel")
         .select("*")
-        .where({ isRecommended: 1 })  // Filtrer les voyages recommandés
+        .where({ isRecommended: 1 })
         .orderBy("name", "asc")
         .then(data => res.status(200).json({'travels' : data }))
         .catch(error => {
@@ -69,3 +68,20 @@ exports.listRecommendedTravel = (req, res) => {
             res.json({ message: "Server error" });
         });
 }
+
+// Get the top five recommended travels
+exports.getTopFiveRecommendedTravels = (req, res) => {
+    db("travel")
+    .select("*")
+    .where("isRecommended", 1)
+    .orderBy("name", "asc")
+    .limit(5)
+    .offset(0)
+    .then(data => res.status(200).json({"travels": data}))
+    .catch(error => {
+        res.status(401);
+        console.log(error);
+        res.json({message: "Server error"});
+    });   
+}
+
