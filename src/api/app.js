@@ -53,6 +53,8 @@ activityRoute(server);
 const travelActivityRoute = require("./routes/travelActivityRoute");
 travelActivityRoute(server);
 
+const travelImageRoute = require("./routes/travelImageRoute");
+travelImageRoute(server);
 const themeTravelRoute = require("./routes/themeTravelRoute");
 themeTravelRoute(server);
 
