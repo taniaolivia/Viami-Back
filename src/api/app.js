@@ -40,6 +40,7 @@ userImageRoute(server);
 
 const travelRoute = require("./routes/travelRoute");
 travelRoute(server);
+
 const commentRoute = require("./routes/commentRoute");
 commentRoute(server);
 
@@ -51,5 +52,8 @@ activityRoute(server);
 
 const travelActivityRoute = require("./routes/travelActivityRoute");
 travelActivityRoute(server);
+
+const themeTravelRoute = require("./routes/themeTravelRoute");
+themeTravelRoute(server);
 
 server.listen(port, hostname);
