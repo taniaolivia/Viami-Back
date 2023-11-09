@@ -149,7 +149,7 @@ CREATE TABLE `activity` (
 
 
 DROP TABLE IF EXISTS `travel_activity`;
-CREATE TABLE `travel_actuvity` (
+CREATE TABLE `travel_activity` (
   `id` int(100) NOT NULL AUTO_INCREMENT,
   `idActivity` int(100) NOT NULL,
   `idTravel` int(100) NOT NULL,
