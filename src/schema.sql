@@ -157,4 +157,25 @@ CREATE TABLE `travel_activity` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
--- 2023-11-07 08:38:35
+DROP TABLE IF EXISTS `theme`;
+CREATE TABLE `theme` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `theme` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `theme_travel`;
+CREATE TABLE `theme_travel` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `themeId` int(11) NOT NULL,
+  `travelId` int(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `themeId` (`themeId`),
+  KEY `travelId` (`travelId`),
+  CONSTRAINT `theme_travel_ibfk_1` FOREIGN KEY (`themeId`) REFERENCES `theme` (`id`),
+  CONSTRAINT `theme_travel_ibfk_2` FOREIGN KEY (`travelId`) REFERENCES `travel` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+-- 2023-11-09 02:12:58

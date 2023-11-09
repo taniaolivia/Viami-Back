@@ -22,4 +22,10 @@ server.route("/api/recommend/travels")
 server.route("/api/recommendFive/travels")
 .get(jwtMiddleware.authenticateUser, cors(),travelController.getTopFiveRecommendedTravels)
 
+server.route("/api/popular/travels")
+.get(jwtMiddleware.authenticateUser, cors(),  travelController.listPopularTravels);
+
+server.route("/api/popularFive/travels")
+.get(jwtMiddleware.authenticateUser, cors(),  travelController.getTopFivePopularTravels);
+
 }

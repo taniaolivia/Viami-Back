@@ -53,4 +53,7 @@ activityRoute(server);
 const travelActivityRoute = require("./routes/travelActivityRoute");
 travelActivityRoute(server);
 
+const themeTravelRoute = require("./routes/themeTravelRoute");
+themeTravelRoute(server);
+
 server.listen(port, hostname);
