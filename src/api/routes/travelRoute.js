@@ -10,6 +10,9 @@ server.route("/api/travels")
 server.route("/api/save/travel")
 .post(jwtMiddleware.authenticateUser, cors(), travelController.saveTravel);
 
+server.route("/api/search/travels")
+.get(jwtMiddleware.authenticateUser, cors(),  travelController.searchTravels);
+
 server.route("/api/travels/:travelId")
 .get(jwtMiddleware.authenticateUser, cors(), travelController.getTravelById);
 
