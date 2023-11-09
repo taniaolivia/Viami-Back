@@ -156,3 +156,13 @@ CREATE TABLE `travel_actuvity` (
 
 
 -- 2023-11-07 08:38:35
+
+
+
+DROP TABLE IF EXISTS `travel_image`;
+CREATE TABLE `travel_image` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `idTravel` int(100) NOT NULL,
+  `idImage` int(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
