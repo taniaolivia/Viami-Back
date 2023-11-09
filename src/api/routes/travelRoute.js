@@ -16,6 +16,9 @@ server.route("/api/search/travels")
 server.route("/api/travels/:travelId")
 .get(jwtMiddleware.authenticateUser, cors(), travelController.getTravelById);
 
+server.route("/api/recommend/travels/:travelId")
+.get(jwtMiddleware.authenticateUser, cors(), travelController.getRecommendedTravelById);
+
 server.route("/api/recommend/travels")
 .get(jwtMiddleware.authenticateUser, cors(),travelController.listRecommendedTravel)
 
