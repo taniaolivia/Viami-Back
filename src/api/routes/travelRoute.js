@@ -7,11 +7,16 @@ module.exports = (server) => {
 server.route("/api/travels")
 .get(jwtMiddleware.authenticateUser, cors(),  travelController.listAllTravel);
 
-server.post("/api/save/travel", cors(), travelController.saveTravel);
+server.route("/api/save/travel")
+.post(jwtMiddleware.authenticateUser, cors(), travelController.saveTravel);
 
-server.route("/api/travel/:travelId")
-.get( cors(), travelController.getTravelById);
+server.route("/api/travels/:travelId")
+.get(jwtMiddleware.authenticateUser, cors(), travelController.getTravelById);
 
-server.route("/api/recommended-travels").get(cors(),travelController.listRecommendedTravel)
+server.route("/api/recommend/travels")
+.get(jwtMiddleware.authenticateUser, cors(),travelController.listRecommendedTravel)
+
+server.route("/api/recommendFive/travels")
+.get(jwtMiddleware.authenticateUser, cors(),travelController.getTopFiveRecommendedTravels)
 
 }

@@ -6,13 +6,10 @@ exports.getTravelById = (req, res) => {
 
     db("travel")
         .select("*")
-        .then(datas => {
-            datas.map((data) => {
-                 if(id === data.id) {
-                    res.status(200);
-                    res.json({message: `Travel found`, travel: data});
-                }
-            })
+        .where("id", id)
+        .then(data => {
+            res.status(200);
+            res.json({message: `Travel found`, travel: data});
         })
         .catch(error => {
             res.status(500);
@@ -23,14 +20,14 @@ exports.getTravelById = (req, res) => {
 // Get all travels
 exports.listAllTravel = (req, res) => {
     db("travel")
-    .select("*")
-    .orderBy("name", "asc")
-    .then(data => res.status(200).json({"travels": data}))
-    .catch(error => {
-        res.status(401);
-        console.log(error);
-        res.json({message: "Server error"});
-    });   
+        .select("*")
+        .orderBy("name", "asc")
+        .then(data => res.status(200).json({"travels": data}))
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({message: "Server error"});
+        });   
 }
 
 // Add new travel
@@ -72,16 +69,16 @@ exports.listRecommendedTravel = (req, res) => {
 // Get the top five recommended travels
 exports.getTopFiveRecommendedTravels = (req, res) => {
     db("travel")
-    .select("*")
-    .where("isRecommended", 1)
-    .orderBy("name", "asc")
-    .limit(5)
-    .offset(0)
-    .then(data => res.status(200).json({"travels": data}))
-    .catch(error => {
-        res.status(401);
-        console.log(error);
-        res.json({message: "Server error"});
-    });   
+        .select("*")
+        .where("isRecommended", 1)
+        .orderBy("name", "asc")
+        .limit(5)
+        .offset(0)
+        .then(data => res.status(200).json({"travels": data}))
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({message: "Server error"});
+        });   
 }
 
