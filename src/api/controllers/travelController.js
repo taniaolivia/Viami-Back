@@ -8,10 +8,26 @@ exports.getTravelById = (req, res) => {
         .select("*")
         .where("id", id)
         .then(data => {
-                 res.status(200);
-                    res.json({message: `Travel found`, travel: data});
-               
-            })
+            res.status(200);
+            res.json({message: `Travel found`, travel: data});
+        })
+        .catch(error => {
+            res.status(500);
+            res.json({message: "Server error"});
+        });   
+}
+
+// Get list of travels compatible with searched demand
+exports.searchTravels = (req, res) => {
+    const location = req.query.location;
+
+    db("travel")
+        .select("*")
+        .where("location", location)
+        .then(data => {
+            res.status(200);
+            res.json({message: `List of travels found`, travels: data});
+        })
         .catch(error => {
             res.status(500);
             res.json({message: "Server error"});
@@ -21,14 +37,14 @@ exports.getTravelById = (req, res) => {
 // Get all travels
 exports.listAllTravel = (req, res) => {
     db("travel")
-    .select("*")
-    .orderBy("name", "asc")
-    .then(data => res.status(200).json({"travels": data}))
-    .catch(error => {
-        res.status(401);
-        console.log(error);
-        res.json({message: "Server error"});
-    });   
+        .select("*")
+        .orderBy("name", "asc")
+        .then(data => res.status(200).json({"travels": data}))
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({message: "Server error"});
+        });   
 }
 
 // Add new travel
@@ -52,3 +68,64 @@ exports.saveTravel = (req,res) => {
             res.status(500).json({ message: "Error while saving the new travel." });
         });
 }
+
+// Get all recommended travels
+exports.listRecommendedTravel = (req, res) => {
+    db("travel")
+        .select("*")
+        .where({ isRecommended: 1 })
+        .orderBy("name", "asc")
+        .then(data => res.status(200).json({'travels' : data }))
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({ message: "Server error" });
+        });
+}
+
+// Get all popular travels
+exports.listPopularTravels = (req, res) => {
+    db("travel")
+        .select("*")
+        .orderBy("nbPepInt", "desc")
+        .orderBy("name", "asc")
+        .then(data => res.status(200).json({'travels' : data }))
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({ message: "Server error" });
+        });
+}
+
+// Get only top five popular travels
+exports.getTopFivePopularTravels = (req, res) => {
+    db("travel")
+        .select("*")
+        .orderBy("nbPepInt", "desc")
+        .orderBy("name", "asc")
+        .limit(5)
+        .offset(0)
+        .then(data => res.status(200).json({'travels' : data }))
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({ message: "Server error" });
+        });
+}
+
+// Get the top five recommended travels
+exports.getTopFiveRecommendedTravels = (req, res) => {
+    db("travel")
+        .select("*")
+        .where("isRecommended", 1)
+        .orderBy("name", "asc")
+        .limit(5)
+        .offset(0)
+        .then(data => res.status(200).json({"travels": data}))
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({message: "Server error"});
+        });   
+}
+

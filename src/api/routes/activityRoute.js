@@ -5,12 +5,13 @@ module.exports = (server) => {
 
 
 server.route("/api/activities")
-.get(jwtMiddleware.authenticateUser, cors(),  activityController.listAllActivities);
+.get(jwtMiddleware.authenticateUser, cors(), activityController.listAllActivities);
 
-server.post("/api/save/activity", cors(),activityController.saveActivity );
+server.route("/api/save/activity")
+.post(jwtMiddleware.authenticateUser, cors(), activityController.saveActivity);
 
 server.route("/api/activity/:activityId")
-.get( cors(), activityController.getActivityById)
+.get(jwtMiddleware.authenticateUser, cors(), activityController.getActivityById)
 
 
 
