@@ -69,3 +69,33 @@ exports.listRecommendedTravel = (req, res) => {
             res.json({ message: "Server error" });
         });
 }
+
+// Get all popular travels
+exports.listPopularTravels = (req, res) => {
+    db("travel")
+        .select("*")
+        .orderBy("nbPepInt", "desc")
+        .orderBy("name", "asc")
+        .then(data => res.status(200).json({'travels' : data }))
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({ message: "Server error" });
+        });
+}
+
+// Get only top five popular travels
+exports.getTopFivePopularTravels = (req, res) => {
+    db("travel")
+        .select("*")
+        .orderBy("nbPepInt", "desc")
+        .orderBy("name", "asc")
+        .limit(5)
+        .offset(0)
+        .then(data => res.status(200).json({'travels' : data }))
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({ message: "Server error" });
+        });
+}
