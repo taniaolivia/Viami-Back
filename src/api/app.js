@@ -40,10 +40,22 @@ userImageRoute(server);
 
 const travelRoute = require("./routes/travelRoute");
 travelRoute(server);
+
 const commentRoute = require("./routes/commentRoute");
 commentRoute(server);
 
 const userCommentRoute = require("./routes/userCommentRoute");
 userCommentRoute(server);
+
+const activityRoute = require("./routes/activityRoute");
+activityRoute(server);
+
+const travelActivityRoute = require("./routes/travelActivityRoute");
+travelActivityRoute(server);
+
+const travelImageRoute = require("./routes/travelImageRoute");
+travelImageRoute(server);
+const themeTravelRoute = require("./routes/themeTravelRoute");
+themeTravelRoute(server);
 
 server.listen(port, hostname);
