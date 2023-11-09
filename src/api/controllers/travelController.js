@@ -129,3 +129,32 @@ exports.getTopFiveRecommendedTravels = (req, res) => {
         });   
 }
 
+//Get the recommended travel by id 
+exports.getRecommendedTravelById = (req, res) => {
+    const id = req.params.travelId;
+
+    db("travel")
+        .select("*")
+        .where("id", id)
+        .then(data => {
+            if (data && data.length > 0) {
+                const travelData = data[0];
+                if (travelData.isRecommended == 1) {
+                    res.status(200);
+                    res.json({message: `Travel found`, travel: travelData});
+                } else {
+                    res.status(403);
+                    res.json({message: "Travel not recommended"});
+                }
+            } else {
+                res.status(404);
+                res.json({message: "Travel not found"});
+            }
+        })
+        .catch(error => {
+            res.status(500);
+            res.json({message: "Server error"});
+        });
+};
+
+
