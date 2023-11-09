@@ -14,4 +14,10 @@ server.route("/api/travel/:travelId")
 
 server.route("/api/recommended-travels").get(cors(),travelController.listRecommendedTravel)
 
+server.route("/api/popular/travels")
+.get(jwtMiddleware.authenticateUser, cors(),  travelController.listPopularTravels);
+
+server.route("/api/popularFive/travels")
+.get(jwtMiddleware.authenticateUser, cors(),  travelController.getTopFivePopularTravels);
+
 }
