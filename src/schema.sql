@@ -142,11 +142,12 @@ DROP TABLE IF EXISTS `activity`;
 CREATE TABLE `activity` (
   `id` int(100) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
+  `description` varchar(300) NOT NULL,
   `imageName` varchar(200) NOT NULL,
   `location` varchar(200) NOT NULL,
+  `note` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 
 DROP TABLE IF EXISTS `travel_activity`;
 CREATE TABLE `travel_activity` (
@@ -190,3 +191,11 @@ CREATE TABLE `theme_travel` (
 
 
 -- 2023-11-09 02:12:58
+
+DROP TABLE IF EXISTS `activity_image`;
+CREATE TABLE `activity_image` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `idActivity` int(100) NOT NULL,
+  `idImage` int(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

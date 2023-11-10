@@ -58,4 +58,7 @@ travelImageRoute(server);
 const themeTravelRoute = require("./routes/themeTravelRoute");
 themeTravelRoute(server);
 
+const activityImageRoute = require("./routes/activityImageRoute");
+activityImageRoute(server);
+
 server.listen(port, hostname);

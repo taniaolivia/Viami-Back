@@ -17,14 +17,12 @@ exports.getActivityById = (req, res) => {
 
     db("activity")
         .select("*")
-        .then(datas => {
-            datas.map((data) => {
-                 if(id === data.id) {
-                    res.status(200);
-                    res.json({message: `Activity found`, activity: data});
-                }
-            })
-        })
+        .where("id",id)
+        .then(data => {
+            
+            res.status(200).json({message: `Activity found`, activity: data
+        })})
+                
         .catch(error => {
             res.status(500);
             res.json({message: "Server error"});
