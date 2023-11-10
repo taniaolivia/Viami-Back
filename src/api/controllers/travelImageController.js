@@ -25,7 +25,7 @@ exports.getAllTravelsImages = (req, res) => {
         });
 }
 
-// Get all activities of a travel by id
+// Get all images of a travel by id
 exports.getTravelImagesById = (req, res) => {
     let id = req.params.travelId;
 
