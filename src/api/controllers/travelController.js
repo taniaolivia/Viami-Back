@@ -24,6 +24,7 @@ exports.searchTravels = (req, res) => {
     db("travel")
         .select("*")
         .where("location", location)
+        .orderBy("name", "asc")
         .then(data => {
             res.status(200);
             res.json({message: `List of travels found`, travels: data});
