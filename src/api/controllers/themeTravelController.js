@@ -46,3 +46,23 @@ exports.listTravelsByTheme = (req, res) => {
         });
 }
 
+// Get first five travels by theme id
+exports.getFirstFiveTravelsByTheme = (req, res) => {
+    const themeId = req.params.themeId;
+
+    db("theme_travel")
+        .select("*")
+        .where("themeId", themeId)
+        .join("travel", "travel.id", "=", "theme_travel.travelId")
+        .join("theme", "theme.id", "=", "theme_travel.themeId")
+        .orderBy("travel.name", "asc")
+        .limit(5)
+        .offset(0)
+        .then(data => res.status(200).json({'travels' : data }))
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({ message: "Server error" });
+        });
+}
+

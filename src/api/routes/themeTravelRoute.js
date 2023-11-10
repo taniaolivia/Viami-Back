@@ -12,4 +12,7 @@ server.route("/api/themesFive")
 server.route("/api/themes/:themeId/travels")
 .get(jwtMiddleware.authenticateUser, cors(), themeTravelController.listTravelsByTheme);
 
+server.route("/api/themesFive/:themeId/travels")
+.get(jwtMiddleware.authenticateUser, cors(), themeTravelController.getFirstFiveTravelsByTheme);
+
 }
