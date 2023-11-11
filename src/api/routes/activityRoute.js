@@ -13,6 +13,19 @@ server.route("/api/save/activity")
 server.route("/api/activity/:activityId")
 .get(jwtMiddleware.authenticateUser, cors(), activityController.getActivityById)
 
+server.route("/api/recommend/activities/:activityId")
+.get(jwtMiddleware.authenticateUser, cors(), travelController.getRecommendedActivityById);
 
+server.route("/api/recommend/activities")
+.get(jwtMiddleware.authenticateUser, cors(),travelController.listRecommendedActivities)
+
+server.route("/api/recommendFive/activities")
+.get(jwtMiddleware.authenticateUser, cors(),travelController.getTopFiveRecommendedActivities)
+
+server.route("/api/popular/activities")
+.get(jwtMiddleware.authenticateUser, cors(),  travelController.listPopularActivities);
+
+server.route("/api/popularFive/activities")
+.get(jwtMiddleware.authenticateUser, cors(),  travelController.getTopFivePopularActivities);
 
 }

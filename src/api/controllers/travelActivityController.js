@@ -10,10 +10,12 @@ exports.getAllTravelsActivities = (req, res) => {
             "travel.name as name",
             "travel.description as travelDescription",
             "travel.location as location",
-            "travel.nbPepInt as nbPepInt",
+            "travel.nbParticipant as nbParticipant",
             "activity.name as activityName",
             "activity.imageName as imageName",
-            "activity.location as activityLocation"
+            "activity.location as activityLocation",
+            "activity.isRecommended as isRecommended",
+            "activity.nbParticipant as nbParticipant"
         ])
         .join("travel", "travel.id", "=", "travel_activity.idTravel")
         .join("activity", "activity.id", "=", "travel_activity.idActivity")
@@ -37,10 +39,12 @@ exports.getTravelActivitiesById = (req, res) => {
         "travel.name as name",
         "travel.description as travelDescription",
         "travel.location as location",
-        "travel.nbPepInt as nbPepInt",
+        "travel.nbParticipant as nbParticipant",
         "activity.name as activityName",
         "activity.imageName as imageName",
-        "activity.location as activityLocation"
+        "activity.location as activityLocation",
+        "activity.isRecommended as isRecommended",
+        "activity.nbParticipant as nbParticipant"
     ])
     .where({idTravel: id})
     .join("travel", "travel.id", "=", "travel_activity.idTravel")
@@ -56,16 +60,11 @@ exports.getTravelActivitiesById = (req, res) => {
 
 // Add activity to travel's data
 exports.addActivityToTravel = (req, res) => {
-    const {name, imageName, location} = req.body;
-    let newActivity = req.body.activity;
+    let activity = req.body;
     let travelId = req.params.travelId;
 
     db("activity")
-        .insert({
-            name:name,
-            imageName:imageName,
-            location:location
-        })
+        .insert(activity)
         .then(data => {
             db("travel_activity")
                 .insert({
@@ -80,12 +79,7 @@ exports.addActivityToTravel = (req, res) => {
                             res.status(200).json({
                                 message: `Activity is added to travel's data`,
                                 travel: travelData,
-                                activity: {
-                                    id: data[0],
-                                    name:name,
-                                    imageName:imageName,
-                                    location:location
-                                }
+                                activity: activity
                             }) 
                         })
                 })
