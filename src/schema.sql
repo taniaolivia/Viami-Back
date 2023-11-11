@@ -153,6 +153,10 @@ CREATE TABLE `travel_activity` (
   `idActivity` int(100) NOT NULL,
   `idTravel` int(100) NOT NULL,
   PRIMARY KEY (`id`)
+  KEY `idActivity` (`idActivity`),
+  KEY `idTravel` (`idTravel`),
+  CONSTRAINT `travel_activity_ibfk_1` FOREIGN KEY (`idActivity`) REFERENCES `activity` (`id`),
+  CONSTRAINT `travel_activity_ibfk_2` FOREIGN KEY (`idTravel`) REFERENCES `travel` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -161,7 +165,11 @@ CREATE TABLE `travel_image` (
   `id` int(100) NOT NULL AUTO_INCREMENT,
   `idTravel` int(100) NOT NULL,
   `idImage` int(100) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idImage` (`idImage`),
+  KEY `idTravel` (`idTravel`),
+  CONSTRAINT `travel_image_ibfk_1` FOREIGN KEY (`idImage`) REFERENCES `image` (`id`),
+  CONSTRAINT `travel_image_ibfk_2` FOREIGN KEY (`idTravel`) REFERENCES `travel` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -184,6 +192,19 @@ CREATE TABLE `theme_activity` (
   KEY `activityId` (`activityId`),
   CONSTRAINT `theme_activity_ibfk_1` FOREIGN KEY (`themeId`) REFERENCES `theme` (`id`),
   CONSTRAINT `theme_activity_ibfk_2` FOREIGN KEY (`activityId`) REFERENCES `activity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `activity_image`;
+CREATE TABLE `activity_image` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `idActivity` int(100) NOT NULL,
+  `idImage` int(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idImage` (`idImage`),
+  KEY `idActivity` (`idActivity`),
+  CONSTRAINT `activity_image_ibfk_1` FOREIGN KEY (`idImage`) REFERENCES `image` (`id`),
+  CONSTRAINT `activity_image_ibfk_2` FOREIGN KEY (`idActivity`) REFERENCES `activity` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
