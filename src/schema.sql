@@ -122,8 +122,6 @@ CREATE TABLE `user_language` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
--- 2023-10-21 21:44:35
-
 DROP TABLE IF EXISTS `travel`;
 CREATE TABLE `travel` (
   `id` int(100) NOT NULL AUTO_INCREMENT,
@@ -135,7 +133,6 @@ CREATE TABLE `travel` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- 2023-10-27 14:18:30
 
 DROP TABLE IF EXISTS `activity`;
 CREATE TABLE `activity` (
@@ -165,6 +162,8 @@ CREATE TABLE `travel_image` (
   `idImage` int(100) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 DROP TABLE IF EXISTS `theme`;
 CREATE TABLE `theme` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -173,16 +172,16 @@ CREATE TABLE `theme` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
-DROP TABLE IF EXISTS `theme_travel`;
-CREATE TABLE `theme_travel` (
+DROP TABLE IF EXISTS `theme_activity`;
+CREATE TABLE `theme_activity` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `themeId` int(11) NOT NULL,
-  `travelId` int(100) NOT NULL,
+  `activityId` int(100) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `themeId` (`themeId`),
-  KEY `travelId` (`travelId`),
-  CONSTRAINT `theme_travel_ibfk_1` FOREIGN KEY (`themeId`) REFERENCES `theme` (`id`),
-  CONSTRAINT `theme_travel_ibfk_2` FOREIGN KEY (`travelId`) REFERENCES `travel` (`id`)
+  KEY `activityId` (`activityId`),
+  CONSTRAINT `theme_activity_ibfk_1` FOREIGN KEY (`themeId`) REFERENCES `theme` (`id`),
+  CONSTRAINT `theme_activity_ibfk_2` FOREIGN KEY (`activityId`) REFERENCES `activity` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
