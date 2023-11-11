@@ -56,7 +56,7 @@ exports.getActivityImagesById = (req, res) => {
 }
 
 // Add image to activity's data
-exports.addImageToTravel = (req, res) => {
+exports.addImageToActivity = (req, res) => {
     let image = req.body.image;
     let activityId = req.params.activityId;
 
@@ -97,7 +97,7 @@ exports.addImageToTravel = (req, res) => {
 }
 
 // Delete an image in activity's data
-exports.deleteTravelImage = (req, res) => {
+exports.deleteActivityImage = (req, res) => {
     let image = req.body.imageId;
     let activity = req.params.activityId;
 
