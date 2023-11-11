@@ -138,6 +138,7 @@ DROP TABLE IF EXISTS `activity`;
 CREATE TABLE `activity` (
   `id` int(100) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
+  `description` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `imageName` varchar(200) NOT NULL,
   `location` varchar(200) NOT NULL,
   `isRecommended` tinyint(1) NOT NULL DEFAULT 0,
