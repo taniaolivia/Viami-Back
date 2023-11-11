@@ -168,6 +168,7 @@ DROP TABLE IF EXISTS `theme`;
 CREATE TABLE `theme` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `theme` varchar(100) NOT NULL,
+  `icon` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
