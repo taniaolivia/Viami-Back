@@ -131,8 +131,7 @@ CREATE TABLE `travel` (
   `description` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `location` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `image` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nbPepInt` int(100) DEFAULT NULL,
-  `isRecommended` tinyint(1) NOT NULL DEFAULT 0,
+  `nbPepInt` int(100) DEFAULT NULL
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -144,6 +143,8 @@ CREATE TABLE `activity` (
   `name` varchar(100) NOT NULL,
   `imageName` varchar(200) NOT NULL,
   `location` varchar(200) NOT NULL,
+  `isRecommended` tinyint(1) NOT NULL DEFAULT 0,
+  `nbParticipant` int(100) DEFAULT NULL
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -155,10 +156,6 @@ CREATE TABLE `travel_activity` (
   `idTravel` int(100) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
--- 2023-11-07 08:38:35
-
 
 
 DROP TABLE IF EXISTS `travel_image`;
