@@ -10,7 +10,7 @@ server.route("/api/activities")
 server.route("/api/save/activity")
 .post(jwtMiddleware.authenticateUser, cors(), activityController.saveActivity);
 
-server.route("/api/activity/:activityId")
+server.route("/api/activities/:activityId")
 .get(jwtMiddleware.authenticateUser, cors(), activityController.getActivityById)
 
 server.route("/api/recommend/activities/:activityId")
