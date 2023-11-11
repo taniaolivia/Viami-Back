@@ -16,9 +16,10 @@ exports.getActivityById = (req, res) => {
 
     db("activity")
         .select("*")
+        .where("id", id)
         .then(data => {
             res.status(200);
-            res.json({"activity": data});
+            res.json({data});
         })
         .catch(error => {
             res.status(401);
