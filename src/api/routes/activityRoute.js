@@ -14,18 +14,18 @@ server.route("/api/activity/:activityId")
 .get(jwtMiddleware.authenticateUser, cors(), activityController.getActivityById)
 
 server.route("/api/recommend/activities/:activityId")
-.get(jwtMiddleware.authenticateUser, cors(), travelController.getRecommendedActivityById);
+.get(jwtMiddleware.authenticateUser, cors(), activityController.getRecommendedActivityById);
 
 server.route("/api/recommend/activities")
-.get(jwtMiddleware.authenticateUser, cors(),travelController.listRecommendedActivities)
+.get(jwtMiddleware.authenticateUser, cors(), activityController.listRecommendedActivities)
 
 server.route("/api/recommendFive/activities")
-.get(jwtMiddleware.authenticateUser, cors(),travelController.getTopFiveRecommendedActivities)
+.get(jwtMiddleware.authenticateUser, cors(), activityController.getTopFiveRecommendedActivities)
 
 server.route("/api/popular/activities")
-.get(jwtMiddleware.authenticateUser, cors(),  travelController.listPopularActivities);
+.get(jwtMiddleware.authenticateUser, cors(), activityController.listPopularActivities);
 
 server.route("/api/popularFive/activities")
-.get(jwtMiddleware.authenticateUser, cors(),  travelController.getTopFivePopularActivities);
+.get(jwtMiddleware.authenticateUser, cors(), activityController.getTopFivePopularActivities);
 
 }
