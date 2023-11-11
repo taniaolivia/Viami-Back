@@ -4,7 +4,7 @@ exports.listAllActivities = (req, res) => {
     db("activity")
     .select("*")
     .orderBy("name", "asc")
-    .then(data => res.status(200).json({data}))
+    .then(data => res.status(200).json({"activity": data}))
     .catch(error => {
         res.status(401);
         res.json({message: "Server error"});
