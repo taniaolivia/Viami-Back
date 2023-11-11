@@ -82,7 +82,7 @@ exports.listPopularActivities = (req, res) => {
 }
 
 // Get only top five popular activities
-exports.getTopFivePopularTravels = (req, res) => {
+exports.getTopFivePopularActivities = (req, res) => {
     db("activity")
         .select("*")
         .orderBy("nbParticipant", "desc")
@@ -98,7 +98,7 @@ exports.getTopFivePopularTravels = (req, res) => {
 }
 
 // Get the top five recommended activities
-exports.getTopFiveRecommendedTravels = (req, res) => {
+exports.getTopFiveRecommendedActivities = (req, res) => {
     db("activity")
         .select("*")
         .where("isRecommended", 1)
