@@ -7,7 +7,6 @@ exports.listAllActivities = (req, res) => {
     .then(data => res.status(200).json({data}))
     .catch(error => {
         res.status(401);
-        console.log(error);
         res.json({message: "Server error"});
     });   
 }
@@ -17,17 +16,13 @@ exports.getActivityById = (req, res) => {
 
     db("activity")
         .select("*")
-        .then(datas => {
-            datas.map((data) => {
-                 if(id === data.id) {
-                    res.status(200);
-                    res.json({message: `Activity found`, activity: data});
-                }
-            })
+        .then(data => {
+            res.status(200);
+            res.json({data});
         })
         .catch(error => {
-            res.status(500);
-            res.json({message: "Server error"});
+            res.status(401);
+            res.json({message: "Activity not found"});
         });   
 }
 
