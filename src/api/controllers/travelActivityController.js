@@ -15,7 +15,7 @@ exports.getAllTravelsActivities = (req, res) => {
             "activity.imageName as imageName",
             "activity.location as activityLocation",
             "activity.isRecommended as isRecommended",
-            "activity.nbParticipant as nbParticipant"
+            "activity.nbParticipant as activityNbParticipant"
         ])
         .join("travel", "travel.id", "=", "travel_activity.idTravel")
         .join("activity", "activity.id", "=", "travel_activity.idActivity")
@@ -44,7 +44,7 @@ exports.getTravelActivitiesById = (req, res) => {
         "activity.imageName as imageName",
         "activity.location as activityLocation",
         "activity.isRecommended as isRecommended",
-        "activity.nbParticipant as nbParticipant"
+        "activity.nbParticipant as activityNbParticipant"
     ])
     .where({idTravel: id})
     .join("travel", "travel.id", "=", "travel_activity.idTravel")
