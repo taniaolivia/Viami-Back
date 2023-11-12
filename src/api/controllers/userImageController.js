@@ -1,8 +1,6 @@
 const db = require("../knex");
 const { S3Client, PutObjectCommand, PutObjectAclCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const crypto = require('crypto');
-const fs = require('fs');
-const path = require("path");
 
 const s3Client = new S3Client({
     region: process.env.REGION,
@@ -48,13 +46,13 @@ exports.getUserImagesById = (req, res) => {
 
 // Add image to user's data
 exports.addUserImage = async (req, res) => {
-    let newImage = req.body.image;
     let userId = req.params.userId;
+    const newImage = req.file;
     const uniqueId = Date.now();
     const randomString = crypto.randomBytes(4).toString('hex');
     const imageName = `image_${uniqueId}_${randomString}.jpg`;
     const key = `${directoryPath}/image_${uniqueId}_${randomString}.jpg`;
-    const fileContent = newImage;
+    const fileContent = Buffer.from(newImage.buffer);
 
     const params = {
         Bucket: bucketName,

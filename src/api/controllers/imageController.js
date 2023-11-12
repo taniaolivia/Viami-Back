@@ -1,9 +1,6 @@
 const db = require("../knex");
 const { S3Client, PutObjectCommand, PutObjectAclCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const crypto = require('crypto');
-const multer = require('multer');
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
 
 const s3Client = new S3Client({
     region: process.env.REGION,
@@ -44,72 +41,61 @@ exports.getImageById = (req, res) => {
 }
 
 // Add new image
-exports.addImage = (req, res) => {
-    let newImage = req.body.image;
+exports.addImage =  (req, res) => {
+    let newImage = req.file;
     
-    db.select("*")
-        .from("image")
-        .where("image", "=", newImage)
-        .then((user) => {
-            if(user.length > 0) {
+    const uploadFile = async () => {
+        const uniqueId = Date.now();
+        const randomString = crypto.randomBytes(4).toString('hex');
+        const imageName = `image_${uniqueId}_${randomString}.jpg`;
+        const key = `${directoryPath}/image_${uniqueId}_${randomString}.jpg`;
+        const fileContent = Buffer.from(newImage.buffer);
+
+        const params = {
+            Bucket: bucketName,
+            Key: key,
+            Body: fileContent,
+            ContentType: "image/jpeg",
+        };
+        
+        try {
+            const command = new PutObjectCommand(params);
+            const result = await s3Client.send(command);
+
+            const aclParams = {
+            Bucket: bucketName,
+            Key: key,
+            ACL: "public-read",
+            };
+        
+            const aclCommand = new PutObjectAclCommand(aclParams);
+            await s3Client.send(aclCommand);
+
+            db("image")
+            .insert({
+                image: `${process.env.CDN_URL}/assets/${imageName}`
+            })
+            .then(data => {
+                res.status(200).json({
+                    message: `Image added successfully`,
+                    data: {
+                        id: data[0],
+                        image: data.location
+                    }                    
+                })
+            })
+            .catch(error => {
                 res.status(401);
-                res.json({message: "Image already exists"});
-            }
-            else {
-                const uploadFile = async () => {
-                    const uniqueId = Date.now();
-                    const randomString = crypto.randomBytes(4).toString('hex');
-                    const imageName = `image_${uniqueId}_${randomString}.jpg`;
-                    const key = `${directoryPath}/image_${uniqueId}_${randomString}.jpg`;
-
-                    const fileContent = newImage;
-
-                    const params = {
-                      Bucket: bucketName,
-                      Key: key,
-                      Body: fileContent,
-                      ContentType: "image/jpeg",
-                    };
-                  
-                    try {
-                      const command = new PutObjectCommand(params);
-                      const result = await s3Client.send(command);
-
-                      const aclParams = {
-                        Bucket: bucketName,
-                        Key: key,
-                        ACL: "public-read",
-                      };
-                  
-                      const aclCommand = new PutObjectAclCommand(aclParams);
-                      await s3Client.send(aclCommand);
-
-                      db("image")
-                        .insert({
-                            image: `${process.env.CDN_URL}/assets/${imageName}`
-                        })
-                        .then(data => {
-                            res.status(200).json({
-                                message: `Image added successfully`,
-                                data: {
-                                    id: data[0],
-                                    image: data.location
-                                }                    
-                            })
-                        })
-                        .catch(error => {
-                            res.status(401);
-                            console.log(error);
-                            res.json({message: "Invalid request"});
-                        });
-                    } catch (error) {
-                      console.error("Error uploading file to S3:", error);
-                    }
-                  };
-                  
-                  uploadFile();
-            }
-        })
+                console.log(error);
+                res.json({message: "Invalid request"});
+            });
+        } catch (error) {
+            console.error("Error uploading file to S3:", error);
+        }
+        };
+        
+        uploadFile();
+            
 }
 
 exports.deleteImage = async (req, res) => {
@@ -153,15 +139,15 @@ exports.deleteImage = async (req, res) => {
 
 
 // Update an image by id
-exports.updateImageById = upload.single('image'), async (req, res) => {
+exports.updateImageById =  async (req, res) => {
     let id = req.params.imageId;
-    const newImage = req.file.buffer;    
+    const newImage = req.file;    
     const uniqueId = Date.now();
     const randomString = crypto.randomBytes(4).toString('hex');
     const imageName = `image_${uniqueId}_${randomString}.jpg`;
     const directoryPath = process.env.AWS_PATH_USER_IMAGES;
     const key = `${directoryPath}/image_${uniqueId}_${randomString}.jpg`;
-    const fileContent = Buffer.from(newImage);
+    const fileContent = Buffer.from(newImage.buffer);
 
     try {
          const params = {
