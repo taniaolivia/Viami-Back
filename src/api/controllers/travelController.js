@@ -54,7 +54,10 @@ exports.getDateLocationUsers = (req, res) => {
                 .orderBy("user.firstName", "asc")
                 .then(user => {
                     res.status(200);
-                    res.json({userDateLocation: user.length});
+                    res.json({userDateLocation: {
+                        nbParticipant: user.length,
+                        users: user
+                    }});
                 })
                 .catch(error => {
                     res.status(401);
