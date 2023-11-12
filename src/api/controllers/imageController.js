@@ -32,11 +32,11 @@ exports.getImageById = (req, res) => {
 
 // Add new image
 exports.addImage = (req, res) => {
-    let newImage = req.body;
+    let newImage = req.body.image;
     
     db.select("*")
         .from("image")
-        .where("image", "=", newImage.image)
+        .where("image", "=", newImage)
         .then((user) => {
             if(user.length > 0) {
                 res.status(401);
@@ -69,8 +69,8 @@ exports.addImage = (req, res) => {
                         console.error("Error uploading image to S3:", err);
                     } else {
                         console.log(params);
-                        console.log(data.location);
-                        db("image")
+                        console.log(data);
+                        /*db("image")
                             .insert({
                                 image: data.location
                             })
@@ -87,7 +87,7 @@ exports.addImage = (req, res) => {
                                 res.status(401);
                                 console.log(error);
                                 res.json({message: "Invalid request"});
-                            });
+                            });*/
                     }
                 });
                     
