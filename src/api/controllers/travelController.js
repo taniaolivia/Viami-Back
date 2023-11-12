@@ -90,7 +90,7 @@ exports.joinTravel = (req, res) => {
     db("date_location")
         .select("*")
         .where("location", location)
-        .andWhere("date", date)
+        .where("date", date)
         .orderBy("date", "asc")
         .then(data => {
             db("user_date_location")

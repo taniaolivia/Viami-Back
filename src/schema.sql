@@ -208,16 +208,13 @@ CREATE TABLE `activity_image` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
-DROP TABLE IF EXISTS `activity_image`;
-CREATE TABLE `activity_image` (
-  `id` int(100) NOT NULL AUTO_INCREMENT,
-  `idActivity` int(100) NOT NULL,
-  `idImage` int(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idImage` (`idImage`),
-  KEY `idActivity` (`idActivity`),
-  CONSTRAINT `activity_image_ibfk_1` FOREIGN KEY (`idImage`) REFERENCES `image` (`id`),
-  CONSTRAINT `activity_image_ibfk_2` FOREIGN KEY (`idActivity`) REFERENCES `activity` (`id`)
+DROP TABLE IF EXISTS `date_location`;
+CREATE TABLE `date_location` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` varchar(100) NOT NULL,
+  `location` varchar(100) NOT NULL,
+  `nbParticipant` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -232,6 +229,5 @@ CREATE TABLE `user_date_location` (
   CONSTRAINT `user_date_location_ibfk_1` FOREIGN KEY (`dateLocationId`) REFERENCES `date_location` (`id`),
   CONSTRAINT `user_date_location_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 
 -- 2023-11-12 03:56:56
