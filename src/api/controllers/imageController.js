@@ -1,6 +1,7 @@
 const db = require("../knex");
 const AWS = require('aws-sdk');
 const crypto = require('crypto');
+const fs = require('fs');
 
 // Get a list of images
 exports.listAllImages = (req, res) => {
@@ -43,18 +44,19 @@ exports.addImage = (req, res) => {
             }
             else {
                 AWS.config.update({
-                    accessKeyId: PROCESS_ENV_ACCESS_KEY,
-                    secretAccessKey: PROCESS_ENV_SECRET_KEY,
-                    region: PROCESS_ENV_REGION
+                    accessKeyId: process.env.ACCESS_KEY,
+                    secretAccessKey: process.env.SECRET_KEY,
+                    region: process.env.REGION
                 });
 
                 const s3 = new AWS.S3();
-                const bucketName = PROCESS_ENV_BUCKET_NAME;
+                const bucketName = process.env.BUCKET_NAME;
                 const uniqueId = Date.now();
                 const randomString = crypto.randomBytes(4).toString('hex');
                 
                 const key = `image_${uniqueId}_${randomString}.jpg`;
-            
+                const fileContent = fs.readFileSync(newImage);
+
                 const params = {
                     Bucket: bucketName,
                     Key: key,
@@ -66,6 +68,8 @@ exports.addImage = (req, res) => {
                     if (err) {
                         console.error("Error uploading image to S3:", err);
                     } else {
+                        console.log(params);
+                        console.log(data.location);
                         db("image")
                             .insert({
                                 image: data.location
