@@ -16,4 +16,10 @@ server.route("/api/search/travels")
 server.route("/api/travels/:travelId")
 .get(jwtMiddleware.authenticateUser, cors(), travelController.getTravelById);
 
+server.route("/api/travelUsers")
+.get(jwtMiddleware.authenticateUser, cors(), travelController.getDateLocationUsers);
+
+server.route("/api/travelUsers/add")
+.patch(jwtMiddleware.authenticateUser, cors(), travelController.joinTravel);
+
 }
