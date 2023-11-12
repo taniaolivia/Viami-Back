@@ -161,7 +161,7 @@ exports.updateImageById = async (req, res) => {
     const imageName = `image_${uniqueId}_${randomString}.jpg`;
     const directoryPath = process.env.AWS_PATH_USER_IMAGES;
     const key = `${directoryPath}/image_${uniqueId}_${randomString}.jpg`;
-    const fileContent = newImage;
+    const fileContent = Buffer.from(newImage);
 
     try {
          const params = {
@@ -222,69 +222,4 @@ exports.updateImageById = async (req, res) => {
      } catch (error) {
          console.error("Error deleting image:", error);
      }
-
-   /* db.select("*")
-        .from("image")
-        .where("id", id)
-        .then((image) => {
-            const deleteFile = async () => {                  
-                /*const paramsDelete = {
-                    Bucket: bucketName,
-                    Key: `${process.env.AWS_PATH}/${image[0].image.split("/")[7]}`
-                };*/
-                
-            
-                /*try {
-                   /* const deleteCommand = new DeleteObjectCommand(paramsDelete);
-                    await s3Client.send(deleteCommand);
-                
-                    console.log("Image deleted successfully.");*/
-
-                    /*const params = {
-                        Bucket: bucketName,
-                        Key: key,
-                        Body: fileContent,
-                        ContentType: "image/jpeg",
-                    };
-
-                    const command = new PutObjectCommand(params);
-                    const result = await s3Client.send(command);
-
-                    const aclParams = {
-                        Bucket: bucketName,
-                        Key: key,
-                        ACL: "public-read",
-                    };
-                
-                    const aclCommand = new PutObjectAclCommand(aclParams);
-                    await s3Client.send(aclCommand);
-                    console.log("File uploaded successfully", result);
-
-                    db("image")
-                        .delete("*")
-                        .where("image", image)
-                        .then(data => {
-                            
-                            db("image")
-                                .update({"image":`${process.env.CDN_URL}/assets/usersImages/${imageName}`})
-                                .where({id: id})
-                                .then(data => res.status(200).json({"message": "Image has been updated successfully"}))
-                                .catch(error => {
-                                    res.status(401);
-                                    console.log(error);
-                                    res.json({message: "Server error"});
-                                });
-                        })
-                        .catch(error => {
-                            res.status(401);
-                            console.log(error);
-                            res.json({message: "Invalid request"});
-                        });
-                } catch (error) {
-                    console.error("Error deleting image:", error);
-                }
-            };
-                
-            deleteFile();
-        })*/
 }
