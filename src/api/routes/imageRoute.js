@@ -7,7 +7,8 @@ server.route("/api/images")
 .get(jwtMiddleware.authenticateUser, cors(), imageController.listAllImages);
 
 server.route("/api/image")
-.post(jwtMiddleware.authenticateUser, cors(), imageController.addImage);
+.post(jwtMiddleware.authenticateUser, cors(), imageController.addImage)
+.delete(jwtMiddleware.authenticateUser, cors(), imageController.deleteImage);
 
 server.route("/api/images/:imageId")
 .get(jwtMiddleware.authenticateUser, cors(), imageController.getImageById)
