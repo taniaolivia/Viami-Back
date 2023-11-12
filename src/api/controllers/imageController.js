@@ -1,8 +1,9 @@
 const db = require("../knex");
 const { S3Client, PutObjectCommand, PutObjectAclCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const crypto = require('crypto');
-const fs = require('fs');
-const path = require("path");
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 const s3Client = new S3Client({
     region: process.env.REGION,
@@ -152,10 +153,9 @@ exports.deleteImage = async (req, res) => {
 
 
 // Update an image by id
-exports.updateImageById = async (req, res) => {
+exports.updateImageById = upload.single('image'), async (req, res) => {
     let id = req.params.imageId;
-    let newImage = req.body.image;
-    
+    const newImage = req.file.buffer;    
     const uniqueId = Date.now();
     const randomString = crypto.randomBytes(4).toString('hex');
     const imageName = `image_${uniqueId}_${randomString}.jpg`;
