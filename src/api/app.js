@@ -14,7 +14,7 @@ server.use(logger('dev'));
 server.use(express.urlencoded({ extended: false }));
 server.use(express.json());
 
-server.use(bodyParser.json({ limit: '50mb' }));
+//server.use(bodyParser.json({ limit: '50mb' }));
 
 server.use(cookieParser());
 
