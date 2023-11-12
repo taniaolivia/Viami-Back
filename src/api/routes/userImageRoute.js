@@ -2,7 +2,6 @@ module.exports = (server) => {
     const userImageController = require("../controllers/userImageController");
     const jwtMiddleware = require("../middlewares/jwtMiddleware");
     const cors = require('cors');
-    const cors = require('cors');
     const multer = require('multer');
     const storage = multer.memoryStorage();
     const upload = multer({ storage: storage });
