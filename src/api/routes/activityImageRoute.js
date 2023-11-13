@@ -3,12 +3,12 @@ module.exports = (server) => {
     const jwtMiddleware = require("../middlewares/jwtMiddleware");
     const cors = require('cors');
 
-server.route("/api/ActivityImages")
+server.route("/api/activityImages")
 .get(jwtMiddleware.authenticateUser, cors(), activityImageController.getAllActivitiesImages);
-
 
 server.route("/api/activities/:activityId/images")
 .get(jwtMiddleware.authenticateUser, cors(), activityImageController.getActivityImagesById)
-
+.post(jwtMiddleware.authenticateUser, cors(), activityImageController.addImageToActivity)
+.delete(jwtMiddleware.authenticateUser, cors(), activityImageController.deleteActivityImage);
 
 }

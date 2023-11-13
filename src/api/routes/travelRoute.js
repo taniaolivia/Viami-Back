@@ -5,7 +5,7 @@ module.exports = (server) => {
 
 
 server.route("/api/travels")
-.get(jwtMiddleware.authenticateUser, cors(),  travelController.listAllTravel);
+.get(jwtMiddleware.authenticateUser, cors(),  travelController.listAllTravels);
 
 server.route("/api/save/travel")
 .post(jwtMiddleware.authenticateUser, cors(), travelController.saveTravel);
@@ -16,19 +16,10 @@ server.route("/api/search/travels")
 server.route("/api/travels/:travelId")
 .get(jwtMiddleware.authenticateUser, cors(), travelController.getTravelById);
 
-server.route("/api/recommend/travels/:travelId")
-.get(jwtMiddleware.authenticateUser, cors(), travelController.getRecommendedTravelById);
+server.route("/api/travelUsers")
+.get(jwtMiddleware.authenticateUser, cors(), travelController.getDateLocationUsers);
 
-server.route("/api/recommend/travels")
-.get(jwtMiddleware.authenticateUser, cors(),travelController.listRecommendedTravel)
-
-server.route("/api/recommendFive/travels")
-.get(jwtMiddleware.authenticateUser, cors(),travelController.getTopFiveRecommendedTravels)
-
-server.route("/api/popular/travels")
-.get(jwtMiddleware.authenticateUser, cors(),  travelController.listPopularTravels);
-
-server.route("/api/popularFive/travels")
-.get(jwtMiddleware.authenticateUser, cors(),  travelController.getTopFivePopularTravels);
+server.route("/api/travelUsers/add")
+.patch(jwtMiddleware.authenticateUser, cors(), travelController.joinTravel);
 
 }

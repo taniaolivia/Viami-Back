@@ -4,7 +4,10 @@ const db = require("../knex");
 const { uuid } = require('uuidv4');
 let { AgeFromDateString } = require('age-calculator');
 const nodemailer = require('nodemailer')
-const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
+
+const currentModuleDir = __dirname;
 
 // Register new user
 exports.userRegister = (req, res) => {
@@ -28,40 +31,46 @@ exports.userRegister = (req, res) => {
                             res.json({message: "User already exists"});
                         }
                         else {
-                            const token = crypto.randomBytes(16).toString('hex');
+                            const userData = {
+                                email: newUser.email, 
+                                password: hash
+                            }
 
-                             db("user")
-                                .insert({
-                                    id: uuid(), 
-                                    firstName: newUser.firstName, 
-                                    lastName: newUser.lastName, 
-                                    email: newUser.email, 
-                                    password: hash,
-                                    location: newUser.location,
-                                    description: newUser.description !== null ? newUser.description : null,
-                                    phoneNumber: newUser.phoneNumber,
-                                    birthday: newUser.birthday,
-                                    age: new AgeFromDateString(newUser.birthday).age,
-                                    sex: newUser.sex,
-                                    lastConnection: newUser.lastConnection !== null ? newUser.lastConnection : null,
-                                    connected: "0",
-                                    profileImage: null,
-                                    verifyEmailToken: token,
-                                    emailVerified: "0"
-                                })
-                                .then(data => {
-                                    exports.sendVerificationMail(newUser.email, token);
+                            jwt.sign(userData, process.env.JWT_KEY, {expiresIn: "1d"}, (error, tokenEmail) => {
 
-                                    res.status(200).json({
-                                        message: `User created : ${newUser.email}`,
-                                        user: newUser
+                                db("user")
+                                    .insert({
+                                        id: uuid(), 
+                                        firstName: newUser.firstName, 
+                                        lastName: newUser.lastName, 
+                                        email: newUser.email, 
+                                        password: hash,
+                                        location: newUser.location,
+                                        description: newUser.description !== null ? newUser.description : null,
+                                        phoneNumber: newUser.phoneNumber,
+                                        birthday: newUser.birthday,
+                                        age: new AgeFromDateString(newUser.birthday).age,
+                                        sex: newUser.sex,
+                                        lastConnection: newUser.lastConnection !== null ? newUser.lastConnection : null,
+                                        connected: "0",
+                                        profileImage: null,
+                                        verifyEmailToken: tokenEmail,
+                                        emailVerified: "0"
                                     })
-                                })
-                                .catch(error => {
-                                    res.status(401);
-                                    console.log(error);
-                                    res.json({message: "Invalid request"});
-                                });
+                                    .then(data => {
+                                        exports.sendVerificationMail(newUser.email, tokenEmail);
+
+                                        res.status(200).json({
+                                            message: `User created : ${newUser.email}`,
+                                            user: newUser
+                                        })
+                                    })
+                                    .catch(error => {
+                                        res.status(401);
+                                        console.log(error);
+                                        res.json({message: "Invalid request"});
+                                    });
+                            })
                         }
                     })
             }
@@ -84,31 +93,53 @@ exports.userLogin = (req, res) => {
                 bcrypt.compare(req.body.password, user[0].password, (error, result) => {
                     
                     if(result === true){
-                        let userData = {
+                        const userData = {
                             id: user[0].id,
                             email: user[0].email,
                             password: user[0].password,
                         }
 
-                        jwt.sign(userData, process.env.JWT_KEY, {expiresIn: "14 days"}, (error, token) => {
-                            if(error){
-                                res.status(500);
-                                res.json({message: "Impossible to generate a token"});
-                            }
-                            else{
+                        if(user[0].emailVerified === "0") {
+
+                            jwt.sign(userData, process.env.JWT_KEY, {expiresIn: "1d"}, (error, token) => {     
                                 db("user")
-                                    .update({connected: "1"})
+                                    .update("verifyEmailToken", token)
                                     .where("id", user[0].id)
-                                    .then(() => {
+                                    .then(data => {
+                                        exports.sendVerificationMail(user[0].email, token);
+
                                         res.status(200);
-                                        res.json({message: `Connected user : ${user[0].email}`, token, user: userData});
+                                        res.json({message: "Please verify your email !"});
                                     })
-                                    .catch((error) => {
-                                        res.status(500);
-                                        res.json({message: "Impossible to generate a token"});
-                                    })
-                            }
-                        });
+                                    .catch(error => {
+                                        res.status(401);
+                                        console.log(error);
+                                        res.json({message: "User not found"});
+                                    });
+                            })
+
+                        }
+                        else {
+                            jwt.sign(userData, process.env.JWT_KEY, {expiresIn: "14 days"}, (error, token) => {
+                                if(error){
+                                    res.status(500);
+                                    res.json({message: "Impossible to generate a token"});
+                                }
+                                else{
+                                    db("user")
+                                        .update({connected: "1"})
+                                        .where("id", user[0].id)
+                                        .then(() => {
+                                            res.status(200);
+                                            res.json({message: `Connected user : ${user[0].email}`, token, user: userData});
+                                        })
+                                        .catch((error) => {
+                                            res.status(500);
+                                            res.json({message: "Impossible to generate a token"});
+                                        })
+                                }
+                            });
+                        }
                     }
                     else{
                         res.status(401);
@@ -147,6 +178,21 @@ exports.userLogout = (req, res) => {
       .catch((error) => {
         console.error('Error disconnecting :', error);
         res.status(500).json({ message: 'Server error' });
+      });
+}
+
+exports.checkToken = (req, res) => {
+    let token = req.params.token;
+
+    jwt.verify(token, process.env.JWT_KEY, function(err, decoded) {
+        if (err) {
+            err = {
+              name: 'TokenExpiredError',
+              message: 'Token expired',
+            }
+
+            res.status(200).json({ message: err });
+        }
       });
 }
 
@@ -284,25 +330,10 @@ exports.updateUserPasswordByEmail = (req, res) => {
                         .then(data => {
                             exports.passwordChangedSuccess(email);
 
-                            const htmlResponse = `
-                                <!DOCTYPE html>
-                                <html lang="fr">
-                                    <head>
-                                        <meta charset="UTF-8">
-                                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                        <title>Mot de passe a été changé</title>
-                                    </head>
-                                    <body>
-                                        <div style="font-family: Arial, sans-serif; text-align: center; max-width: 600px; margin: auto;">
-                                            <h1>Mot de passe a été changé</h1>
-                                            <p>Votre mot de passe a été changé avec succès.</p>
-                                            <p>Vous pouvez maintenant accéder à votre compte.</p>
-                                        </div>
-                                    </body>
-                                </html>
-                            `;
+                            const emailTemplatePath = path.join(currentModuleDir, '../email/passwordChanged.html');
+                            const html = fs.readFileSync(emailTemplatePath, 'utf-8');
 
-                            res.send(htmlResponse);
+                            res.send(html);
                         })
                         .catch(error => {
                             res.status(401);
@@ -351,58 +382,27 @@ exports.deleteUserById =(req,res) => {
 // Send email to user for email verification
 exports.sendVerificationMail = async(to, token) =>{
 
+    const emailTemplatePath = path.join(currentModuleDir, '../email/sendVerifyEmail.html');
+    const htmlContent = fs.readFileSync(emailTemplatePath, 'utf-8');
+    const html = htmlContent
+        .replace('${process.env.CDN_URL}', process.env.CDN_URL)
+        .replace('${process.env.API_URL}', process.env.API_URL)
+        .replace('${token}', token);
+
     let mailOptions = ({
         from: process.env.VIAMI_EMAIL,
         to: to,
         subject: "Vérification de l'adresse e-mail Viami",
-        html: `
-            <!DOCTYPE html>
-            <html lang="fr">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Vérifiez votre adresse e-mail</title>
-                </head>
-                <body>
-                    <div style="font-family: Arial, sans-serif; text-align: justify; margin: 0 auto; background-color: #E5F3FF;">
-                        <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white">
-                            <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 250px; height: auto"/>
-                        </div>
+        html: html});
 
-                        <div style="padding: 5px 20px;">
-                            <h2>Prêt à embarquer ?</h2>
-                            <br>
-                            <p>
-                                Nous sommes ravis de vous accueillir sur Viami, l'application qui réunit les voyageurs solitaires en quête d'aventures et de découvertes ! 
-                                Pour finaliser votre inscription et commencer à vivre des expériences uniques, il est essentiel de vérifier votre adresse e-mail. 
-                                Cela nous permettra de garantir la sécurité de votre compte et de vous connecter avec d'autres voyageurs passionnés.
-                            </p>
-                            <p>Pour vérifier votre adresse e-mail et commencer votre voyage avec Viami, il vous suffit de cliquer sur le bouton ci-dessous :</p>
-                            <div style="margin: auto;">
-                                <a href="${process.env.API_URL}/verify?token=${token}" style="text-decoration: none;">
-                                    <button style="margin: auto; color: white; background-color: #0081CF; border-radius: 10px; border: 1px solid #0081CF; padding: 10px 20px; font-weight: bold;">Vérifier mon e-mail</button>
-                                </a>
-                            </div>
-                            <p>Si le bouton ne fonctionne pas, vous pouvez également copier et coller le lien suivant dans votre navigateur :</p>
-                            <p><a href="${process.env.API_URL}/verify?token=${token}">${process.env.API_URL}/verify?token=${token}</a></p>
-                            <p>Nous sommes impatients de vous voir embarquer pour cette incroyable aventure avec Viami, où chaque destination devient une opportunité de rencontres extraordinaires.</p>
-                            <br>
-                            <p>Cordialement,</p>
-                            <p>L'équipe Viami</p>
-                        </div>
-                    </div>
-                </body>
-            </html>
-        `});
-   
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-          user: process.env.VIAMI_EMAIL,
-          pass: process.env.VIAMI_PASSWORD,
+        user: process.env.VIAMI_EMAIL,
+        pass: process.env.VIAMI_PASSWORD,
         },
-      });
-  
+    });
+
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             console.error(error);
@@ -419,89 +419,63 @@ exports.sendVerificationMail = async(to, token) =>{
 exports.verifiedEmailUserByToken = (req, res) => {
     const token = req.query.token;
     
-    db("user")
-        .update("emailVerified", "1")
-        .where("verifyEmailToken", token)
-        .then(data => {
-            db("user")
-                .select("*")
-                .where("verifyEmailToken", token)
-                .then((user) => {
-                    exports.sendEmailVerified(user[0].email);
-                })
-                .catch((error) => {
-                    console.log(error);
-                    res.status(401);
-                    res.json({message: "User not found"});
-                })
-        
-            const htmlResponse = `
-                <!DOCTYPE html>
-                <html lang="fr">
-                    <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>Email Vérifié</title>
-                    </head>
-                    <body>
-                        <div style="font-family: Arial, sans-serif; text-align: center; max-width: 600px; margin: auto;">
-                            <h1>Email Vérifié</h1>
-                            <p>Votre adresse e-mail a été vérifiée avec succès.</p>
-                            <p>Vous pouvez maintenant accéder à votre compte.</p>
-                        </div>
-                    </body>
-                </html>
-            `;
+    jwt.verify(token, process.env.JWT_KEY, function(err, decoded) {
+        if (err) {
+            err = {
+              name: 'TokenExpiredError',
+              message: 'Token expired',
+            }
 
-            res.send(htmlResponse);
-        })
-        .catch(error => {
-            res.status(401);
-            console.log(error);
-            res.json({message: "User not found"});
-        });
+            const emailTemplatePath = path.join(currentModuleDir, '../email/emailVerifyExpired.html');
+            const htmlContent = fs.readFileSync(emailTemplatePath, 'utf-8');
+        
+            res.send(htmlContent);
+        }
+        else {
+            const emailTemplatePath = path.join(currentModuleDir, '../email/emailVerified.html');
+            const htmlContent = fs.readFileSync(emailTemplatePath, 'utf-8');
+
+            db("user")
+                .update("emailVerified", "1")
+                .where("verifyEmailToken", token)
+                .then(data => {
+                    db("user")
+                        .select("*")
+                        .where("verifyEmailToken", token)
+                        .then((user) => {
+                            exports.sendEmailVerified(user[0].email);
+                
+                            res.send(htmlContent);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            res.status(401);
+                            res.json({message: "User not found"});
+                        })
+                })
+                .catch(error => {
+                    res.status(401);
+                    console.log(error);
+                    res.json({message: "User not found"});
+                });
+        }
+      });
+   
 }
 
 // Send an email to user when email is verified successfully
 exports.sendEmailVerified = async(to) =>{
 
+    const emailTemplatePath = path.join(currentModuleDir, '../email/sendVerifyEmail.html');
+    const htmlContent = fs.readFileSync(emailTemplatePath, 'utf-8');
+    const html = htmlContent
+        .replace('${process.env.CDN_URL}', process.env.CDN_URL);
+
     let mailOptions = ({
         from: process.env.VIAMI_EMAIL,
         to: to,
         subject: "Bienvenue sur Viami !",
-        html: `
-            <!DOCTYPE html>
-            <html lang="fr">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Viami</title>
-                </head>
-                <body>
-                    <div style="font-family: Arial, sans-serif; text-align: justify; margin: 0 auto; background-color: #E5F3FF;">
-                        <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white">
-                            <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 250px; height: auto"/>
-                        </div>
-
-                        <div style="padding: 5px 20px;">
-                            <h3>Bienvenue sur Viami !</h3> 
-                            <br>
-                            <p>
-                                Nous sommes ravis de vous informer que votre adresse e-mail a été vérifiée avec succès. 
-                                Vous avez désormais franchi une étape cruciale pour profiter pleinement de votre expérience sur Viami, 
-                                l'application de rencontre entre voyageurs solitaires.
-                            </p>
-                            <p>Votre compte est désormais sécurisé, et vous êtes prêt(e) à vivre des aventures passionnantes avec d'autres voyageurs intrépides.</p>
-                            <p>Merci d'avoir choisi Viami pour vos voyages en solitaire. Nous sommes honorés de faire partie de vos expériences de voyage et avons hâte de voir où vous nous emmènerez !</p>
-                            <p>Bon voyage et à bientôt sur Viami !</p>
-                            <br>
-                            <p>Cordialement,</p>
-                            <p>L'équipe Viami</p>
-                        </div>
-                    </div>
-                </body>
-            </html>
-        `});
+        html: html});
    
     const transporter = nodemailer.createTransport({
         service: "gmail",
@@ -526,135 +500,95 @@ exports.sendEmailVerified = async(to) =>{
 exports.forgetPassword = async(req, res) => {
     const to = req.body.email;
 
-    let mailOptions = ({
-        from: process.env.VIAMI_EMAIL,
-        to: to,
-        subject: "Réinitialisation de votre mot de passe",
-        html: `
-            <!DOCTYPE html>
-            <html lang="fr">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Réinitialisation de votre mot de passe</title>
-                </head>
-                <body style="font-family: Arial, sans-serif; text-align: justify; background-color: white; padding: 0; margin: 0;">
-                    <div style="margin: 0 auto;  background-color: #f1eee8; width: 100%; max-width: 600px;">
-                        <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white;">
-                            <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 250px; height: auto"/>
-                        </div>
+    jwt.sign({email: to}, process.env.JWT_KEY, {expiresIn: "1h"}, (error, token) => {
 
-                        <div style="padding: 5px 20px;">
-                            <h3>Bonjour,</h3>
-                            <p></p>
-                            <p> Si vous avez bien demandé la réinitialisation de votre mot de passe, veuillez cliquer sur le bouton ci-dessous :</p>
-                            <a href="${process.env.API_URL}/newPasswordForm?email=${to}" style="text-decoration: none;">
-                                <button style="margin: auto; color: white; background-color: #0081CF; border-radius: 10px; border: 1px solid #0081CF; padding: 10px 20px; font-weight: bold;">Réinitialiser le mot de passe</button>
-                            </a>
-                            <p> Si vous n'avez pas demandé la réinitialisation de votre mot de passe cette demande, vous pouvez ignorer cet e-mail !</p>
-                            <br>
-                            <p>Cordialement,</p>
-                            <p>L'équipe Viami</p>
-                        </div>
-                    </div>
-                </body>
-            </html>
-        `});
-   
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.VIAMI_EMAIL,
-          pass: process.env.VIAMI_PASSWORD,
-        },
-      });
-  
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.error(error);
-            res.status(401);
-            res.json({message: `Error sending email`});
-        } else {
-            res.status(200);
-            res.json({message: `Email sent`});
-        }
-    }); 
+        const emailTemplatePath = path.join(currentModuleDir, '../email/forgetPassword.html');
+        const htmlContent = fs.readFileSync(emailTemplatePath, 'utf-8');
+        const html = htmlContent
+            .replace('${process.env.CDN_URL}', process.env.CDN_URL)
+            .replace('${process.env.API_URL}', process.env.API_URL)
+            .replace('${token}', token)
+            .replace('${to}', to);
+
+        let mailOptions = ({
+            from: process.env.VIAMI_EMAIL,
+            to: to,
+            subject: "Réinitialisation de votre mot de passe",
+            html: html});
+    
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+            user: process.env.VIAMI_EMAIL,
+            pass: process.env.VIAMI_PASSWORD,
+            },
+        });
+    
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error(error);
+                res.status(401);
+                res.json({message: `Error sending email`});
+            } else {
+                res.status(200);
+                res.json({message: `Email sent`});
+            }
+        }); 
+    })
 }
 
 // Verified user's email by token
 exports.newPasswordForm = (req, res) => {
     const email = req.query.email;
-    
-    db("user")
-        .select("*")
-        .where("email", email)
-        .then(user => {
-            const htmlResponse = `
-                <!DOCTYPE html>
-                <html lang="fr">
-                    <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>Réinitialisation de mot de passe</title>
-                    </head>
-                    <body style="font-family: Arial, sans-serif; text-align: center; width: 100%; background-color: white;">
-                        <div style="width: 100%; max-width: 600px; margin: auto; background-color: #f1eee8; border: 1px solid #0081CF;">
-                            <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white;">
-                                <h3>Réinitialisation de mot de passe</h3>
-                            </div>
-                            <form method="POST" action="${process.env.API_URL}/setNewPassword?email=${email}" style="padding: 10px;">
-                                <p>Nouveau mot de passe : 
-                                    <input type="password" name="password"/>
-                                </p>
-                                <button type="submit" style="margin: auto; color: white; background-color: green; border-radius: 10px; border: 1px solid #0081CF; padding: 10px 20px; font-weight: bold;">Valider</button>
-                            </form>
-                        </div>
-                    </body>
-                </html>
-            `;
+    const token = req.query.token;
 
-            res.send(htmlResponse);
+    jwt.verify(token, process.env.JWT_KEY, function(err, decoded) {
+        if (err) {
+            err = {
+              name: 'TokenExpiredError',
+              message: 'Token expired',
+            }
+
+            const emailTemplatePath = path.join(currentModuleDir, '../email/emailVerifyExpired.html');
+            const htmlContent = fs.readFileSync(emailTemplatePath, 'utf-8');
+        
+            res.send(htmlContent);
+        }
+        else {
+            const emailTemplatePath = path.join(currentModuleDir, '../email/newPasswordForm.html');
+            const htmlContent = fs.readFileSync(emailTemplatePath, 'utf-8');
+            const html = htmlContent
+                .replace('${process.env.API_URL}', process.env.API_URL)
+                .replace('${email}', email);
+
+            db("user")
+                .select("*")
+                .where("email", email)
+                .then(user => {
+                    res.send(html);
+                })
+                .catch(error => {
+                    res.status(401);
+                    console.log(error);
+                    res.json({message: "User not found"});
+                });
+            }
         })
-        .catch(error => {
-            res.status(401);
-            console.log(error);
-            res.json({message: "User not found"});
-        });
 }
 
-exports.passwordChangedSuccess = async(req, res) => {
-    const to = req.body.email;
+exports.passwordChangedSuccess = (email) => {
+    const to = email;
+
+    const emailTemplatePath = path.join(currentModuleDir, '../email/passwordChangedSuccess.html');
+    const htmlContent = fs.readFileSync(emailTemplatePath, 'utf-8');
+    const html = htmlContent
+        .replace('${process.env.CDN_URL}', process.env.CDN_URL);
 
     let mailOptions = ({
         from: process.env.VIAMI_EMAIL,
         to: to,
         subject: "Votre mot de passe a été changé avec succès",
-        html: `
-            <!DOCTYPE html>
-            <html lang="fr">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Votre mot de passe a été changé avec succès</title>
-                </head>
-                <body style="font-family: Arial, sans-serif; text-align: justify; background-color: white; padding: 0; margin: 0;">
-                    <div style="margin: 0 auto;  background-color: #f1eee8; width: 100%; max-width: 600px;">
-                        <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white;">
-                            <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 250px; height: auto"/>
-                        </div>
-
-                        <div style="padding: 5px 20px;">
-                            <h3>Bonjour,</h3>
-                            <p></p>
-                            <p> Nous tenons à vous informer que votre demande de changement de mot de passe a été traitée avec succès. Votre nouveau mot de passe a été enregistré et vous pouvez désormais l'utiliser pour vous connecter à votre compte en toute sécurité.</p>
-                            <br>
-                            <p>Cordialement,</p>
-                            <p>L'équipe Viami</p>
-                        </div>
-                    </div>
-                </body>
-            </html>
-        `});
+        html: html});
    
     const transporter = nodemailer.createTransport({
         service: "gmail",

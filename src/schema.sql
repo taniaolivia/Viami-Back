@@ -61,7 +61,7 @@ CREATE TABLE `user` (
   `lastConnection` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `connected` enum('0','1') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `profileImage` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `verifyEmailToken` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `verifyEmailToken` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `emailVerified` enum('0','1') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -122,8 +122,6 @@ CREATE TABLE `user_language` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
--- 2023-10-21 21:44:35
-
 DROP TABLE IF EXISTS `travel`;
 CREATE TABLE `travel` (
   `id` int(100) NOT NULL AUTO_INCREMENT,
@@ -131,20 +129,20 @@ CREATE TABLE `travel` (
   `description` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `location` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `image` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nbPepInt` int(100) DEFAULT NULL,
-  `isRecommended` tinyint(1) NOT NULL DEFAULT 0,
+  `nbParticipant` int(100) DEFAULT NULL
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- 2023-10-27 14:18:30
 
 DROP TABLE IF EXISTS `activity`;
 CREATE TABLE `activity` (
   `id` int(100) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
-  `description` varchar(300) NOT NULL,
+  `description` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `imageName` varchar(200) NOT NULL,
   `location` varchar(200) NOT NULL,
+  `isRecommended` tinyint(1) NOT NULL DEFAULT 0,
+  `nbParticipant` int(100) DEFAULT NULL,
   `note` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -155,11 +153,11 @@ CREATE TABLE `travel_activity` (
   `idActivity` int(100) NOT NULL,
   `idTravel` int(100) NOT NULL,
   PRIMARY KEY (`id`)
+  KEY `idActivity` (`idActivity`),
+  KEY `idTravel` (`idTravel`),
+  CONSTRAINT `travel_activity_ibfk_1` FOREIGN KEY (`idActivity`) REFERENCES `activity` (`id`),
+  CONSTRAINT `travel_activity_ibfk_2` FOREIGN KEY (`idTravel`) REFERENCES `travel` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
--- 2023-11-07 08:38:35
-
 
 
 DROP TABLE IF EXISTS `travel_image`;
@@ -167,35 +165,67 @@ CREATE TABLE `travel_image` (
   `id` int(100) NOT NULL AUTO_INCREMENT,
   `idTravel` int(100) NOT NULL,
   `idImage` int(100) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idImage` (`idImage`),
+  KEY `idTravel` (`idTravel`),
+  CONSTRAINT `travel_image_ibfk_1` FOREIGN KEY (`idImage`) REFERENCES `image` (`id`),
+  CONSTRAINT `travel_image_ibfk_2` FOREIGN KEY (`idTravel`) REFERENCES `travel` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 DROP TABLE IF EXISTS `theme`;
 CREATE TABLE `theme` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `theme` varchar(100) NOT NULL,
+  `icon` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
-DROP TABLE IF EXISTS `theme_travel`;
-CREATE TABLE `theme_travel` (
+DROP TABLE IF EXISTS `theme_activity`;
+CREATE TABLE `theme_activity` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `themeId` int(11) NOT NULL,
-  `travelId` int(100) NOT NULL,
+  `activityId` int(100) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `themeId` (`themeId`),
-  KEY `travelId` (`travelId`),
-  CONSTRAINT `theme_travel_ibfk_1` FOREIGN KEY (`themeId`) REFERENCES `theme` (`id`),
-  CONSTRAINT `theme_travel_ibfk_2` FOREIGN KEY (`travelId`) REFERENCES `travel` (`id`)
+  KEY `activityId` (`activityId`),
+  CONSTRAINT `theme_activity_ibfk_1` FOREIGN KEY (`themeId`) REFERENCES `theme` (`id`),
+  CONSTRAINT `theme_activity_ibfk_2` FOREIGN KEY (`activityId`) REFERENCES `activity` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
--- 2023-11-09 02:12:58
 
 DROP TABLE IF EXISTS `activity_image`;
 CREATE TABLE `activity_image` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(100) NOT NULL AUTO_INCREMENT,
   `idActivity` int(100) NOT NULL,
   `idImage` int(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idImage` (`idImage`),
+  KEY `idActivity` (`idActivity`),
+  CONSTRAINT `activity_image_ibfk_1` FOREIGN KEY (`idImage`) REFERENCES `image` (`id`),
+  CONSTRAINT `activity_image_ibfk_2` FOREIGN KEY (`idActivity`) REFERENCES `activity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `date_location`;
+CREATE TABLE `date_location` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` varchar(100) NOT NULL,
+  `location` varchar(100) NOT NULL,
+  `nbParticipant` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `user_date_location`;
+CREATE TABLE `user_date_location` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `dateLocationId` int(11) NOT NULL,
+  `userId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `dateLocationId` (`dateLocationId`),
+  KEY `userId` (`userId`),
+  CONSTRAINT `user_date_location_ibfk_1` FOREIGN KEY (`dateLocationId`) REFERENCES `date_location` (`id`),
+  CONSTRAINT `user_date_location_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

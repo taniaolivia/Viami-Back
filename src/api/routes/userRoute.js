@@ -19,6 +19,8 @@ server.route("/api/users/:userId")
 server.route("/api/users/:userId/description")
 .patch(jwtMiddleware.authenticateUser, cors(), userController.updateUserDescriptionById)
 
+server.get("/api/checkToken/:token", cors(), userController.checkToken);
+
 server.get("/verify", cors(), userController.verifiedEmailUserByToken);
 
 server.post("/forgetPassword", cors(), userController.forgetPassword);

@@ -11,7 +11,7 @@ exports.getAllTravelsImages = (req, res) => {
             "travel.name as name",
             "travel.description as travelDescription",
             "travel.location as location",
-            "travel.nbPepInt as nbPepInt",
+            "travel.nbParticipant as nbParticipant",
             "image.image as imageName",
             
         ])
@@ -37,7 +37,7 @@ exports.getTravelImagesById = (req, res) => {
             "travel.name as name",
             "travel.description as travelDescription",
             "travel.location as location",
-            "travel.nbPepInt as nbPepInt",
+            "travel.nbParticipant as nbParticipant",
             "image.image as imageName",
     ])
     .where({idTravel: id})
