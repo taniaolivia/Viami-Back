@@ -14,7 +14,8 @@ exports.getAllActivitiesImages = (req, res) => {
             "activity.nbParticipant as nbParticipant",
             "activity.isRecommended as isRecommended",
             "activity.imageName as imageName",
-            "image.image as image" 
+            "image.image as image",
+            "activity.note as note"
         ])
         .join("activity", "activity.id", "=", "activity_image.idActivity")
         .join("image", "image.id", "=", "activity_image.idImage")
@@ -41,7 +42,8 @@ exports.getActivityImagesById = (req, res) => {
         "activity.nbParticipant as nbParticipant",
         "activity.isRecommended as isRecommended",
         "activity.imageName as imageName",
-        "image.image as image"
+        "image.image as image",
+        "activity.note as note"
     ])
     .where({idActivity: id})
     .join("activity", "activity.id", "=", "activity_image.idActivity")
@@ -54,6 +56,7 @@ exports.getActivityImagesById = (req, res) => {
     });
 
 }
+
 
 // Add image to activity's data
 exports.addImageToActivity = (req, res) => {

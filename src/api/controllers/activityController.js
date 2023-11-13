@@ -19,7 +19,7 @@ exports.getActivityById = (req, res) => {
         .where("id", id)
         .then(data => {
             res.status(200);
-            res.json({data});
+            res.json({message: `Activity found`, data});
         })
         .catch(error => {
             res.status(401);

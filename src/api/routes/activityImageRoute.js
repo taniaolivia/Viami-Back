@@ -6,7 +6,6 @@ module.exports = (server) => {
 server.route("/api/activityImages")
 .get(jwtMiddleware.authenticateUser, cors(), activityImageController.getAllActivitiesImages);
 
-
 server.route("/api/activities/:activityId/images")
 .get(jwtMiddleware.authenticateUser, cors(), activityImageController.getActivityImagesById)
 .post(jwtMiddleware.authenticateUser, cors(), activityImageController.addImageToActivity)

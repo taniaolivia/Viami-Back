@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const bodyParser = require('body-parser');
 
 const hostname = "0.0.0.0";
 const port = 3000;
@@ -13,8 +12,6 @@ server.use(logger('dev'));
 
 server.use(express.urlencoded({ extended: false }));
 server.use(express.json());
-
-//server.use(bodyParser.json({ limit: '50mb' }));
 
 server.use(cookieParser());
 
@@ -64,6 +61,9 @@ themeRoute(server);
 
 const themeActivityRoute = require("./routes/themeActivityRoute");
 themeActivityRoute(server);
+
+const activityImageRoute = require("./routes/activityImageRoute");
+activityImageRoute(server);
 
 const activityImageRoute = require("./routes/activityImageRoute");
 activityImageRoute(server);

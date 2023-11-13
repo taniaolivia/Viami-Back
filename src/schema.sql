@@ -138,14 +138,14 @@ DROP TABLE IF EXISTS `activity`;
 CREATE TABLE `activity` (
   `id` int(100) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
-  `description` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `imageName` varchar(200) NOT NULL,
   `location` varchar(200) NOT NULL,
   `isRecommended` tinyint(1) NOT NULL DEFAULT 0,
   `nbParticipant` int(100) DEFAULT NULL,
+  `note` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 
 DROP TABLE IF EXISTS `travel_activity`;
 CREATE TABLE `travel_activity` (
@@ -229,5 +229,3 @@ CREATE TABLE `user_date_location` (
   CONSTRAINT `user_date_location_ibfk_1` FOREIGN KEY (`dateLocationId`) REFERENCES `date_location` (`id`),
   CONSTRAINT `user_date_location_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- 2023-11-12 03:56:56
