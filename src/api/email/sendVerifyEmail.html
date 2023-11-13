@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Vérifiez votre adresse e-mail</title>
+    </head>
+    <body>
+        <div style="font-family: Arial, sans-serif; text-align: justify; margin: 0 auto; background-color: #E5F3FF;">
+            <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white">
+                <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 250px; height: auto"/>
+            </div>
+
+            <div style="padding: 5px 20px;">
+                <h2>Prêt à embarquer ?</h2>
+                <br>
+                <p>
+                    Nous sommes ravis de vous accueillir sur Viami, l'application qui réunit les voyageurs solitaires en quête d'aventures et de découvertes ! 
+                    Pour finaliser votre inscription et commencer à vivre des expériences uniques, il est essentiel de vérifier votre adresse e-mail. 
+                    Cela nous permettra de garantir la sécurité de votre compte et de vous connecter avec d'autres voyageurs passionnés.
+                </p>
+                <p>Pour vérifier votre adresse e-mail et commencer votre voyage avec Viami, il vous suffit de cliquer sur le bouton ci-dessous :</p>
+                <div style="margin: auto;">
+                    <a href="${process.env.API_URL}/verify?token=${token}" style="text-decoration: none;">
+                        <button style="margin: auto; color: white; background-color: #0081CF; border-radius: 10px; border: 1px solid #0081CF; padding: 10px 20px; font-weight: bold;">Vérifier mon e-mail</button>
+                    </a>
+                </div>
+                <p>Nous sommes impatients de vous voir embarquer pour cette incroyable aventure avec Viami, où chaque destination devient une opportunité de rencontres extraordinaires.</p>
+                <p>Important : Cet e-mail expire dans un jour. </p>
+                <br>
+                <p>Cordialement,</p>
+                <p>L'équipe Viami</p>
+            </div>
+        </div>
+    </body>
+</html>
