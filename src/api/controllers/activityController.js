@@ -123,6 +123,28 @@ exports.getRecommendedActivityById = (req, res) => {
         });
 };
 
+//update note activity
+exports.updateNoteActivity=(req,res) => {
+    const id = req.params.activityId;
+    const newNote = req.body.note;
+
+    db("activity")
+      .update({ note: newNote })
+      .where('id', id)
+      .then(data => {
+        res.status(200);
+        res.json({message: `Activity note is updated successfully'`});
+    })
+    .catch(error => {
+        res.status(401);
+        console.log(error);
+        res.json({message: "Activity not found"});
+    });
+
+
+
+}
+
 
 
 
