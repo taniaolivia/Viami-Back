@@ -69,6 +69,8 @@ activityImageRoute(server);
 
 const messageRoute = require("./routes/messageRoute");
 messageRoute(server);
+const messengerRoute = require("./routes/messengerRoute");
+messengerRoute(server);
 
 
 server.listen(port, hostname);
