@@ -83,3 +83,19 @@ exports.getLastMessageBySenderResponder = (req, res) => {
         });
 }
 
+// Set a message read
+exports.setMessageRead = (req, res) => {
+    let messageId = req.params.id;
+    
+    db("message")
+        .update("read", "1")
+        .where("id", messageId)
+        .then(data => res.status(200).json({"message": "Message is set to read successfully !"}))
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({message: "Server error"});
+        });
+}
+
+

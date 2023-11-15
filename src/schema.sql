@@ -239,6 +239,7 @@ CREATE TABLE `viami`.`message` (
   `senderId` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `responderId` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `date` varchar(100) NOT NULL,
+  `read` enum('0','1') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `senderId` (`senderId`),
   KEY `responderId` (`responderId`),
