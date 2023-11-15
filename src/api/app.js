@@ -2,14 +2,13 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const socketIo = require('socket.io');
+const socketIo = require('./socket');
 
 const hostname = "0.0.0.0";
 const port = 3000;
 
 const server = express();
-
-const io = socketIo(server);
+const io = socketIo;
 
 server.use(logger('dev'));
 
@@ -67,6 +66,9 @@ themeActivityRoute(server);
 
 const activityImageRoute = require("./routes/activityImageRoute");
 activityImageRoute(server);
+
+const messageRoute = require("./routes/messageRoute");
+messageRoute(server);
 
 
 server.listen(port, hostname);
