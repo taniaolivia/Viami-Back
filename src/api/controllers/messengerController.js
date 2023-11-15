@@ -10,7 +10,8 @@ exports.listAllMessagesBySenderId = (req, res) => {
             "sender.id as senderId",
             "responder.id as responderId",
             "message.date as date",
-            "sender.id as firstName",
+            "message.message as message",
+            "sender.firstName as firstName",
             "sender.lastName as lastName",
             "sender.email as email",
             "sender.password as password",
@@ -50,7 +51,8 @@ exports.getLastMessageBySenderResponder = (req, res) => {
             "sender.id as senderId",
             "responder.id as responderId",
             "message.date as date",
-            "sender.id as firstName",
+            "message.message as message",
+            "sender.firstName as firstName",
             "sender.lastName as lastName",
             "sender.email as email",
             "sender.password as password",
@@ -80,4 +82,20 @@ exports.getLastMessageBySenderResponder = (req, res) => {
             res.json({message: "Server error"});
         });
 }
+
+// Set a message read
+exports.setMessageRead = (req, res) => {
+    let messageId = req.params.messageId;
+    
+    db("message")
+        .update("read", "1")
+        .where("id", messageId)
+        .then(data => res.status(200).json({"message": "Message is set to read successfully !"}))
+        .catch(error => {
+            res.status(401);
+            console.log(error);
+            res.json({message: "Server error"});
+        });
+}
+
 
