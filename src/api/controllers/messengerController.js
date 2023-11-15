@@ -7,8 +7,8 @@ exports.listAllMessagesBySenderId = (req, res) => {
     db("message")
         .select("*")
         .where("senderId", senderId)
-        .join("user", "user.id", "=", "message.senderId")
-        .join("user", "user.id", "=", "message.responderId")
+        .join("user as sender", "sender.id", "=", "message.senderId")
+        .join("user as responder", "responder.id", "=", "message.responderId")
         .orderBy("date", "asc")
         .then(data => res.status(200).json({"messages": data}))
         .catch(error => {
@@ -27,8 +27,8 @@ exports.listAllMessagesBySenderResponder = (req, res) => {
         .select("*")
         .where("senderId", senderId)
         .where("responderId", responderId)
-        .join("user", "user.id", "=", "message.senderId")
-        .join("user", "user.id", "=", "message.responderId")
+        .join("user as sender", "sender.id", "=", "message.senderId")
+        .join("user as responder", "responder.id", "=", "message.responderId")
         .orderBy("date", "asc")
         .then(data => res.status(200).json({"messages": data}))
         .catch(error => {
