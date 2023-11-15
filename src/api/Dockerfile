@@ -11,7 +11,7 @@ USER root
 WORKDIR /app
 
 # Copy the package file to the project
-COPY ["./src/api/package.json", "./src/api/package-lock.json*", "./"]
+COPY ["package.json", "package-lock.json", "./"]
 
 # Install all the dependencies needed 
 RUN npm install --production
