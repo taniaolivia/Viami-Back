@@ -25,8 +25,8 @@ exports.listAllMessagesBySenderResponder = (req, res) => {
 
     db("message")
         .select("*")
-        .where("senderId", senderId)
-        .where("responderId", responderId)
+        .where({"senderId": senderId, "responderId": responderId})
+        .orWhere({"senderId": responderId, "responderId": senderId})
         .join("user as sender", "sender.id", "=", "message.senderId")
         .join("user as responder", "responder.id", "=", "message.responderId")
         .orderBy("date", "asc")
