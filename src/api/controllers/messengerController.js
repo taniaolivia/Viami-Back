@@ -18,8 +18,8 @@ exports.listAllMessagesBySenderId = (req, res) => {
         });
 }
 
-// Get a list of all messages sent between two users
-exports.listAllMessagesBySenderResponder = (req, res) => {
+// Get the last message between the two users
+exports.getLastMessageBySenderResponder = (req, res) => {
     let senderId = req.params.senderId;
     let responderId = req.params.responderId;
 
@@ -29,7 +29,8 @@ exports.listAllMessagesBySenderResponder = (req, res) => {
         .orWhere({"senderId": responderId, "responderId": senderId})
         .join("user as sender", "sender.id", "=", "message.senderId")
         .join("user as responder", "responder.id", "=", "message.responderId")
-        .orderBy("date", "asc")
+        .orderBy("id", "desc")
+        .limit(1)
         .then(data => res.status(200).json({"messages": data}))
         .catch(error => {
             res.status(401);
