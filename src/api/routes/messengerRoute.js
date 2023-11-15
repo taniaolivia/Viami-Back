@@ -9,4 +9,7 @@ server.route("/api/users/:senderId/messages")
 server.route("/api/users/:senderId/:responderId/message")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getLastMessageBySenderResponder);
 
+server.route("/api/messages/:messageId")
+.patch(jwtMiddleware.authenticateUser, cors(), messengerController.setMessageRead);
+
 }

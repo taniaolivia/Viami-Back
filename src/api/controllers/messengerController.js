@@ -85,7 +85,7 @@ exports.getLastMessageBySenderResponder = (req, res) => {
 
 // Set a message read
 exports.setMessageRead = (req, res) => {
-    let messageId = req.params.id;
+    let messageId = req.params.messageId;
     
     db("message")
         .update("read", "1")
