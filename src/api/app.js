@@ -67,8 +67,7 @@ themeActivityRoute(server);
 const activityImageRoute = require("./routes/activityImageRoute");
 activityImageRoute(server);
 
-const messageRoute = require("./routes/messageRoute");
-messageRoute(server);
+
 const messengerRoute = require("./routes/messengerRoute");
 messengerRoute(server);
 

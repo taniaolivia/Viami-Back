@@ -231,26 +231,6 @@ CREATE TABLE `user_date_location` (
   CONSTRAINT `user_date_location_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-DROP TABLE IF EXISTS `conversations`;
-CREATE TABLE `conversations` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user1_id` int(11) NOT NULL,
-  `user2_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-DROP TABLE IF EXISTS `message`;
-CREATE TABLE `message` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `conversationId` int(11) NOT NULL,
-  `senderId` int(11) NOT NULL,
-  `content` text NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `conversationId` (`conversationId`),
-  CONSTRAINT `message_ibfk_1` FOREIGN KEY (`conversationId`) REFERENCES `conversations` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `viami`.`message` (

@@ -1,4 +1,5 @@
 const db = require("../knex");
+const io = require('../socket'); 
 
 // Get a list of all messages sent by a user
 exports.listAllMessagesBySenderId = (req, res) => {
@@ -97,5 +98,53 @@ exports.setMessageRead = (req, res) => {
             res.json({message: "Server error"});
         });
 }
+
+//get message by id 
+exports.getMessageById = (req, res) => {
+    const id = req.params.messageId;
+
+    db("message")
+        .select("*")
+        .where("id", id)
+        .then(data => {
+            res.status(200);
+            res.json({message: `Message found`, data});
+        })
+        .catch(error => {
+            res.status(401);
+            res.json({message: "Message not found"});
+        });   
+}
+
+
+// send message 
+exports.sendMessage = (req,res) => {
+    const { message, senderId, responderId } = req.body;
+
+    const messageSend = {
+      message: message,
+        senderId: senderId,
+        responderId: responderId,
+        date: new Date(),
+        read: "0",
+      };
+
+      db('message')
+    .insert(messageSend)
+    .then(() => {
+      io.emit(`message-${senderId}`, messageSend);
+      res.status(201).json({ message: 'Message sent successfully' });
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).json({ message: 'Failed to send message' });
+    });
+
+
+
+
+}
+
+
 
 
