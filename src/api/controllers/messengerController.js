@@ -11,22 +11,10 @@ exports.listAllMessagesBySenderId = (req, res) => {
             "responder.id as responderId",
             "message.date as date",
             "message.message as message",
-            "sender.firstName as firstName",
-            "sender.lastName as lastName",
-            "sender.email as email",
-            "sender.password as password",
-            "sender.location as location",
-            "sender.description as description",
-            "sender.phoneNumber as phoneNumber",
-            "sender.birthday as birthday",
-            "sender.age as age",
-            "sender.sex as sex",
-            "sender.lastConnection as lastConnection",
-            "sender.connected as connected",
-            "sender.profileImage as profileImage",
-            "sender.verifyEmailToken as verifyEmailToken",
-            "sender.emailVerified as emailVerified",
-            "sender.plan as plan"
+            "sender.firstName as senderFirstName",
+            "sender.lastName as senderlastName",
+            "responder.firstName as responderFirstName",
+            "responder.lastName as responderLastName"
         ])
         .where("senderId", senderId)
         .join("user as sender", "sender.id", "=", "message.senderId")
