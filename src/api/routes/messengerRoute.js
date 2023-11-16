@@ -6,6 +6,9 @@ module.exports = (server) => {
 server.route("/api/users/:senderId/messages")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.listAllMessagesBySenderId);
 
+server.route("/api/users/:senderId/:responderId/messages")
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getMessagesBetweenUsers);
+
 server.route("/api/users/:senderId/:responderId/message")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getLastMessageBySenderResponder);
 
