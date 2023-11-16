@@ -14,7 +14,8 @@ exports.listAllMessagesBySenderId = (req, res) => {
             "sender.firstName as senderFirstName",
             "sender.lastName as senderLastName",
             "responder.firstName as responderFirstName",
-            "responder.lastName as responderLastName"
+            "responder.lastName as responderLastName",
+            "message.read as read"
         ])
         .where("senderId", senderId)
         .join("user as sender", "sender.id", "=", "message.senderId")
@@ -43,7 +44,8 @@ exports.getLastMessageBySenderResponder = (req, res) => {
             "sender.firstName as senderFirstName",
             "sender.lastName as senderLastName",
             "responder.firstName as responderFirstName",
-            "responder.lastName as responderLastName"
+            "responder.lastName as responderLastName",
+            "message.read as read"
         ])
         .where({"senderId": senderId, "responderId": responderId})
         .orWhere({"senderId": responderId, "responderId": senderId})
