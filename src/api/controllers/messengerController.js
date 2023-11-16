@@ -140,11 +140,41 @@ exports.sendMessage = (req,res) => {
       res.status(500).json({ message: 'Failed to send message' });
     });
 
+}
 
+
+//get All messages between sender and other user
+
+exports.getMessagesBetweenUsers = (req,res) => {
+    const senderId = req.params.senderId;
+    const responderId = req.params.responderId;
+    
+
+    db('message')
+  .select('*')
+  .where((builder) => builder
+    .where('senderId', senderId)
+    .andWhere('responderId', responderId)
+  )
+  .orWhere((builder) => builder
+    .where('senderId', responderId)
+    .andWhere('responderId', senderId)
+  )
+  .orderBy('date', 'asc')
+  .then((data) => {
+    if (data.length > 0) {
+      res.status(200).json({'messages' : data});
+    } else {
+      res.status(404).json({ message: 'Messages not found' });
+    }
+  })
+  .catch((error) => {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  });
 
 
 }
-
 
 
 
