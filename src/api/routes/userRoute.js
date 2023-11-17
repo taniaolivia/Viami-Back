@@ -10,6 +10,9 @@ server.post("/api/logout/:userId", cors(), userController.userLogout);
 server.route("/api/users")
 .get(jwtMiddleware.authenticateUser, cors(), userController.listAllUsers);
 
+server.route("/api/users/userStatus/:userId")
+.get(jwtMiddleware.authenticateUser, cors(), userController.getUserStatus);
+
 server.route("/api/users/:userId")
 .get(jwtMiddleware.authenticateUser, cors(), userController.getUserById)
 .put(jwtMiddleware.authenticateUser, cors(), userController.updateUserById)

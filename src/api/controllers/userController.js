@@ -609,3 +609,28 @@ exports.passwordChangedSuccess = (email) => {
         }
     }); 
 }
+
+
+// Route to get user status
+exports.getUserStatus = (req, res) => {
+    const userId = req.params.userId;
+  
+    db('user')
+      .select('connected', 'lastConnection')
+      .where('id', userId)
+      .then(user => {
+        if (user.length > 0) {
+          const userStatus = user[0].connected === '1'
+            ? { status: 'online', lastConnection: null }
+            : { status: 'offline', lastConnection: user[0].lastConnection };
+          res.status(200).json({ userStatus: userStatus });
+        } else {
+          res.status(200).json({ userStatus: { status: 'unknown', lastConnection: null } });
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+      });
+  };
+  
