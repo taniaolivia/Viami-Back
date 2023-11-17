@@ -277,3 +277,39 @@ exports.addUserToGroup = (req, res) => {
   };
   
 
+  //get discussions for a specific message 
+  exports.getDiscussionsForMessage = (req, res) => {
+    const messageId = req.params.messageId;
+  
+  
+    db('message')
+      .select('senderId', 'responderId', 'groupId')
+      .where('id', messageId)
+      .then(messageDetails => {
+        if (messageDetails.length === 0) {
+          res.status(404).json({ message: 'Message not found' });
+        } else {
+          const senderId = messageDetails[0].senderId;
+          const responderId = messageDetails[0].responderId;
+          const groupId = messageDetails[0].groupId;
+  
+         
+         db('message')
+         .select('*')
+         .where('groupId', groupId)
+         .orderBy('date', 'asc')
+         .then(messages => {
+           res.status(200).json({ messages: messages });
+         })
+         .catch(error => {
+           console.error(error);
+           res.status(500).json({ message: 'Internal server error' });
+         });
+     }
+   })
+      .catch(error => {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+      });
+  }
+
