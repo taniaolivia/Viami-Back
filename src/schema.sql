@@ -239,6 +239,19 @@ CREATE TABLE `group` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
+DROP TABLE IF EXISTS `user_group`;
+CREATE TABLE `user_group` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `groupId` int(11) NOT NULL,
+  PRIMARY KEY (`userId`,`groupId`),
+  UNIQUE KEY `id` (`id`),
+  KEY `fk_user_group_group` (`groupId`),
+  CONSTRAINT `fk_user_group_group` FOREIGN KEY (`groupId`) REFERENCES `group` (`id`),
+  CONSTRAINT `fk_user_group_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `viami`.`message` (
