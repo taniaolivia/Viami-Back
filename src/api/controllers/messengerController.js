@@ -118,29 +118,75 @@ exports.getMessageById = (req, res) => {
 
 
 // send message 
-exports.sendMessage = (req,res) => {
+exports.sendMessage = (req, res) => {
     const { message, senderId, responderId } = req.body;
-
-    const messageSend = {
+  
+    // Check if a group already exists between the two users
+    db('user_group')
+      .select('groupId')
+      .whereIn('userId', [senderId, responderId])
+      .groupBy('groupId')
+      .havingRaw('COUNT(DISTINCT userId) >= 2') // group can have 2 user min
+      .then(existingGroups => {
+        if (existingGroups.length > 0) {
+          const groupId = existingGroups[0].groupId;
+          // Use the ID of the existing group to send the message
+          sendGroupMessage(groupId, message, senderId, res);
+        } else {
+          // Create a new group between the two users
+          db('group')
+            .insert({})
+            .then(groupIds => {
+              const groupId = groupIds[0];
+              // Add both users to the new group
+              db('user_group')
+                .insert([
+                  { userId: senderId, groupId: groupId },
+                  { userId: responderId, groupId: groupId }
+                ])
+                .then(() => {
+                  // Use the ID of the new group to send the message
+                  sendGroupMessage(groupId, message, senderId, res);
+                })
+                .catch(error => {
+                  console.error(error);
+                  res.status(500).json({ message: 'Failed to create group and send message' });
+                });
+            })
+            .catch(error => {
+              console.error(error);
+              res.status(500).json({ message: 'Failed to create group and send message' });
+            });
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+      });
+  };
+  
+  // Function to send the message to a group
+  function sendGroupMessage(groupId, message, senderId, res) {
+    const groupMessage = {
       message: message,
-        senderId: senderId,
-        responderId: responderId,
-        date: new Date(),
-        read: "0",
-      };
-
-      db('message')
-    .insert(messageSend)
-    .then(() => {
-      io.emit(`message-${senderId}`, messageSend);
-      res.status(201).json({ message: 'Message sent successfully' });
-    })
-    .catch(error => {
-      console.error(error);
-      res.status(500).json({ message: 'Failed to send message' });
-    });
-
-}
+      senderId: senderId,
+      groupId: groupId,
+      date: new Date(),
+      read: "0",
+    };
+  
+    db('message')
+      .insert(groupMessage)
+      .then(() => {
+        io.emit(`group-${groupId}`, groupMessage);
+        res.status(201).json({ message: 'Message sent successfully' });
+      })
+      .catch(error => {
+        console.error(error);
+        res.status(500).json({ message: 'Failed to send group message' });
+      });
+  }
+  
 
 
 //get All messages between sender and other user
