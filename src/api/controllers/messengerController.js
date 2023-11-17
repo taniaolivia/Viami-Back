@@ -188,39 +188,45 @@ exports.sendMessage = (req, res) => {
   }
   
 
-
 //get All messages between sender and other user
-
-exports.getMessagesBetweenUsers = (req,res) => {
+exports.getMessagesBetweenUsers = (req, res) => {
     const senderId = req.params.senderId;
     const responderId = req.params.responderId;
-    
-
-    db('message')
-  .select('*')
-  .where((builder) => builder
-    .where('senderId', senderId)
-    .andWhere('responderId', responderId)
-  )
-  .orWhere((builder) => builder
-    .where('senderId', responderId)
-    .andWhere('responderId', senderId)
-  )
-  .orderBy('date', 'asc')
-  .then((data) => {
-    if (data.length > 0) {
-      res.status(200).json({'messages' : data});
-    } else {
-      res.status(404).json({ message: 'Messages not found' });
-    }
-  })
-  .catch((error) => {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
-  });
-
-
-}
+  
+    db('user_group')
+      .select('groupId')
+      .whereIn('userId', [senderId, responderId])
+      .groupBy('groupId')
+      .havingRaw('COUNT(DISTINCT userId) = 2')
+      .then(groupIds => {
+        if (groupIds.length > 0) {
+          const groupId = groupIds[0].groupId;
+  
+          db('message')
+            .select('*')
+            .where('groupId', groupId)
+            .orderBy('date', 'asc')
+            .then(data => {
+              if (data.length > 0) {
+                res.status(200).json({ messages: data });
+              } else {
+                res.status(404).json({ message: 'Messages not found' });
+              }
+            })
+            .catch(error => {
+              console.error(error);
+              res.status(500).json({ message: 'Internal server error' });
+            });
+        } else {
+          res.status(404).json({ message: 'Group not found' });
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+      });
+  };
+  
 
 
 
