@@ -3,13 +3,13 @@ module.exports = (server) => {
     const jwtMiddleware = require("../middlewares/jwtMiddleware");
     const cors = require('cors');
 
-server.route("/api/users/:senderId/messages")
+server.route("/api/messages/:senderId/messages")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.listAllMessagesBySenderId);
 
-server.route("/api/users/:senderId/:responderId/messages")
+server.route("/api/messages/:senderId/:responderId/messages")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getMessagesBetweenUsers);
 
-server.route("/api/users/:senderId/:responderId/message")
+server.route("/api/messages/:senderId/:responderId/message")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getLastMessageBySenderResponder);
 
 server.route("/api/messages/:messageId")
@@ -18,5 +18,9 @@ server.route("/api/messages/:messageId")
 
 server.route("/api/sendMessage")
 .post(jwtMiddleware.authenticateUser, cors(), messengerController.sendMessage);
+
+server.route("/api/messages/addUserToGroup/:loggedInUserId/:userToAddId/:receiverId")
+.post(jwtMiddleware.authenticateUser, cors(), messengerController.addUserToGroup);
+
 
 }

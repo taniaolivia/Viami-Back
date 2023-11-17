@@ -228,5 +228,51 @@ exports.getMessagesBetweenUsers = (req, res) => {
   };
   
 
+  
 
+// Add a user to an existing group
+exports.addUserToGroup = (req, res) => {
+    const loggedInUserId = req.params.loggedInUserId;
+    const userToAddId = req.params.userToAddId;
+    const receiverId = req.params.receiverId;
+  
+    db('user_group')
+      .select('groupId')
+      .whereIn('userId', [loggedInUserId, receiverId])
+      .groupBy('groupId')
+      .havingRaw('COUNT(DISTINCT userId) >= 2')
+      .then(groupIds => {
+        if (groupIds.length > 0) {
+          const groupId = groupIds[0].groupId;
+  
+        
+          db('user_group')
+            .select('userId')
+            .where('groupId', groupId)
+            .andWhere('userId', userToAddId)
+            .then(existingUser => {
+              if (existingUser.length === 0) {
+                db('user_group')
+                  .insert({ userId: userToAddId, groupId: groupId })
+                  .then(() => {
+                    res.status(200).json({ success: true, message: 'User added to the group successfully' });
+                  })
+                  .catch(error => {
+                    console.error(error);
+                    res.status(500).json({ success: false, message: 'Failed to add user to the group' });
+                  });
+              } else {
+                res.status(400).json({ success: false, message: 'User is already in the group' });
+              }
+            });
+        } else {
+          res.status(404).json({ success: false, message: 'Group not found' });
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+      });
+  };
+  
 
