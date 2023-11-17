@@ -254,17 +254,21 @@ CREATE TABLE `user_group` (
 
 
 DROP TABLE IF EXISTS `message`;
-CREATE TABLE `viami`.`message` (
+CREATE TABLE `message` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `message` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `senderId` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `groupId` INT NOT NULL,
-  `date` varchar(100) NOT NULL,
-  `read` enum('0','1') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `responderId` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `date` DATETIME NOT NULL,
+  `read` ENUM('0', '1') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `senderId` (`senderId`),
   KEY `groupId` (`groupId`),
-  CONSTRAINT `fk_message_sender` FOREIGN KEY (`senderId`) REFERENCES `viami`.`user` (`id`),
-  CONSTRAINT `fk_message_group` FOREIGN KEY (`groupId`) REFERENCES `viami`.`group` (`id`)
+  KEY `responderId` (`responderId`),
+  CONSTRAINT `fk_message_sender` FOREIGN KEY (`senderId`) REFERENCES `user` (`id`),
+  CONSTRAINT `fk_message_group` FOREIGN KEY (`groupId`) REFERENCES `group` (`id`),
+  CONSTRAINT `fk_message_responder` FOREIGN KEY (`responderId`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 

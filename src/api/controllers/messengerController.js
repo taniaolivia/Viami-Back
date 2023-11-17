@@ -131,7 +131,7 @@ exports.sendMessage = (req, res) => {
         if (existingGroups.length > 0) {
           const groupId = existingGroups[0].groupId;
           // Use the ID of the existing group to send the message
-          sendGroupMessage(groupId, message, senderId, res);
+          sendGroupMessage(groupId, message, senderId,responderId, res);
         } else {
           // Create a new group between the two users
           db('group')
@@ -146,7 +146,7 @@ exports.sendMessage = (req, res) => {
                 ])
                 .then(() => {
                   // Use the ID of the new group to send the message
-                  sendGroupMessage(groupId, message, senderId, res);
+                  sendGroupMessage(groupId, message, senderId,responderId, res);
                 })
                 .catch(error => {
                   console.error(error);
@@ -166,11 +166,12 @@ exports.sendMessage = (req, res) => {
   };
   
   // Function to send the message to a group
-  function sendGroupMessage(groupId, message, senderId, res) {
+  function sendGroupMessage(groupId, message, senderId,responderId, res) {
     const groupMessage = {
       message: message,
       senderId: senderId,
       groupId: groupId,
+      responderId:responderId,
       date: new Date(),
       read: "0",
     };
