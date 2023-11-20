@@ -413,4 +413,65 @@ exports.getAllUnreadDiscussionsForUser = (req, res) => {
     });
 };
 
+// Function to get all chats for a user with filter by location
+exports.getAllDiscussionsForUserWithLocationFilter = (req, res) => {
+  const userId = req.params.userId;
+  const selectedLocation = req.params.selectedLocation;
 
+  db('user_group')
+    .select('groupId')
+    .where('userId', userId)
+    .groupBy('groupId')
+    .then(groupIds => {
+      const discussionPromises = groupIds.map(group => {
+        const groupId = group.groupId;
+
+        return db('message')
+          .select('*')
+          .where('groupId', groupId)
+          .orderBy('date', 'desc')
+          .limit(1)
+          .then(lastMessage => {
+            if (lastMessage.length > 0) {
+             
+              return db('user_group as senderGroup')
+                .select('senderGroup.userId as senderId', 'receiverGroup.userId as receiverId', 'receiverUser.location')
+                .join('user_group as receiverGroup', 'receiverGroup.groupId', '=', 'senderGroup.groupId')
+                .andWhere('senderGroup.groupId', groupId)
+                .andWhere('receiverGroup.userId', '!=', userId)
+                .join('user as receiverUser', 'receiverGroup.userId', '=', 'receiverUser.id')
+                .then(users => {
+                  const receiverLocation = users[0].location;
+
+                 
+                  if (receiverLocation === selectedLocation) {
+                    return {
+                     
+                      lastMessage: lastMessage[0],
+                      
+                    };
+                  } else {
+                    return null;
+                  }
+                });
+            } else {
+              return null;
+            }
+          });
+      });
+
+      Promise.all(discussionPromises)
+        .then(discussions => {
+          const filteredDiscussions = discussions.filter(discussion => discussion !== null);
+          res.status(200).json({ discussions: filteredDiscussions });
+        })
+        .catch(error => {
+          console.error(error);
+          res.status(500).json({ message: 'Erreur interne du serveur' });
+        });
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).json({ message: 'Erreur interne du serveur' });
+    });
+};
