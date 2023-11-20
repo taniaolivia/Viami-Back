@@ -113,6 +113,8 @@ exports.getSearchedUsers = (req, res) => {
       "message.message as message",
       "sender.firstName as firstName",
       "sender.lastName as lastName",
+      "responder.firstName as responderFirstName",
+      "responder.lastName as responderLastName",
       "sender.email as email",
       "sender.password as password",
       "sender.location as location",
