@@ -130,7 +130,7 @@ exports.getSearchedUsers = (req, res) => {
       "sender.emailVerified as emailVerified",
       "sender.plan as plan"
     ])
-    .where("responder.firstName", 'like', `%${search}%`)
+    .where("responder.firstName", 'like', `${search}%`)
     .andWhere({"senderId": senderId})
     .join("user as sender", "sender.id", "=", "message.senderId")
     .join("user as responder", "responder.id", "=", "message.responderId")
