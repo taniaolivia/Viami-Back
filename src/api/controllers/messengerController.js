@@ -102,6 +102,7 @@ exports.setMessageRead = (req, res) => {
 // Search user by the inserted name in the search input
 exports.getSearchedUsers = (req, res) => {
   let search = req.query.search;
+  let senderId = req.params.senderId;
 
   db('message')
     .select([
@@ -129,6 +130,7 @@ exports.getSearchedUsers = (req, res) => {
     ])
     .where("responder.firstName", 'like', `%${search}%`)
     .orWhere("lastName", 'like', `%${search}%`)
+    .andWhere({"senderId": senderId})
     .join("user as sender", "sender.id", "=", "message.senderId")
     .join("user as responder", "responder.id", "=", "message.responderId")
     .orderBy("id", "asc")
