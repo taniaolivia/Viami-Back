@@ -30,3 +30,35 @@ exports.getUserCommentsById = (req, res) => {
             res.json({message: "Server error"});
         });
 }
+
+// Function to add a comment to a traveler's profile
+exports.addCommentToUserProfile = (req, res) => {
+    const userId = req.params.userId; 
+    const commenterId = req.body.commenterId; 
+    const commentText = req.body.commentText; 
+  
+   
+    db('comment')
+      .insert({ comment: commentText })
+      .then(commentIds => {
+        const commentId = commentIds[0];
+  
+        db('user_comment')
+          .insert({
+            userId: userId,
+            commenterId: commenterId,
+            commentId: commentId,
+          })
+          .then(() => {
+            res.status(200).json({ message: 'Comment added successfully' });
+          })
+          .catch(error => {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+          });
+      })
+      .catch(error => {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+      });
+  };
