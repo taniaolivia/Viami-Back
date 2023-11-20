@@ -475,3 +475,56 @@ exports.getAllDiscussionsForUserWithLocationFilter = (req, res) => {
       res.status(500).json({ message: 'Erreur interne du serveur' });
     });
 };
+
+// Function to get all chats for a user
+exports.getAllDiscussionsForUser = (req, res) => {
+  const userId = req.params.userId;
+
+  db('user_group')
+    .select('groupId')
+    .where('userId', userId)
+    .groupBy('groupId')
+    .then(groupIds => {
+      const discussionPromises = groupIds.map(group => {
+        const groupId = group.groupId;
+
+        return db('message')
+          .select('*')
+          .where('groupId', groupId)
+          .orderBy('date', 'desc')
+          .limit(1)
+          .then(lastMessage => {
+            if (lastMessage.length > 0) {
+              return db('user_group')
+                .select('userId')
+                .where('groupId', groupId)
+                .andWhereNot('userId', userId)
+                .then(users => {
+                  return {
+                    groupId: groupId,
+                    lastMessage: lastMessage[0],
+                    users: users.map(user => user.userId),
+                  };
+                });
+            } else {
+              return null;
+            }
+          });
+      });
+
+      Promise.all(discussionPromises)
+        .then(discussions => {
+          const filteredDiscussions = discussions.filter(discussion => discussion !== null);
+          res.status(200).json({ discussions: filteredDiscussions });
+        })
+        .catch(error => {
+          console.error(error);
+          res.status(500).json({ message: 'Erreur interne du serveur' });
+        });
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).json({ message: 'Erreur interne du serveur' });
+    });
+};
+
