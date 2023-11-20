@@ -129,7 +129,7 @@ exports.getSearchedUsers = (req, res) => {
       "sender.plan as plan"
     ])
     .where("responder.firstName", 'like', `%${search}%`)
-    .orWhere("lastName", 'like', `%${search}%`)
+    .orWhere("responder.lastName", 'like', `%${search}%`)
     .andWhere({"senderId": senderId})
     .join("user as sender", "sender.id", "=", "message.senderId")
     .join("user as responder", "responder.id", "=", "message.responderId")
@@ -137,7 +137,7 @@ exports.getSearchedUsers = (req, res) => {
     .then(data => res.status(200).json({"messages": data}))
     .catch(error => {
       console.error(error);
-      res.status(500).json({ message: 'Internal server error' });
+      res.status(401).json({ message: 'User not found' });
     });
 };
 
