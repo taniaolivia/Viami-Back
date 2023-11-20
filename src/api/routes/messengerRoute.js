@@ -37,6 +37,10 @@ server.get('/api/discussions/:userId', messengerController.getAllDiscussionsForU
 server.get('/api/discussions/:userId', messengerController.getAllDiscussionsForUser);
 
 
+server.get('/api/discussions/twoUserDiscussions/:userId', messengerController.getTwoUserDiscussions);    
+
+server.get('/api/discussions/groupUsersDiscussions/:userId', messengerController.getGroupUsersDiscussions);
+
 
 
 
