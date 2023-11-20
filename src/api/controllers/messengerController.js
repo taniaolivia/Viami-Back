@@ -313,3 +313,104 @@ exports.addUserToGroup = (req, res) => {
       });
   }
 
+  
+
+// Function to get all chats with read messages for a user
+exports.getAllReadDiscussionsForUser = (req, res) => {
+  const userId = req.params.userId;
+
+
+  db('user_group')
+    .select('groupId')
+    .where('userId', userId)
+    .groupBy('groupId')
+    .then(groupIds => {
+      const discussionPromises = groupIds.map(group => {
+        const groupId = group.groupId;
+      
+        return db('message')
+          .select('*')
+          .where('groupId', groupId)
+          .andWhere('read', '1') 
+          .orderBy('date', 'desc')
+          .then(readMessages => {
+         
+            return db('user_group')
+              .select('userId')
+              .where('groupId', groupId)
+              .andWhereNot('userId', userId) 
+              .then(users => {
+                return {
+                  groupId: groupId,
+                  messagesLus: readMessages,
+                  utilisateurs: users.map(user => user.userId),
+                };
+              });
+          });
+      });
+
+      Promise.all(discussionPromises)
+        .then(discussions => {
+          res.status(200).json({ discussions: discussions });
+        })
+        .catch(error => {
+          console.error(error);
+          res.status(500).json({ message: 'Erreur interne du serveur' });
+        });
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).json({ message: 'Erreur interne du serveur' });
+    });
+};
+
+// Function to get all chats with unread messages for a user
+exports.getAllUnreadDiscussionsForUser = (req, res) => {
+  const userId = req.params.userId;
+
+  
+  db('user_group')
+    .select('groupId')
+    .where('userId', userId)
+    .groupBy('groupId')
+    .then(groupIds => {
+      const discussionPromises = groupIds.map(group => {
+        const groupId = group.groupId;
+      
+        return db('message')
+          .select('*')
+          .where('groupId', groupId)
+          .andWhere('read', '0') 
+          .orderBy('date', 'desc')
+          .then(unreadMessages => {
+            
+            return db('user_group')
+              .select('userId')
+              .where('groupId', groupId)
+              .andWhereNot('userId', userId) 
+              .then(users => {
+                return {
+                  groupId: groupId,
+                  messagesNonLus: unreadMessages,
+                  utilisateurs: users.map(user => user.userId),
+                };
+              });
+          });
+      });
+
+      Promise.all(discussionPromises)
+        .then(discussions => {
+          res.status(200).json({ discussions: discussions });
+        })
+        .catch(error => {
+          console.error(error);
+          res.status(500).json({ message: 'Erreur interne du serveur' });
+        });
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).json({ message: 'Erreur interne du serveur' });
+    });
+};
+
+

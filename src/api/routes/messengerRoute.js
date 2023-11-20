@@ -25,5 +25,9 @@ server.route("/api/sendMessage")
 server.route("/api/messages/addUserToGroup/:loggedInUserId/:userToAddId/:receiverId")
 .post(jwtMiddleware.authenticateUser, cors(), messengerController.addUserToGroup);
 
+server.get("/api/readDiscussions/:userId", messengerController.getAllReadDiscussionsForUser);
+
+server.get("/api/unreadDiscussions/:userId", messengerController.getAllUnreadDiscussionsForUser);
+
 
 }
