@@ -528,3 +528,114 @@ exports.getAllDiscussionsForUser = (req, res) => {
     });
 };
 
+ // Function to get only discussions between the user and one other person 
+ exports.getTwoUserDiscussions = (req, res) => {
+  const userId = req.params.userId;
+
+  db('user_group')
+    .select('groupId')
+    .where('userId', userId)
+    .groupBy('groupId')
+    .then(groupIds => {
+      const twoUserDiscussionPromises = groupIds.map(group => {
+        const groupId = group.groupId;
+
+        return db('user_group')
+          .select('userId')
+          .where('groupId', groupId)
+          .then(users => {
+            const userCount = users.length;
+
+            if (userCount === 2 && users.some(user => user.userId === userId)) {
+              return db('message')
+                .select('*')
+                .where('groupId', groupId)
+                .orderBy('date', 'desc')
+                .limit(1)
+                .then(lastMessage => {
+                  return {
+                    groupId: groupId,
+                    lastMessage: lastMessage[0],
+                    otherUserId: users.find(user => user.userId !== userId).userId,
+                  };
+                });
+            } else {
+              return null;
+            }
+          });
+      });
+
+      Promise.all(twoUserDiscussionPromises)
+        .then(discussions => {
+          const filteredDiscussions = discussions.filter(discussion => discussion !== null);
+
+          res.status(200).json({ discussions: filteredDiscussions });
+        })
+        .catch(error => {
+          console.error(error);
+          res.status(500).json({ message: 'Erreur interne du serveur' });
+        });
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).json({ message: 'Erreur interne du serveur' });
+    });
+};
+
+
+// Function to get only discussions where the group is composed of three users or more
+exports.getGroupUsersDiscussions = (req, res) => {
+  const userId = req.params.userId;
+
+  db('user_group')
+    .select('groupId')
+    .where('userId', userId)
+    .groupBy('groupId')
+    .then(groupIds => {
+      const threeOrMoreUserDiscussionPromises = groupIds.map(group => {
+        const groupId = group.groupId;
+
+        return db('user_group')
+          .select('userId')
+          .where('groupId', groupId)
+          .then(users => {
+            const userCount = users.length;
+
+            if (userCount >= 3) {
+              return db('message')
+                .select('*')
+                .where('groupId', groupId)
+                .orderBy('date', 'desc')
+                .limit(1)
+                .then(lastMessage => {
+                  return {
+                    groupId: groupId,
+                    lastMessage: lastMessage[0],
+                    otherUserIds: users
+                      .filter(user => user.userId !== userId)
+                      .map(user => user.userId),
+                  };
+                });
+            } else {
+              return null;
+            }
+          });
+      });
+
+      Promise.all(threeOrMoreUserDiscussionPromises)
+        .then(discussions => {
+          const filteredDiscussions = discussions.filter(discussion => discussion !== null);
+
+          res.status(200).json({ discussions: filteredDiscussions });
+        })
+        .catch(error => {
+          console.error(error);
+          res.status(500).json({ message: 'Erreur interne du serveur' });
+        });
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).json({ message: 'Erreur interne du serveur' });
+    });
+};
+
