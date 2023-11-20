@@ -29,5 +29,7 @@ server.get("/api/readDiscussions/:userId", messengerController.getAllReadDiscuss
 
 server.get("/api/unreadDiscussions/:userId", messengerController.getAllUnreadDiscussionsForUser);
 
+server.get('/api/discussions/:userId/location/:selectedLocation', messengerController.getAllDiscussionsForUserWithLocationFilter);
+
 
 }
