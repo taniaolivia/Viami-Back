@@ -32,4 +32,15 @@ server.get("/api/unreadDiscussions/:userId", messengerController.getAllUnreadDis
 server.get('/api/discussions/:userId/location/:selectedLocation', messengerController.getAllDiscussionsForUserWithLocationFilter);
 
 
+server.get('/api/discussions/:userId', messengerController.getAllDiscussionsForUser);
+
+server.get('/api/discussions/:userId', messengerController.getAllDiscussionsForUser);
+
+
+
+
+
+
+
+
 }
