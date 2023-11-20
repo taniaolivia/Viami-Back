@@ -497,6 +497,7 @@ exports.sendEmailVerified = async(to) =>{
     }); 
 }
 
+// Send an email of change password to the demanded email
 exports.forgetPassword = async(req, res) => {
     const to = req.body.email;
 
@@ -537,7 +538,7 @@ exports.forgetPassword = async(req, res) => {
     })
 }
 
-// Verified user's email by token
+// Display the form to change password in html
 exports.newPasswordForm = (req, res) => {
     const email = req.query.email;
     const token = req.query.token;
@@ -576,6 +577,7 @@ exports.newPasswordForm = (req, res) => {
         })
 }
 
+// Send email when password is changed successfully
 exports.passwordChangedSuccess = (email) => {
     const to = email;
 
@@ -609,7 +611,6 @@ exports.passwordChangedSuccess = (email) => {
         }
     }); 
 }
-
 
 // Route to get user status
 exports.getUserStatus = (req, res) => {

@@ -19,22 +19,26 @@ server.route("/api/messages/:messageId")
 .patch(jwtMiddleware.authenticateUser, cors(), messengerController.setMessageRead)
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getMessageById);
 
+server.route("/api/messages/search/users")
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getSearchedUsers);
+
 server.route("/api/sendMessage")
 .post(jwtMiddleware.authenticateUser, cors(), messengerController.sendMessage);
 
 server.route("/api/messages/addUserToGroup/:loggedInUserId/:userToAddId/:receiverId")
 .post(jwtMiddleware.authenticateUser, cors(), messengerController.addUserToGroup);
 
-server.get("/api/readDiscussions/:userId", messengerController.getAllReadDiscussionsForUser);
+server.route("/api/readDiscussions/:userId")
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllReadDiscussionsForUser);
 
-server.get("/api/unreadDiscussions/:userId", messengerController.getAllUnreadDiscussionsForUser);
+server.route("/api/unreadDiscussions/:userId")
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllUnreadDiscussionsForUser);
 
-server.get('/api/discussions/:userId/location/:selectedLocation', messengerController.getAllDiscussionsForUserWithLocationFilter);
+server.route("/api/discussions/:userId/location/:selectedLocation")
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllDiscussionsForUserWithLocationFilter);
 
-
-server.get('/api/discussions/:userId', messengerController.getAllDiscussionsForUser);
-
-server.get('/api/discussions/:userId', messengerController.getAllDiscussionsForUser);
+server.route('/api/discussions/:userId')
+.get('/api/discussions/:userId', jwtMiddleware.authenticateUser, cors(), messengerController.getAllDiscussionsForUser);
 
 
 
