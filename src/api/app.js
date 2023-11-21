@@ -2,13 +2,13 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const socketIo = require('./socket');
+//const socketIo = require('./socket');
 
 const hostname = "0.0.0.0";
 const port = 3000;
 
 const server = express();
-const io = socketIo;
+//const io = socketIo;
 
 server.use(logger('dev'));
 
