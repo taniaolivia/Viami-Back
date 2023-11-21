@@ -1,5 +1,4 @@
 const db = require("../knex");
-const io = require('../socket'); 
 
 // Get a list of all messages sent by a user
 exports.listAllMessagesBySenderId = (req, res) => {
@@ -138,7 +137,7 @@ exports.getMessageById = (req, res) => {
 }
 
 // Send message 
-exports.sendMessage = (req, res) => {
+exports.sendMessage = (io, req, res) => {
   const { message, senderId, responderId } = req.body;
 
   // Check if a group already exists between the two users
@@ -151,7 +150,7 @@ exports.sendMessage = (req, res) => {
       if (existingGroups.length > 0) {
         const groupId = existingGroups[0].groupId;
         // Use the ID of the existing group to send the message
-        sendGroupMessage(groupId, message, senderId,responderId, res);
+        sendGroupMessage(groupId, message, senderId,responderId, res, io);
       } else {
         // Create a new group between the two users
         db('group')
@@ -186,7 +185,7 @@ exports.sendMessage = (req, res) => {
 };
 
 // Function to send the message to a group
-function sendGroupMessage(groupId, message, senderId,responderId, res) {
+function sendGroupMessage(groupId, message, senderId,responderId, res, io) {
   const groupMessage = {
     message: message,
     senderId: senderId,
