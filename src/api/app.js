@@ -68,6 +68,9 @@ themeActivityRoute(app);
 const activityImageRoute = require("./routes/activityImageRoute");
 activityImageRoute(app);
 
+const messengerRoute = require("./routes/messengerRoute");
+messengerRoute(app, io);
+
 io.on('connection', (socket) => {
     console.log('A user connected');
 
@@ -79,10 +82,9 @@ io.on('connection', (socket) => {
         console.log('User disconnected');
     });
 });
-
-const messengerRoute = require("./routes/messengerRoute");
-messengerRoute(app, io);
   
 server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
 });
+
+module.exports = { app, server, io };
