@@ -8,16 +8,13 @@ const logger = require('morgan');
 const hostname = "0.0.0.0";
 const port = 3000;
 const app = express();
-const server = http.createapp(app);
+const server = http.createServer(app);
 const io = socketIo(server);
 
 app.use(logger('dev'));
-
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
 app.use(cookieParser());
-
 app.use(cors());
 
 const userRoute = require("./routes/userRoute");
@@ -73,15 +70,17 @@ messengerRoute(app);
 
 
 io.on('connection', (socket) => {
-console.log('A user connected');
+    console.log('A user connected');
 
-socket.on('chat message', (message) => {
-    io.emit('chat message', message);
-});
+    socket.on('chat message', (message) => {
+        io.emit('chat message', message);
+    });
 
-socket.on('disconnect', () => {
-    console.log('User disconnected');
-});
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
 });
   
-server.listen(port, hostname);
+server.listen(port, hostname, () => {
+    console.log(`Server running at http://${hostname}:${port}/`);
+});
