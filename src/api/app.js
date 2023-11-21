@@ -71,7 +71,7 @@ activityImageRoute(app);
 const messengerRoute = require("./routes/messengerRoute");
 messengerRoute(app, io);
 
-io.on('connection', (socket) => {
+/*io.on('connection', (socket) => {
     console.log('A user connected');
 
     socket.on('chat message', (message) => {
@@ -81,7 +81,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('User disconnected');
     });
-});
+});*/
   
 server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
