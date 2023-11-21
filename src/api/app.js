@@ -1,16 +1,11 @@
 const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const initSocket = require('./socket');
 
 const hostname = "0.0.0.0";
 const port = 3000;
 const app = express();
-const server = http.createServer(app);
-const io = initSocket(server);
 
 app.use(logger('dev'));
 app.use(express.urlencoded({ extended: false }));
