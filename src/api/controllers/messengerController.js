@@ -165,7 +165,7 @@ exports.sendMessage = (io, req, res) => {
               ])
               .then(() => {
                 // Use the ID of the new group to send the message
-                sendGroupMessage(groupId, message, senderId,responderId, res);
+                sendGroupMessage(groupId, message, senderId,responderId, res, io);
               })
               .catch(error => {
                 console.error(error);
