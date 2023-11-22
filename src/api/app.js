@@ -5,67 +5,67 @@ const logger = require('morgan');
 
 const hostname = "0.0.0.0";
 const port = 3000;
-const app = express();
+const server = express();
 
-app.use(logger('dev'));
+server.use(logger('dev'));
 
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+server.use(express.urlencoded({ extended: false }));
+server.use(express.json());
 
-app.use(cookieParser());
+server.use(cookieParser());
 
-app.use(cors());
+server.use(cors());
 
 const userRoute = require("./routes/userRoute");
-userRoute(app);
+userRoute(server);
 
 const interestRoute = require("./routes/interestRoute");
-interestRoute(app);
+interestRoute(server);
 
 const userInterestRoute = require("./routes/userInterestRoute");
-userInterestRoute(app);
+userInterestRoute(server);
 
 const languageRoute = require("./routes/languageRoute");
-languageRoute(app);
+languageRoute(server);
 
 const userLanguageRoute = require("./routes/userLanguageRoute");
-userLanguageRoute(app);
+userLanguageRoute(server);
 
 const imageRoute = require("./routes/imageRoute");
-imageRoute(app);
+imageRoute(server);
 
 const userImageRoute = require("./routes/userImageRoute");
-userImageRoute(app);
+userImageRoute(server);
 
 const travelRoute = require("./routes/travelRoute");
-travelRoute(app);
+travelRoute(server);
 
 const commentRoute = require("./routes/commentRoute");
-commentRoute(app);
+commentRoute(server);
 
 const userCommentRoute = require("./routes/userCommentRoute");
-userCommentRoute(app);
+userCommentRoute(server);
 
 const activityRoute = require("./routes/activityRoute");
-activityRoute(app);
+activityRoute(server);
 
 const travelActivityRoute = require("./routes/travelActivityRoute");
-travelActivityRoute(app);
+travelActivityRoute(server);
 
 const travelImageRoute = require("./routes/travelImageRoute");
-travelImageRoute(app);
+travelImageRoute(server);
 
 const themeRoute = require("./routes/themeRoute");
-themeRoute(app);
+themeRoute(server);
 
 const themeActivityRoute = require("./routes/themeActivityRoute");
-themeActivityRoute(app);
+themeActivityRoute(server);
 
 const activityImageRoute = require("./routes/activityImageRoute");
-activityImageRoute(app);
+activityImageRoute(server);
 
 const messengerRoute = require("./routes/messengerRoute");
-messengerRoute(app);
+messengerRoute(server);
   
 server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
