@@ -1,4 +1,4 @@
-module.exports = (server) => {
+module.exports = (server, io) => {
     const messengerController = require("../controllers/messengerController");
     const jwtMiddleware = require("../middlewares/jwtMiddleware");
     const cors = require('cors');
@@ -23,7 +23,7 @@ server.route("/api/messages/:senderId/search/users")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getSearchedUsers);
 
 server.route("/api/sendMessage")
-.post(jwtMiddleware.authenticateUser, cors(), messengerController.sendMessage);
+.post(jwtMiddleware.authenticateUser, cors(), io, messengerController.sendMessage);
 
 server.route("/api/messages/addUserToGroup/:loggedInUserId/:userToAddId/:receiverId")
 .post(jwtMiddleware.authenticateUser, cors(), messengerController.addUserToGroup);
