@@ -30,36 +30,48 @@ exports.listAllMessagesBySenderId = (req, res) => {
         });
 }
 
-// Get the last message between the two users
-exports.getLastMessageBySenderResponder = (req, res) => {
-    let senderId = req.params.senderId;
-    let responderId = req.params.responderId;
+// Get the last message between the two users or groups
+exports.getLastMessageByGroups = (req, res) => {
+    let userId = req.params.groupId;
 
-    db("message")
-        .select([
-            "message.id as id",
-            "sender.id as senderId",
-            "responder.id as responderId",
-            "message.date as date",
-            "message.message as message",
-            "sender.firstName as senderFirstName",
-            "sender.lastName as senderLastName",
-            "responder.firstName as responderFirstName",
-            "responder.lastName as responderLastName",
-            "message.read as read"
-        ])
-        .where({"senderId": senderId, "responderId": responderId})
-        .orWhere({"senderId": responderId, "responderId": senderId})
-        .join("user as sender", "sender.id", "=", "message.senderId")
-        .join("user as responder", "responder.id", "=", "message.responderId")
-        .orderBy("id", "desc")
-        .limit(1)
-        .then(data => res.status(200).json({"messages": data}))
-        .catch(error => {
-            res.status(401);
-            console.log(error);
-            res.json({message: "Server error"});
-        });
+    db("user_group")
+      .select("*")
+      .where({"userId": userId})
+      .then(groups => {
+        groups.map((group) => {
+          db("message")
+            .select([
+                "message.id as id",
+                "sender.id as senderId",
+                "responder.id as responderId",
+                "message.groupId as groupId",
+                "message.date as date",
+                "message.message as message",
+                "sender.firstName as senderFirstName",
+                "sender.lastName as senderLastName",
+                "responder.firstName as responderFirstName",
+                "responder.lastName as responderLastName",
+                "message.read as read"
+            ])
+            .where({"groupId": group.groupId})
+            .join("user as sender", "sender.id", "=", "message.senderId")
+            .join("user as responder", "responder.id", "=", "message.responderId")
+            .orderBy("id", "desc")
+            .limit(1)
+            .then(data => res.status(200).json({"messages": data}))
+            .catch(error => {
+                res.status(401);
+                console.log(error);
+                res.json({message: "Server error"});
+            });
+        })
+      })
+      .catch(error => {
+          res.status(401);
+          console.log(error);
+          res.json({message: "Server error"});
+      });
+    
 }
 
 // Set a message read

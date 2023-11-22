@@ -12,8 +12,8 @@ server.route("/api/messages/discussions/:messageId")
 server.route("/api/messages/:senderId/:responderId/messages")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getMessagesBetweenUsers);
 
-server.route("/api/users/:senderId/:responderId/message")
-.get(jwtMiddleware.authenticateUser, cors(), messengerController.getLastMessageBySenderResponder);
+server.route("/api/users/:userId/message")
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getLastMessageByGroups);
 
 server.route("/api/messages/:messageId")
 .patch(jwtMiddleware.authenticateUser, cors(), messengerController.setMessageRead)
