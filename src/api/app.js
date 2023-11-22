@@ -1,73 +1,90 @@
 const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const socketIo = require('./socket');
 
 const hostname = "0.0.0.0";
 const port = 3000;
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
 
-const server = express();
-const io = socketIo;
+app.use(logger('dev'));
 
-server.use(logger('dev'));
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
-server.use(express.urlencoded({ extended: false }));
-server.use(express.json());
+app.use(cookieParser());
 
-server.use(cookieParser());
-
-server.use(cors());
+app.use(cors());
 
 const userRoute = require("./routes/userRoute");
-userRoute(server);
+userRoute(app);
 
 const interestRoute = require("./routes/interestRoute");
-interestRoute(server);
+interestRoute(app);
 
 const userInterestRoute = require("./routes/userInterestRoute");
-userInterestRoute(server);
+userInterestRoute(app);
 
 const languageRoute = require("./routes/languageRoute");
-languageRoute(server);
+languageRoute(app);
 
 const userLanguageRoute = require("./routes/userLanguageRoute");
-userLanguageRoute(server);
+userLanguageRoute(app);
 
 const imageRoute = require("./routes/imageRoute");
-imageRoute(server);
+imageRoute(app);
 
 const userImageRoute = require("./routes/userImageRoute");
-userImageRoute(server);
+userImageRoute(app);
 
 const travelRoute = require("./routes/travelRoute");
-travelRoute(server);
+travelRoute(app);
 
 const commentRoute = require("./routes/commentRoute");
-commentRoute(server);
+commentRoute(app);
 
 const userCommentRoute = require("./routes/userCommentRoute");
-userCommentRoute(server);
+userCommentRoute(app);
 
 const activityRoute = require("./routes/activityRoute");
-activityRoute(server);
+activityRoute(app);
 
 const travelActivityRoute = require("./routes/travelActivityRoute");
-travelActivityRoute(server);
+travelActivityRoute(app);
 
 const travelImageRoute = require("./routes/travelImageRoute");
-travelImageRoute(server);
+travelImageRoute(app);
 
 const themeRoute = require("./routes/themeRoute");
-themeRoute(server);
+themeRoute(app);
 
 const themeActivityRoute = require("./routes/themeActivityRoute");
-themeActivityRoute(server);
+themeActivityRoute(app);
 
 const activityImageRoute = require("./routes/activityImageRoute");
-activityImageRoute(server);
+activityImageRoute(app);
 
 const messengerRoute = require("./routes/messengerRoute");
-messengerRoute(server);
+messengerRoute(app);
 
-server.listen(port, hostname);
+io.on('connection', (socket) => {
+    console.log('A user connected');
+
+    socket.on('chat message', (message) => {
+        io.emit('chat message', message);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
+});
+  
+server.listen(port, hostname, () => {
+    console.log(`Server running at http://${hostname}:${port}/`);
+});
+
+module.exports = io;

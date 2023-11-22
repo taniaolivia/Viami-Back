@@ -3,7 +3,7 @@ module.exports = (server) => {
     const jwtMiddleware = require("../middlewares/jwtMiddleware");
     const cors = require('cors');
 
-server.route("/api/messages/:senderId/messages")
+server.route("/api/users/:senderId/messages")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.listAllMessagesBySenderId);
 
 server.route("/api/messages/discussions/:messageId")
@@ -12,7 +12,7 @@ server.route("/api/messages/discussions/:messageId")
 server.route("/api/messages/:senderId/:responderId/messages")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getMessagesBetweenUsers);
 
-server.route("/api/messages/:senderId/:responderId/message")
+server.route("/api/users/:senderId/:responderId/message")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getLastMessageBySenderResponder);
 
 server.route("/api/messages/:messageId")
@@ -40,15 +40,10 @@ server.route("/api/discussions/:userId/location/:selectedLocation")
 server.route('/api/discussions/:userId')
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllDiscussionsForUser);
 
+server.route('/api/discussions/twoUsers/:userId')
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getTwoUserDiscussions); 
 
-server.get('/api/discussions/twoUserDiscussions/:userId', messengerController.getTwoUserDiscussions);    
-
-server.get('/api/discussions/groupUsersDiscussions/:userId', messengerController.getGroupUsersDiscussions);
-
-
-
-
-
-
+server.route('/api/discussions/groupUsers/:userId')
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getGroupUsersDiscussions);
 
 }

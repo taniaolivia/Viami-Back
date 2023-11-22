@@ -19,7 +19,7 @@ io.on('connection', (socket) => {
 });
 
 server.listen(3001, () => {
-  console.log('Socket.IO server listening on port 3000');
+  console.log('Socket.IO server listening on port 3001');
 });
 
 module.exports = io;
