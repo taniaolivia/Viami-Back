@@ -2,32 +2,45 @@ const db = require("../knex");
 const io = require('../app');
 
 // Get a list of all messages sent by a user
-exports.listAllMessagesBySenderId = (req, res) => {
-    let senderId = req.params.senderId;
-    
-    db("message")
-        .select([
-            "message.id as id",
-            "sender.id as senderId",
-            "responder.id as responderId",
-            "message.date as date",
-            "message.message as message",
-            "sender.firstName as senderFirstName",
-            "sender.lastName as senderLastName",
-            "responder.firstName as responderFirstName",
-            "responder.lastName as responderLastName",
-            "message.read as read"
-        ])
-        .where("senderId", senderId)
-        .join("user as sender", "sender.id", "=", "message.senderId")
-        .join("user as responder", "responder.id", "=", "message.responderId")
-        .orderBy("date", "asc")
-        .then(data => res.status(200).json({"messages": data}))
-        .catch(error => {
-            res.status(401);
-            console.log(error);
-            res.json({message: "Server error"});
-        });
+exports.listAllMessagesByUser = (req, res) => {
+  let userId = req.params.groupId;
+
+  db("user_group")
+    .select("*")
+    .where({"userId": userId})
+    .then(groups => {
+      groups.map((group) => {
+        db("message")
+          .select([
+              "message.id as id",
+              "sender.id as senderId",
+              "responder.id as responderId",
+              "message.groupId as groupId",
+              "message.date as date",
+              "message.message as message",
+              "sender.firstName as senderFirstName",
+              "sender.lastName as senderLastName",
+              "responder.firstName as responderFirstName",
+              "responder.lastName as responderLastName",
+              "message.read as read"
+          ])
+          .where({"groupId": group.groupId})
+          .join("user as sender", "sender.id", "=", "message.senderId")
+          .join("user as responder", "responder.id", "=", "message.responderId")
+          .orderBy("id", "asc")
+          .then(data => res.status(200).json({"messages": data}))
+          .catch(error => {
+              res.status(401);
+              console.log(error);
+              res.json({message: "Server error"});
+          });
+      })
+    })
+    .catch(error => {
+        res.status(401);
+        console.log(error);
+        res.json({message: "Server error"});
+    });
 }
 
 // Get the last message between the two users or groups
@@ -71,7 +84,6 @@ exports.getLastMessageByGroups = (req, res) => {
           console.log(error);
           res.json({message: "Server error"});
       });
-    
 }
 
 // Set a message read
