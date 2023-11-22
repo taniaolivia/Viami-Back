@@ -510,11 +510,33 @@ exports.getAllDiscussionsForUser = (req, res) => {
                 .where('groupId', groupId)
                 .andWhereNot('userId', userId)
                 .then(users => {
-                  return {
-                    groupId: groupId,
-                    lastMessage: lastMessage[0],
-                    users: users.map(user => user.userId),
-                  };
+                  const senderId = lastMessage[0].senderId;
+                  const responderId = lastMessage[0].responderId;
+
+                  return db('user')
+                    .select('id', 'firstName', 'lastName')
+                    .whereIn('id', [senderId, responderId])
+                    .then(userDetails => {
+                      const senderDetails = userDetails.find(user => user.id === senderId);
+                      const responderDetails = userDetails.find(user => user.id === responderId);
+
+                      if (senderDetails && responderDetails) {
+                        return {
+                          groupId: groupId,
+                          lastMessage: {
+                            ...lastMessage[0],
+                            senderFirstName: senderDetails.firstName,
+                            senderLastName: senderDetails.lastName,
+                            responderFirstName: responderDetails.firstName,
+                            responderLastName: responderDetails.lastName,
+                          },
+                          users: users.map(user => user.userId),
+                        };
+                      } else {
+                        // Gérez le cas où les détails de l'utilisateur ne sont pas trouvés
+                        return null;
+                      }
+                    });
                 });
             } else {
               return null;
@@ -537,6 +559,8 @@ exports.getAllDiscussionsForUser = (req, res) => {
       res.status(500).json({ message: 'Erreur interne du serveur' });
     });
 };
+
+
 
  // Function to get only discussions between the user and one other person 
  exports.getTwoUserDiscussions = (req, res) => {
