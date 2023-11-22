@@ -1,6 +1,4 @@
 const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
@@ -8,8 +6,6 @@ const logger = require('morgan');
 const hostname = "0.0.0.0";
 const port = 3000;
 const app = express();
-const server = http.createServer(app);
-const io = socketIo(server);
 
 app.use(logger('dev'));
 
@@ -70,21 +66,7 @@ activityImageRoute(app);
 
 const messengerRoute = require("./routes/messengerRoute");
 messengerRoute(app);
-
-io.on('connection', (socket) => {
-    console.log('A user connected');
-
-    socket.on('chat message', (message) => {
-        io.emit('chat message', message);
-    });
-
-    socket.on('disconnect', () => {
-        console.log('User disconnected');
-    });
-});
   
 server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
 });
-
-module.exports = io;

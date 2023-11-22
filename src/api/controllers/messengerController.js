@@ -1,5 +1,5 @@
 const db = require("../knex");
-//const io = require('../app');
+const io = require('../socket');
 
 // Get a list of all messages sent by a user
 exports.listAllMessagesByUser = (req, res) => {
