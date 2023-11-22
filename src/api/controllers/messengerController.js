@@ -307,7 +307,7 @@ exports.getDiscussionsForMessage = (req, res) => {
         const responderId = messageDetails[0].responderId;
         const groupId = messageDetails[0].groupId;
 
-        // Récupérer les détails de l'expéditeur
+     
         db('user')
           .select('firstName', 'lastName')
           .where('id', senderId)
@@ -315,7 +315,7 @@ exports.getDiscussionsForMessage = (req, res) => {
             if (senderDetails.length === 0) {
               res.status(404).json({ message: 'Sender not found' });
             } else {
-              // Récupérer les détails du destinataire
+           
               db('user')
                 .select('firstName', 'lastName')
                 .where('id', responderId)
@@ -323,13 +323,13 @@ exports.getDiscussionsForMessage = (req, res) => {
                   if (responderDetails.length === 0) {
                     res.status(404).json({ message: 'Responder not found' });
                   } else {
-                    // Récupérer les messages pour le groupe spécifié
+                  
                     db('message')
                       .select('*')
                       .where('groupId', groupId)
                       .orderBy('date', 'asc')
                       .then(messages => {
-                        // Pour chaque message, ajouter les détails du sender et responder
+                        
                         const messagesWithDetails = messages.map(message => ({
                           ...message,
                           senderFirstName: senderDetails[0].firstName,
@@ -571,7 +571,7 @@ exports.getAllDiscussionsForUser = (req, res) => {
                           users: users.map(user => user.userId),
                         };
                       } else {
-                        // Gérez le cas où les détails de l'utilisateur ne sont pas trouvés
+                        
                         return null;
                       }
                     });
