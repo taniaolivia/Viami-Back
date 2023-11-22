@@ -69,7 +69,7 @@ const activityImageRoute = require("./routes/activityImageRoute");
 activityImageRoute(app);
 
 const messengerRoute = require("./routes/messengerRoute");
-messengerRoute(app, io);
+messengerRoute(app);
 
 io.on('connection', (socket) => {
     console.log('A user connected');
