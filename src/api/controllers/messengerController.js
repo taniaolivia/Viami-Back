@@ -697,4 +697,122 @@ exports.getGroupUsersDiscussions = (req, res) => {
       res.status(500).json({ message: 'Erreur interne du serveur' });
     });
 };
+ 
 
+
+  
+// Add a user to an existing group or create a new group
+exports.addUserToGroup = (req, res) => {
+  const loggedInUserId = req.params.loggedInUserId;
+  const userToAddId = req.params.userToAddId;
+  const groupId = req.params.groupId; 
+  let newGroupId; 
+
+  // Vérifier si le groupe existe
+  db('user_group')
+    .select('userId')
+    .where('groupId', groupId)
+    .then(existingGroupUsers => {
+      if (existingGroupUsers.length > 0) {
+       
+
+        if (existingGroupUsers.length === 2) {
+         
+          db.transaction(trx => {
+            trx('group') 
+              .insert({}) 
+              .then(() => {
+                
+                return trx('group')
+                  .select('id')
+                  .orderBy('id', 'desc') 
+                  .limit(1);
+              })
+              .then(newGroup => {
+                newGroupId = newGroup[0].id; 
+
+               
+                const existingUsersInserts = existingGroupUsers.map(user => ({
+                  userId: user.userId,
+                  groupId: newGroupId
+                }));
+
+                return trx('user_group').insert(existingUsersInserts);
+              })
+              .then(() => {
+               
+                return trx('user_group').insert({ userId: userToAddId, groupId: newGroupId });
+              })
+              .then(() => {
+               
+                trx.commit()
+                  .then(() => {
+                    res.status(200).json({ success: true, message: 'User added to the group successfully' });
+                  })
+                  .catch(error => {
+                    console.error(error);
+                    res.status(500).json({ success: false, message: 'Failed to commit the transaction' });
+                  });
+              })
+              .catch(error => {
+                console.error(error);
+                trx.rollback();
+                res.status(500).json({ success: false, message: 'Failed to add user to the group' });
+              });
+          });
+        } else {
+          
+          db('user_group')
+            .insert({ userId: userToAddId, groupId: groupId })
+            .then(() => {
+              res.status(200).json({ success: true, message: 'User added to the group successfully' });
+            })
+            .catch(error => {
+              console.error(error);
+              res.status(500).json({ success: false, message: 'Failed to add user to the group' });
+            });
+        }
+      } else {
+        
+        db.transaction(trx => {
+          trx('group')
+            .insert({}) 
+            .then(() => {
+              
+              return trx('group')
+                .select('id')
+                .orderBy('id', 'desc') 
+                .limit(1);
+            })
+            .then(newGroup => {
+              newGroupId = newGroup[0].id; 
+
+              return trx('user_group').insert([
+                { userId: userToAddId, groupId: newGroupId },
+                { userId: loggedInUserId, groupId: newGroupId }
+              ]);
+            })
+            .then(() => {
+              
+              trx.commit()
+                .then(() => {
+                  res.status(200).json({ success: true, message: 'User added to the group successfully' });
+                })
+                .catch(error => {
+                  console.error(error);
+                  res.status(500).json({ success: false, message: 'Failed to commit the transaction' });
+                });
+            })
+            .catch(error => {
+              console.error(error);
+              trx.rollback();
+              res.status(500).json({ success: false, message: 'Failed to add user to the group' });
+            });
+        });
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Internal server error' });
+    });
+};

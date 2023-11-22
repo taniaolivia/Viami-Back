@@ -25,7 +25,7 @@ server.route("/api/messages/:senderId/search/users")
 server.route("/api/sendMessage")
 .post(jwtMiddleware.authenticateUser, cors(), messengerController.sendMessage);
 
-server.route("/api/messages/addUserToGroup/:loggedInUserId/:userToAddId/:receiverId")
+server.route("/api/messages/addUserToGroup/:loggedInUserId/:userToAddId/:groupId")
 .post(jwtMiddleware.authenticateUser, cors(), messengerController.addUserToGroup);
 
 server.route("/api/readDiscussions/:userId")
