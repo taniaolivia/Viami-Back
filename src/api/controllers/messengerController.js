@@ -136,6 +136,7 @@ exports.getSearchedUsers = (req, res) => {
       "message.id as id",
       "sender.id as senderId",
       "responder.id as responderId",
+      "message.groupId as groupId",
       "message.date as date",
       "message.message as message",
       "sender.firstName as senderFirstName",
