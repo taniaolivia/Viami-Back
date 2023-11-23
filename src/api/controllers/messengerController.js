@@ -180,8 +180,15 @@ exports.getUsersGroup = (req, res) => {
   let userId = req.params.userId;
 
   db("user_group")
-      .select("*")
+      .select([
+        "user_group.id as id",
+        "user.id as userId",
+        "user_group.groupId as groupId",
+        "user.firstName as firstName",
+        "user.lastName as lastName"
+      ])
       .where({"groupId": groupId})
+      .join("user", "user.id", "=", "user_group.userId")
       .then(users => {
         let usersFiltered = users.filter((user) => user.userId != userId);
 
