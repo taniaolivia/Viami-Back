@@ -173,6 +173,26 @@ exports.getMessageById = (req, res) => {
       });   
 }
 
+// Get users by group id
+exports.getUsersGroup = (req, res) => {
+  let groupId = req.params.groupId;
+  let userId = req.params.userId;
+
+  db("user_group")
+      .select("*")
+      .where({"groupId": groupId})
+      .then(users => {
+        let usersFiltered = users.filter((user) => user.userId != userId);
+
+        res.status(200).json({ "groupUsers": usersFiltered });
+      })
+      .catch(error => {
+          res.status(401);
+          console.log(error);
+          res.json({message: "Server error"});
+      });
+}
+
 // Send message 
 exports.sendMessage = (req, res) => {
   const { message, senderId, responderId } = req.body;

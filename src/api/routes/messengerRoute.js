@@ -19,6 +19,9 @@ server.route("/api/messages/:messageId")
 .patch(jwtMiddleware.authenticateUser, cors(), messengerController.setMessageRead)
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getMessageById);
 
+server.route("/api/groups/:groupId/:userId/users")
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getUsersGroup);
+
 server.route("/api/messages/:senderId/search/users")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getSearchedUsers);
 
