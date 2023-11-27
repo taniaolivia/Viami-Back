@@ -1,3 +1,4 @@
+const { LakeFormation } = require("aws-sdk");
 const db = require("../knex");
 const io = require('../socket');
 
@@ -143,42 +144,87 @@ exports.getSearchedUsers = (req, res) => {
     .where("user_group.userId", userId)
     .join("user", "user.id", "=", "user_group.userId")
     .then(currentUserGroups => {
-      let allUsers = [];
+        let allMessages = [];
 
-      const promises = currentUserGroups.map((currentUser) => {
-        return db("user_group")
-          .select([
-            "user_group.id as id",
-            "user.id as userId",
-            "user_group.groupId as groupId",
-            "user.firstName as firstName",
-            "user.lastName as lastName"
-          ])
-          .where({"groupId": currentUser.groupId})
-          .andWhere("user.firstName", 'like', `${search}%`)
-          .join("user", "user.id", "=", "user_group.userId")
-          .then(datas => {
-            datas.map((data) => {
-              allUsers.push(data);
+        const promises = currentUserGroups.map((user) => {
+          return db("message")
+            .select([
+                "message.id as id",
+                "sender.id as senderId",
+                "responder.id as responderId",
+                "message.groupId as groupId",
+                "message.date as date",
+                "message.message as message",
+                "sender.firstName as senderFirstName",
+                "sender.lastName as senderLastName",
+                "responder.firstName as responderFirstName",
+                "responder.lastName as responderLastName",
+                "message.read as read"
+            ])
+            .where({"groupId": user.groupId})
+            .orWhere("sender.firstName", 'like', `${search}%`)
+            .orWhere("responder.firstName", 'like', `${search}%`)
+            .leftJoin("user as sender", "sender.id", "=", "message.senderId")
+            .leftJoin("user as responder", "responder.id", "=", "message.responderId")
+            .orderBy("id", "desc")
+            .then(datas =>  {
+              datas.map((data) => {
+                const exists = allMessages.some((message) => {
+                  return JSON.stringify(message) === JSON.stringify(data);
+                });
+            
+                if (!exists) {
+                    allMessages.push(data);
+                }
+              })
             })
+            .catch(error => {
+                res.status(401);
+                console.log(error);
+                res.json({message: "Server error"});
+            });
+        })
+
+        Promise.all(promises)
+          .then(messages => {
+            let lastMessages = [];
+
+            for(i = 0; i < allMessages.length; i++ ) {
+              let currentMessage = allMessages[i];
+              let foundBiggerDate = false;
+              let onlyOneDate = false;
+
+              for (let j = 0; j < allMessages.length; j++) {
+                  if (currentMessage.groupId === allMessages[j].groupId) {
+                      if (new Date(currentMessage.date) > new Date(allMessages[j].date)) {
+                        foundBiggerDate = true;
+                        break;
+                      }
+                      else if (new Date(currentMessage.date) < new Date(allMessages[j].date)) {
+                        foundBiggerDate = false;
+                        break;
+                      }
+                      else {
+                        onlyOneDate = true;
+                      }
+                  }
+              }
+
+              if (onlyOneDate || foundBiggerDate) {
+                if(!lastMessages.includes(currentMessage.id)) {
+                  lastMessages.push(currentMessage.id);
+                }
+              }
+            }
+          
+            let filteredMessages = allMessages.filter((message) => lastMessages.includes(message.id));
+
+            res.status(200).json({ "messages": filteredMessages });
           })
           .catch(error => {
-              res.status(401);
               console.log(error);
-              res.json({message: "Server error"});
+              res.status(401).json({ message: "Server error" });
           });
-      });
-
-      Promise.all(promises)
-        .then(users => {
-          let usersFiltered = allUsers.filter((user) => user.userId != userId);
-
-          res.status(200).json({ "groupUsers": usersFiltered });
-        })
-        .catch(error => {
-            console.log(error);
-            res.status(401).json({ message: "Server error" });
-        });
     })
     .catch(error => {
         res.status(401);
