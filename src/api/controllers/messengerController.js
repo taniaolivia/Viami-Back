@@ -129,7 +129,8 @@ exports.setMessageRead = (req, res) => {
 // Search user by the inserted name in the search input
 exports.getSearchedUsers = (req, res) => {
   let search = req.query.search;
-  let userId = req.params.senderId;
+  let userId = req.query.userId;
+  //let groupId = req.params.groupId;
 
   db("user_group")
     .select([
@@ -139,13 +140,45 @@ exports.getSearchedUsers = (req, res) => {
       "user.firstName as firstName",
       "user.lastName as lastName"
     ])
-    .where({"groupId": groupId})
-    .where("user.firstName", 'like', `${search}%`)
+    .where("user_group.userId", userId)
     .join("user", "user.id", "=", "user_group.userId")
-    .then(users => {
-      let usersFiltered = users.filter((user) => user.userId != userId);
+    .then(currentUserGroups => {
+      let allUsers = [];
 
-      res.status(200).json({ "groupUsers": usersFiltered });
+      const promises = currentUserGroups.map((currentUser) => {
+        return db("user_group")
+          .select([
+            "user_group.id as id",
+            "user.id as userId",
+            "user_group.groupId as groupId",
+            "user.firstName as firstName",
+            "user.lastName as lastName"
+          ])
+          .where({"groupId": currentUser.groupId})
+          .andWhere("user.firstName", 'like', `${search}%`)
+          .join("user", "user.id", "=", "user_group.userId")
+          .then(datas => {
+            datas.map((data) => {
+              allUsers.push(data);
+            })
+          })
+          .catch(error => {
+              res.status(401);
+              console.log(error);
+              res.json({message: "Server error"});
+          });
+      });
+
+      Promise.all(promises)
+        .then(users => {
+          let usersFiltered = allUsers.filter((user) => user.userId != userId);
+
+          res.status(200).json({ "groupUsers": usersFiltered });
+        })
+        .catch(error => {
+            console.log(error);
+            res.status(401).json({ message: "Server error" });
+        });
     })
     .catch(error => {
         res.status(401);

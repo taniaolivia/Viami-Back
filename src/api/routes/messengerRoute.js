@@ -22,7 +22,7 @@ server.route("/api/messages/:messageId")
 server.route("/api/groups/:groupId/:userId/users")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getUsersGroup);
 
-server.route("/api/messages/:userId/search/users")
+server.route("/api/messages/search/users")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getSearchedUsers);
 
 server.route("/api/sendMessage")
