@@ -129,33 +129,30 @@ exports.setMessageRead = (req, res) => {
 // Search user by the inserted name in the search input
 exports.getSearchedUsers = (req, res) => {
   let search = req.query.search;
-  let senderId = req.params.senderId;
+  let userId = req.params.senderId;
 
-  db('message')
+  db("user_group")
     .select([
-      "message.id as id",
-      "sender.id as senderId",
-      "responder.id as responderId",
-      "message.groupId as groupId",
-      "message.date as date",
-      "message.message as message",
-      "sender.firstName as senderFirstName",
-      "sender.lastName as senderLastName",
-      "responder.firstName as responderFirstName",
-      "responder.lastName as responderLastName",
-      "message.read as read"
+      "user_group.id as id",
+      "user.id as userId",
+      "user_group.groupId as groupId",
+      "user.firstName as firstName",
+      "user.lastName as lastName"
     ])
-    .where("responder.firstName", 'like', `${search}%`)
-    .andWhere({"senderId": senderId})
-    .join("user as sender", "sender.id", "=", "message.senderId")
-    .join("user as responder", "responder.id", "=", "message.responderId")
-    .orderBy("id", "asc")
-    .then(data => res.status(200).json({"messages": data}))
+    .where({"groupId": groupId})
+    .where("user.firstName", 'like', `${search}%`)
+    .join("user", "user.id", "=", "user_group.userId")
+    .then(users => {
+      let usersFiltered = users.filter((user) => user.userId != userId);
+
+      res.status(200).json({ "groupUsers": usersFiltered });
+    })
     .catch(error => {
-      console.error(error);
-      res.status(401).json({ message: 'User not found' });
+        res.status(401);
+        console.log(error);
+        res.json({message: "Server error"});
     });
-};
+}
 
 // Get message by id 
 exports.getMessageById = (req, res) => {
