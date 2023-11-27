@@ -131,109 +131,94 @@ exports.setMessageRead = (req, res) => {
 exports.getSearchedUsers = (req, res) => {
   let search = req.query.search;
   let userId = req.query.userId;
-  //let groupId = req.params.groupId;
 
-  db("user_group")
-    .select([
-      "user_group.id as id",
-      "user.id as userId",
-      "user_group.groupId as groupId",
-      "user.firstName as firstName",
-      "user.lastName as lastName"
-    ])
-    .where("user_group.userId", userId)
-    .join("user", "user.id", "=", "user_group.userId")
-    .then(currentUserGroups => {
-        let allMessages = [];
+  db('user_group')
+    .select("*")
+    .where('userId', userId)
+    .groupBy('groupId')
+    .then(groupIds => {
+      const discussionPromises = groupIds.map(group => {
+        const groupId = group.groupId;
 
-        const promises = currentUserGroups.map((user) => {
-          return db("message")
-            .select([
-                "message.id as id",
-                "sender.id as senderId",
-                "responder.id as responderId",
-                "message.groupId as groupId",
-                "message.date as date",
-                "message.message as message",
-                "sender.firstName as senderFirstName",
-                "sender.lastName as senderLastName",
-                "responder.firstName as responderFirstName",
-                "responder.lastName as responderLastName",
-                "message.read as read"
-            ])
-            .where({"groupId": user.groupId})
-            .andWhere(function() {
-              this.where(function() {
-                this.where("sender.firstName", "like", `${search}%`)
-                .orWhere("responder.firstName", "like", `${search}%`);
-              });
-            })
-            .leftJoin("user as sender", "sender.id", "=", "message.senderId")
-            .leftJoin("user as responder", "responder.id", "=", "message.responderId")
-            .orderBy("id", "desc")
-            .then(datas =>  {
-              datas.map((data) => {
-                const exists = allMessages.some((message) => {
-                  return JSON.stringify(message) === JSON.stringify(data);
-                });
-            
-                if (!exists) {
-                    allMessages.push(data);
-                }
-              })
-            })
-            .catch(error => {
-                res.status(401);
-                console.log(error);
-                res.json({message: "Server error"});
+        return db('message')
+          .select([
+            "message.id as id",
+            "sender.id as senderId",
+            "responder.id as responderId",
+            "message.groupId as groupId",
+            "message.date as date",
+            "message.message as message",
+            "sender.firstName as senderFirstName",
+            "sender.lastName as senderLastName",
+            "responder.firstName as responderFirstName",
+            "responder.lastName as responderLastName",
+            "message.read as read"
+          ])
+          .where('groupId', groupId)
+          .andWhere(function() {
+            this.where(function() {
+              this.where("sender.firstName", "like", `${search}%`)
+              .orWhere("responder.firstName", "like", `${search}%`);
             });
-        })
-
-        Promise.all(promises)
-          .then(messages => {
-            let lastMessages = [];
-
-            for(i = 0; i < allMessages.length; i++ ) {
-              let currentMessage = allMessages[i];
-              let foundBiggerDate = false;
-              let onlyOneDate = false;
-
-              for (let j = 0; j < allMessages.length; j++) {
-                  if (currentMessage.groupId === allMessages[j].groupId) {
-                      if (new Date(currentMessage.date) > new Date(allMessages[j].date)) {
-                        foundBiggerDate = true;
-                        break;
-                      }
-                      else if (new Date(currentMessage.date) < new Date(allMessages[j].date)) {
-                        foundBiggerDate = false;
-                        break;
-                      }
-                      else {
-                        onlyOneDate = true;
-                      }
-                  }
-              }
-
-              if (onlyOneDate || foundBiggerDate) {
-                if(!lastMessages.includes(currentMessage.id)) {
-                  lastMessages.push(currentMessage.id);
-                }
-              }
-            }
-          
-            let filteredMessages = allMessages.filter((message) => lastMessages.includes(message.id));
-
-            res.status(200).json({ "messages": filteredMessages });
           })
-          .catch(error => {
-              console.log(error);
-              res.status(401).json({ message: "Server error" });
+          .leftJoin("user as sender", "sender.id", "=", "message.senderId")
+          .leftJoin("user as responder", "responder.id", "=", "message.responderId")
+          .orderBy('date', 'desc')
+          .limit(1)
+          .then(lastMessage => {
+            if (lastMessage.length > 0) {
+              return db('user_group')
+                .select('userId')
+                .where('groupId', groupId)
+                .andWhereNot('userId', userId)
+                .then(users => {
+                  const senderId = lastMessage[0].senderId;
+                  const responderId = lastMessage[0].responderId;
+
+                  return db('user')
+                    .select('id', 'firstName', 'lastName')
+                    .whereIn('id', [senderId, responderId])
+                    .then(userDetails => {
+                      const senderDetails = userDetails.find(user => user.id === senderId);
+                      const responderDetails = userDetails.find(user => user.id === responderId);
+
+                      if (senderDetails && responderDetails) {
+                        return {
+                          groupId: groupId,
+                          lastMessage: {
+                            ...lastMessage[0],
+                            senderFirstName: senderDetails.firstName,
+                            senderLastName: senderDetails.lastName,
+                            responderFirstName: responderDetails.firstName,
+                            responderLastName: responderDetails.lastName,
+                          },
+                          users: users.map(user => user.userId),
+                        };
+                      } else {
+                        
+                        return null;
+                      }
+                    });
+                });
+            } else {
+              return null;
+            }
           });
+      });
+
+      Promise.all(discussionPromises)
+        .then(discussions => {
+          const filteredDiscussions = discussions.filter(discussion => discussion !== null);
+          res.status(200).json({ discussions: filteredDiscussions });
+        })
+        .catch(error => {
+          console.error(error);
+          res.status(500).json({ message: 'Erreur interne du serveur' });
+        });
     })
     .catch(error => {
-        res.status(401);
-        console.log(error);
-        res.json({message: "Server error"});
+      console.error(error);
+      res.status(500).json({ message: 'Erreur interne du serveur' });
     });
 }
 
