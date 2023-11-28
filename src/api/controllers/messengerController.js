@@ -549,7 +549,6 @@ exports.getAllDiscussionsForUserWithLocationFilter =  (req, res) => {
     .then(groupIds => {
       const discussionPromises = groupIds.map(group => {
         const groupId = group.groupId;
-
        
         return db('user_group')
           .select('userId')
@@ -584,24 +583,40 @@ exports.getAllDiscussionsForUserWithLocationFilter =  (req, res) => {
                               .then(userDetails => {
                                 const senderDetails = userDetails.find(user => user.id === senderId);
                                 const responderDetails = userDetails.find(user => user.id === responderId);
+                                const usersDetails = [];
+                    
+                                const usersFetchPromises = users.map(async user => {
+                                  const userData = await db('user')
+                                    .select('id', 'firstName', 'lastName')
+                                    .where('id', user.userId)
+                                    .then(userData => userData[0])
+                                    .catch(error => null);
+                                  
+                                  return userData;
+                                });
+                                
+                                return Promise.all(usersFetchPromises)
+                                  .then(usersData => {
+                                    usersDetails.push(...usersData);
 
-                                if (senderDetails && responderDetails) {
-                                  return {
-                                    groupId: groupId,
-                                    lastMessage: {
-                                      ...lastMessage[0],
-                                      senderFirstName: senderDetails.firstName,
-                                      senderLastName: senderDetails.lastName,
-                                      responderFirstName: responderDetails.firstName,
-                                      responderLastName: responderDetails.lastName,
-                                    },
-                                    users: users.map(user => user.userId),
-                                  };
-                                } else {
-                                  return null;
-                                }
-                              });
-                          });
+                                                if (senderDetails && responderDetails) {
+                                                  return {
+                                                    groupId: groupId,
+                                                    lastMessage: {
+                                                      ...lastMessage[0],
+                                                      senderFirstName: senderDetails.firstName,
+                                                      senderLastName: senderDetails.lastName,
+                                                      responderFirstName: responderDetails.firstName,
+                                                      responderLastName: responderDetails.lastName,
+                                                    },
+                                                    users: usersDetails,
+                                                  };
+                                                } else {
+                                                  return null;
+                                                }
+                                              });
+                                          });
+                                        })
                       } else {
                         return null;
                       }
@@ -764,25 +779,38 @@ exports.getTwoUserDiscussions = (req, res) => {
               if (lastMessage.length > 0) {
                 const senderId = lastMessage[0].senderId;
                 const responderId = users.find(user => user.userId !== userId).userId;
-               
 
                 const senderDetails = await getUserDetailsById(senderId);
                 const responderDetails = await getUserDetailsById(responderId);
 
-                return {
-                  groupId: groupId,
-                  lastMessage: {
-                    ...lastMessage[0],
-                    senderFirstName: senderDetails.firstName,
-                    senderLastName: senderDetails.lastName,
-                    responderFirstName: responderDetails.firstName,
-                    responderLastName: responderDetails.lastName,
-                  },
+                const usersDetails = [];
+                    
+                const usersFetchPromises = users.map(async user => {
+                  const userData = await db('user')
+                    .select('id', 'firstName', 'lastName')
+                    .where('id', user.userId)
+                    .then(userData => userData[0])
+                    .catch(error => null);
                   
-                  
-                 
-                  users:[responderId],
-                };
+                  return userData;
+                });
+                
+                return Promise.all(usersFetchPromises)
+                  .then(usersData => {
+                    usersDetails.push(...usersData);
+
+                    return {
+                      groupId: groupId,
+                      lastMessage: {
+                        ...lastMessage[0],
+                        senderFirstName: senderDetails.firstName,
+                        senderLastName: senderDetails.lastName,
+                        responderFirstName: responderDetails.firstName,
+                        responderLastName: responderDetails.lastName,
+                      },
+                      users: usersDetails,
+                    };
+                  })
               }
             }
 
@@ -859,7 +887,7 @@ exports.getGroupUsersDiscussions = (req, res) => {
                     responderFirstName: otherUsersDetails[1].firstName,
                     responderLastName: otherUsersDetails[1].lastName,
                   },
-                  users : otherUserIds,
+                  users : otherUsersDetails,
                 };
               }
             } else {
