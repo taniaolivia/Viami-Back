@@ -46,7 +46,7 @@ exports.getSearchedUsers = (req, res) => {
           .where('groupId', groupId)
           .andWhere(function() {
             this.where(function() {
-              this.where("user.firstName", "like", `${search}%`)
+              this.where("sender.firstName", "like", `${search}%`)
               .orWhere("responder.firstName", "like", `${search}%`);
             });
           })
