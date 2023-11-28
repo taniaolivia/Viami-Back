@@ -174,6 +174,17 @@ exports.getSearchedUsers = (req, res) => {
                 .then(users => {
                   const senderId = lastMessage[0].senderId;
                   const responderId = lastMessage[0].responderId;
+                  const usersDetails = [];
+                  
+                  users.map(async (user) =>  {
+                    let userDetails = await db('user')
+                      .select('id', 'firstName', 'lastName')
+                      .where('id', user.userId)
+                      .then(userData => userData[0])
+                      .catch((error) => null)
+
+                    usersDetails.push(userDetails);
+                  })
 
                   return db('user')
                     .select('id', 'firstName', 'lastName')
@@ -192,10 +203,9 @@ exports.getSearchedUsers = (req, res) => {
                             responderFirstName: responderDetails.firstName,
                             responderLastName: responderDetails.lastName,
                           },
-                          users: users.map(user => user.userId),
+                          users: usersDetails
                         };
                       } else {
-                        
                         return null;
                       }
                     });
@@ -679,6 +689,17 @@ exports.getAllDiscussionsForUser = (req, res) => {
                 .then(users => {
                   const senderId = lastMessage[0].senderId;
                   const responderId = lastMessage[0].responderId;
+                  const usersDetails = [];
+
+                  users.map(async (user) =>  {
+                    let userDetails = await db('user')
+                      .select('id', 'firstName', 'lastName')
+                      .where('id', user.userId)
+                      .then(userData => userData[0])
+                      .catch((error) => null)
+
+                    usersDetails.push(userDetails);
+                  })
 
                   return db('user')
                     .select('id', 'firstName', 'lastName')
@@ -697,7 +718,7 @@ exports.getAllDiscussionsForUser = (req, res) => {
                             responderFirstName: responderDetails.firstName,
                             responderLastName: responderDetails.lastName,
                           },
-                          users: users.map(user => user.userId),
+                          users: usersDetails
                         };
                       } else {
                         
@@ -731,8 +752,6 @@ exports.getAllDiscussionsForUser = (req, res) => {
 // Function to get only discussions between the user and one other person
 exports.getTwoUserDiscussions = (req, res) => {
   const userId = req.params.userId;
-  
-
 
   // Function to get user details by ID
   const getUserDetailsById = async (userId) => {
