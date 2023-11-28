@@ -603,17 +603,23 @@ exports.getAllDiscussionsForUserWithLocationFilter =  (req, res) => {
                                     usersDetails.push(...usersData);
 
                                     if (senderDetails && responderDetails) {
-                                      return {
-                                        groupId: groupId,
-                                        lastMessage: {
-                                          ...lastMessage[0],
-                                          senderFirstName: senderDetails.firstName,
-                                          senderLastName: senderDetails.lastName,
-                                          responderFirstName: responderDetails.firstName,
-                                          responderLastName: responderDetails.lastName,
-                                        },
-                                        users: usersDetails,
-                                      };
+                                      return db("message_user_read")
+                                        .select("*")
+                                        .where("messageId", lastMessage[0].id)
+                                        .then(read => {
+                                          return {
+                                            groupId: groupId,
+                                            lastMessage: {
+                                              ...lastMessage[0],
+                                              senderFirstName: senderDetails.firstName,
+                                              senderLastName: senderDetails.lastName,
+                                              responderFirstName: responderDetails.firstName,
+                                              responderLastName: responderDetails.lastName,
+                                            },
+                                            users: usersDetails,
+                                            usersRead: read
+                                          };
+                                        })
                                     } else {
                                       return null;
                                     }
@@ -666,6 +672,7 @@ exports.getAllDiscussionsForUser = (req, res) => {
           .limit(1)
           .then(lastMessage => {
             if (lastMessage.length > 0) {
+
               return db("message_user_read")
                 .select("*")
                 .where("messageId", lastMessage[0].id)
@@ -815,19 +822,25 @@ exports.getTwoUserDiscussions = (req, res) => {
                     usersDetails.push(...usersData);
 
                     const filteredUsers = usersDetails.filter(user => user != null);
-
-                    return {
-                      groupId: groupId,
-                      lastMessage: {
-                        ...lastMessage[0],
-                        senderFirstName: senderDetails.firstName,
-                        senderLastName: senderDetails.lastName,
-                        responderFirstName: responderDetails.firstName,
-                        responderLastName: responderDetails.lastName,
-                      },
-                      users: filteredUsers,
-                    };
-                  })
+                    
+                    return db("message_user_read")
+                      .select("*")
+                      .where("messageId", lastMessage[0].id)
+                      .then(read => {
+                          return {
+                            groupId: groupId,
+                            lastMessage: {
+                              ...lastMessage[0],
+                              senderFirstName: senderDetails.firstName,
+                              senderLastName: senderDetails.lastName,
+                              responderFirstName: responderDetails.firstName,
+                              responderLastName: responderDetails.lastName,
+                            },
+                            users: filteredUsers,
+                            usersRead: read
+                          };
+                        })
+                    })
               }
             }
 
@@ -895,17 +908,23 @@ exports.getGroupUsersDiscussions = (req, res) => {
                   otherUserIds.map(userId => getUserDetailsById(userId))
                 );
 
-                return {
-                  groupId: groupId,
-                  lastMessage: {
-                    ...lastMessage[0],
-                    senderFirstName: otherUsersDetails[0].firstName,
-                    senderLastName: otherUsersDetails[0].lastName,
-                    responderFirstName: otherUsersDetails[1].firstName,
-                    responderLastName: otherUsersDetails[1].lastName,
-                  },
-                  users : otherUsersDetails,
-                };
+                return db("message_user_read")
+                  .select("*")
+                  .where("messageId", lastMessage[0].id)
+                  .then(read => {
+                    return {
+                      groupId: groupId,
+                      lastMessage: {
+                        ...lastMessage[0],
+                        senderFirstName: otherUsersDetails[0].firstName,
+                        senderLastName: otherUsersDetails[0].lastName,
+                        responderFirstName: otherUsersDetails[1].firstName,
+                        responderLastName: otherUsersDetails[1].lastName,
+                      },
+                      users : otherUsersDetails,
+                      usersRead: read
+                    };
+                })
               }
             } else {
               return null;
