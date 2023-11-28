@@ -153,17 +153,17 @@ exports.getSearchedUsers = (req, res) => {
           })
           .catch(error => {
             console.error(error);
-            res.status(500).json({ message: 'Erreur interne du serveur' });
+            res.status(500).json({ message: 'Server error' });
           });
         })
         .catch(error => {
           console.error(error);
-          res.status(500).json({ message: 'Erreur interne du serveur' });
+          res.status(500).json({ message: 'Server error' });
         });
     })
     .catch(error => {
       console.error(error);
-      res.status(500).json({ message: 'Erreur interne du serveur' });
+      res.status(500).json({ message: 'Server error' });
     });
 }
 
@@ -478,12 +478,12 @@ exports.getAllReadDiscussionsForUser = (req, res) => {
         })
         .catch(error => {
           console.error(error);
-          res.status(500).json({ message: 'Erreur interne du serveur' });
+          res.status(500).json({ message: 'Server error' });
         });
     })
     .catch(error => {
       console.error(error);
-      res.status(500).json({ message: 'Erreur interne du serveur' });
+      res.status(500).json({ message: 'Server error' });
     });
 };
 
@@ -526,12 +526,12 @@ exports.getAllUnreadDiscussionsForUser = (req, res) => {
         })
         .catch(error => {
           console.error(error);
-          res.status(500).json({ message: 'Erreur interne du serveur' });
+          res.status(500).json({ message: 'Server error' });
         });
     })
     .catch(error => {
       console.error(error);
-      res.status(500).json({ message: 'Erreur interne du serveur' });
+      res.status(500).json({ message: 'Server error' });
     });
 };
 
@@ -635,12 +635,12 @@ exports.getAllDiscussionsForUserWithLocationFilter =  (req, res) => {
         })
         .catch(error => {
           console.error(error);
-          res.status(500).json({ message: 'Erreur interne du serveur' });
+          res.status(500).json({ message: 'Server error' });
         });
     })
     .catch(error => {
       console.error(error);
-      res.status(500).json({ message: 'Erreur interne du serveur' });
+      res.status(500).json({ message: 'Server error' });
     });
 };
 
@@ -733,12 +733,12 @@ exports.getAllDiscussionsForUser = (req, res) => {
         })
         .catch(error => {
           console.error(error);
-          res.status(500).json({ message: 'Erreur interne du serveur' });
+          res.status(500).json({ message: 'Server error' });
         });
     })
     .catch(error => {
       console.error(error);
-      res.status(500).json({ message: 'Erreur interne du serveur' });
+      res.status(500).json({ message: 'Server error' });
     });
 };
 
@@ -830,12 +830,12 @@ exports.getTwoUserDiscussions = (req, res) => {
         })
         .catch(error => {
           console.error(error);
-          res.status(500).json({ message: 'Erreur interne du serveur' });
+          res.status(500).json({ message: 'Server error' });
         });
     })
     .catch(error => {
       console.error(error);
-      res.status(500).json({ message: 'Erreur interne du serveur' });
+      res.status(500).json({ message: 'Server error' });
     });
 };
 
@@ -908,11 +908,11 @@ exports.getGroupUsersDiscussions = (req, res) => {
         })
         .catch(error => {
           console.error(error);
-          res.status(500).json({ message: 'Erreur interne du serveur' });
+          res.status(500).json({ message: 'Server error' });
         });
     })
     .catch(error => {
       console.error(error);
-      res.status(500).json({ message: 'Erreur interne du serveur' });
+      res.status(500).json({ message: 'Server error' });
     });
 };
