@@ -34,7 +34,7 @@ server.route("/api/readDiscussions/:userId")
 server.route("/api/unreadDiscussions/:userId")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllUnreadDiscussionsForUser);
 
-server.route("/api/discussions/:userId/location/:selectedLocation")
+server.route("/api/discussions/:userId/location")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllDiscussionsForUserWithLocationFilter);
 
 server.route('/api/discussions/:userId')
