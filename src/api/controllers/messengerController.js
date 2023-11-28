@@ -22,97 +22,139 @@ exports.getSearchedUsers = (req, res) => {
   let userId = req.query.userId;
 
   db('user_group')
-    .select("*")
-    .where('userId', userId)
+    .select([
+      "user_group.id as id",
+      "user.id as userId",
+      "user_group.groupId as groupId",
+      "user.firstName as firstName",
+      "user.lastName as lastName"
+    ])
+    .where("user.firstName", "like", `${search}%`)
+    .leftJoin("user", "user.id", "=", "user_group.userId")
     .groupBy('groupId')
-    .then(groupIds => {
-      const discussionPromises = groupIds.map(group => {
-        const groupId = group.groupId;
-
-        return db('message')
+    .then(groups => {
+      const discussionPromises = groups.map(group => {
+        return db('user_group')
           .select([
-            "message.id as id",
-            "sender.id as senderId",
-            "responder.id as responderId",
-            "message.groupId as groupId",
-            "message.date as date",
-            "message.message as message",
-            "sender.firstName as senderFirstName",
-            "sender.lastName as senderLastName",
-            "responder.firstName as responderFirstName",
-            "responder.lastName as responderLastName",
-            "message.read as read"
+            "user_group.id as id",
+            "user.id as userId",
+            "user_group.groupId as groupId",
+            "user.firstName as firstName",
+            "user.lastName as lastName"
           ])
-          .whereIn('message.groupId', function () {
-            this.select('groupId')
-              .from('user_group')
-              .where('userId', userId); 
-          })
-          .andWhere(function() {
-            this.where(function() {
-              this.where("sender.firstName", "like", `${search}%`)
-              .orWhere("responder.firstName", "like", `${search}%`);
-            });
-          })
-          .leftJoin("user as sender", "sender.id", "=", "message.senderId")
-          .leftJoin("user as responder", "responder.id", "=", "message.responderId")
-          .orderBy('date', 'desc')
-          .limit(1)
-          .then(lastMessage => {
-            if (lastMessage.length > 0) {
-              return db('user_group')
-                .select('userId')
-                .where('groupId', groupId)
-                .andWhereNot('userId', userId)
-                .then(users => {
-                  const senderId = lastMessage[0].senderId;
-                  const responderId = lastMessage[0].responderId;
-                  const usersDetails = [];
-                  
-                  users.map(async (user) =>  {
-                    let userDetails = await db('user')
-                      .select('id', 'firstName', 'lastName')
-                      .where('id', user.userId)
-                      .then(userData => userData[0])
-                      .catch((error) => null)
-
-                    usersDetails.push(userDetails);
-                  })
-
-                  return db('user')
-                    .select('id', 'firstName', 'lastName')
-                    .whereIn('id', [senderId, responderId])
-                    .then(userDetails => {
-                      const senderDetails = userDetails.find(user => user.id === senderId);
-                      const responderDetails = userDetails.find(user => user.id === responderId);
-
-                      if (senderDetails && responderDetails) {
-                        return {
-                          groupId: groupId,
-                          lastMessage: {
-                            ...lastMessage[0],
-                            senderFirstName: senderDetails.firstName,
-                            senderLastName: senderDetails.lastName,
-                            responderFirstName: responderDetails.firstName,
-                            responderLastName: responderDetails.lastName,
-                          },
-                          users: usersDetails
-                        };
-                      } else {
-                        return null;
-                      }
-                    });
-                });
-            } else {
-              return null;
-            }
-          });
+          .where('groupId', group.groupId)
+          .andWhere("userId", userId)
+          .leftJoin("user", "user.id", "=", "user_group.userId")
+          .groupBy('groupId')
+          .then(groupIds => groupIds[0]);
       });
 
       Promise.all(discussionPromises)
         .then(discussions => {
-          const filteredDiscussions = discussions.filter(discussion => discussion !== null);
-          res.status(200).json({ discussions: filteredDiscussions });
+          
+          const filteredDiscussions = discussions.filter(discussion => discussion !== null && discussion !== undefined);
+
+          const promises = filteredDiscussions.map(group => {
+            const groupId = group.groupId;
+        
+            return db('message')
+              .select([
+                "message.id as id",
+                "sender.id as senderId",
+                "responder.id as responderId",
+                "message.groupId as groupId",
+                "message.date as date",
+                "message.message as message",
+                "sender.firstName as senderFirstName",
+                "sender.lastName as senderLastName",
+                "responder.firstName as responderFirstName",
+                "responder.lastName as responderLastName",
+                "message.read as read"
+              ])
+              .where('groupId', groupId)
+              .leftJoin("user as sender", "sender.id", "=", "message.senderId")
+              .leftJoin("user as responder", "responder.id", "=", "message.responderId")
+              .orderBy('date', 'desc')
+              .limit(1)
+              .then(lastMessage => {
+                if (lastMessage.length > 0) {
+                  return db('user_group')
+                    .select('userId')
+                    .where('groupId', groupId)
+                    .andWhereNot('userId', userId)
+                    .then((users) => {
+                      const senderId = lastMessage[0].senderId;
+                      const responderId = lastMessage[0].responderId;
+                      const usersDetails = [];
+                    
+                      const usersFetchPromises = users.map(async user => {
+                        const userData = await db('user')
+                          .select('id', 'firstName', 'lastName')
+                          .where('id', user.userId)
+                          .then(userData => userData[0])
+                          .catch(error => null);
+                        
+                        return userData;
+                      });
+                      
+                      return Promise.all(usersFetchPromises)
+                        .then(usersData => {
+                          usersDetails.push(...usersData);
+          
+                          return db('user')
+                                .select('id', 'firstName', 'lastName')
+                                .whereIn('id', [senderId, responderId])
+                                .then(userDetails => {
+                                  const senderDetails = userDetails.find(user => user.id === senderId);
+                                  const responderDetails = userDetails.find(user => user.id === responderId);    
+                                
+                                  if (senderDetails && (responderDetails !== undefined)) {
+                                    return {
+                                      groupId: groupId,
+                                      lastMessage: {
+                                        ...lastMessage[0],
+                                        senderFirstName: senderDetails.firstName,
+                                        senderLastName: senderDetails.lastName,
+                                        responderFirstName: responderDetails.firstName,
+                                        responderLastName: responderDetails.lastName,
+                                      },
+                                      users: usersDetails
+                                    };
+                                  } 
+                                  else if (senderDetails && responderDetails == undefined) {
+                                    return {
+                                      groupId: groupId,
+                                      lastMessage: {
+                                        ...lastMessage[0],
+                                        senderFirstName: senderDetails.firstName,
+                                        senderLastName: senderDetails.lastName,
+                                        responderFirstName: null,
+                                        responderLastName: null,
+                                      },
+                                      users: usersDetails
+                                    };
+                                  } 
+                                  else {
+                                    return null;
+                                  }
+                              });
+                        });
+                    });
+              } else {
+                return null;
+              }
+            });
+          });
+          
+          Promise.all(promises)
+            .then(discussionsF => {
+              console.log(discussionsF)
+              res.status(200).json({ discussions: discussionsF });
+          })
+          .catch(error => {
+            console.error(error);
+            res.status(500).json({ message: 'Erreur interne du serveur' });
+          });
         })
         .catch(error => {
           console.error(error);
@@ -590,8 +632,8 @@ exports.getAllDiscussionsForUser = (req, res) => {
                       .where('id', user.userId)
                       .then(userData => userData[0])
                       .catch((error) => null)
-
-                    usersDetails.push(userDetails);
+                    
+                      usersDetails.push(userDetails)
                   })
 
                   return db('user')
@@ -601,7 +643,7 @@ exports.getAllDiscussionsForUser = (req, res) => {
                       const senderDetails = userDetails.find(user => user.id === senderId);
                       const responderDetails = userDetails.find(user => user.id === responderId);
 
-                      if (senderDetails && responderDetails) {
+                      if (senderDetails && (responderDetails !== undefined)) {
                         return {
                           groupId: groupId,
                           lastMessage: {
@@ -613,8 +655,21 @@ exports.getAllDiscussionsForUser = (req, res) => {
                           },
                           users: usersDetails
                         };
-                      } else {
-                        
+                      } 
+                      else if (senderDetails && responderDetails == undefined) {
+                        return {
+                          groupId: groupId,
+                          lastMessage: {
+                            ...lastMessage[0],
+                            senderFirstName: senderDetails.firstName,
+                            senderLastName: senderDetails.lastName,
+                            responderFirstName: null,
+                            responderLastName: null,
+                          },
+                          users: usersDetails
+                        };
+                      } 
+                      else {
                         return null;
                       }
                     });
