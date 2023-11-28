@@ -599,24 +599,24 @@ exports.getAllDiscussionsForUserWithLocationFilter =  (req, res) => {
                                   .then(usersData => {
                                     usersDetails.push(...usersData);
 
-                                                if (senderDetails && responderDetails) {
-                                                  return {
-                                                    groupId: groupId,
-                                                    lastMessage: {
-                                                      ...lastMessage[0],
-                                                      senderFirstName: senderDetails.firstName,
-                                                      senderLastName: senderDetails.lastName,
-                                                      responderFirstName: responderDetails.firstName,
-                                                      responderLastName: responderDetails.lastName,
-                                                    },
-                                                    users: usersDetails,
-                                                  };
-                                                } else {
-                                                  return null;
-                                                }
-                                              });
-                                          });
-                                        })
+                                    if (senderDetails && responderDetails) {
+                                      return {
+                                        groupId: groupId,
+                                        lastMessage: {
+                                          ...lastMessage[0],
+                                          senderFirstName: senderDetails.firstName,
+                                          senderLastName: senderDetails.lastName,
+                                          responderFirstName: responderDetails.firstName,
+                                          responderLastName: responderDetails.lastName,
+                                        },
+                                        users: usersDetails,
+                                      };
+                                    } else {
+                                      return null;
+                                    }
+                                  });
+                              });
+                            })
                       } else {
                         return null;
                       }
