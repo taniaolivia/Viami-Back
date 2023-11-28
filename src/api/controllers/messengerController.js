@@ -786,18 +786,22 @@ exports.getTwoUserDiscussions = (req, res) => {
                 const usersDetails = [];
                     
                 const usersFetchPromises = users.map(async user => {
-                  const userData = await db('user')
-                    .select('id', 'firstName', 'lastName')
-                    .where('id', user.userId)
-                    .then(userData => userData[0])
-                    .catch(error => null);
-                  
-                  return userData;
+                  if(user.userId !== userId) {
+                    const userData = await db('user')
+                      .select('id', 'firstName', 'lastName')
+                      .where('id', user.userId)
+                      .then(userData => userData[0])
+                      .catch(error => null);
+                    
+                    return userData;
+                  }
                 });
                 
                 return Promise.all(usersFetchPromises)
                   .then(usersData => {
                     usersDetails.push(...usersData);
+
+                    const filteredUsers = usersDetails.filter(user => user != null);
 
                     return {
                       groupId: groupId,
@@ -808,7 +812,7 @@ exports.getTwoUserDiscussions = (req, res) => {
                         responderFirstName: responderDetails.firstName,
                         responderLastName: responderDetails.lastName,
                       },
-                      users: usersDetails,
+                      users: filteredUsers,
                     };
                   })
               }
