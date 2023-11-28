@@ -3,17 +3,11 @@ module.exports = (server) => {
     const jwtMiddleware = require("../middlewares/jwtMiddleware");
     const cors = require('cors');
 
-server.route("/api/users/:userId/messages")
-.get(jwtMiddleware.authenticateUser, cors(), messengerController.listAllMessagesByUser);
-
 server.route("/api/messages/discussions/:messageId")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getDiscussionsForMessage);
 
 server.route("/api/messages/:senderId/:responderId/messages")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getMessagesBetweenUsers);
-
-server.route("/api/users/:userId/message")
-.get(jwtMiddleware.authenticateUser, cors(), messengerController.getLastMessageByGroups);
 
 server.route("/api/messages/:messageId")
 .patch(jwtMiddleware.authenticateUser, cors(), messengerController.setMessageRead)

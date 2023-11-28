@@ -1,116 +1,5 @@
-const { LakeFormation } = require("aws-sdk");
 const db = require("../knex");
 const io = require('../socket');
-
-// Get a list of all messages sent by a user
-exports.listAllMessagesByUser = (req, res) => {
-  let userId = req.params.userId;
-
-  db("user_group")
-      .select("*")
-      .where({"userId": userId})
-      .then(groups => {
-        let allMessages = [];
-
-        const promises = groups.map((group) => {
-          return db("message")
-            .select([
-                "message.id as id",
-                "sender.id as senderId",
-                "responder.id as responderId",
-                "message.groupId as groupId",
-                "message.date as date",
-                "message.message as message",
-                "sender.firstName as senderFirstName",
-                "sender.lastName as senderLastName",
-                "responder.firstName as responderFirstName",
-                "responder.lastName as responderLastName",
-                "message.read as read"
-            ])
-            .where({"groupId": group.groupId})
-            .leftJoin("user as sender", "sender.id", "=", "message.senderId")
-            .leftJoin("user as responder", "responder.id", "=", "message.responderId")
-            .orderBy("id", "asc")
-            .then(datas =>  {
-              datas.map((data) => {
-                allMessages.push(data)
-              })
-            })
-            .catch(error => {
-                res.status(401);
-                console.log(error);
-                res.json({message: "Server error"});
-            });
-        })
-
-        Promise.all(promises)
-          .then(messages => {
-              res.status(200).json({ "messages": allMessages });
-          })
-          .catch(error => {
-              console.log(error);
-              res.status(401).json({ message: "Server error" });
-          });
-      })
-      .catch(error => {
-          res.status(401);
-          console.log(error);
-          res.json({message: "Server error"});
-      });
-}
-
-// Get the last message between the two users or groups
-exports.getLastMessageByGroups = (req, res) => {
-    let userId = req.params.userId;
-
-    db("user_group")
-      .select("*")
-      .where({"userId": userId})
-      .then(groups => {
-        const promises = groups.map((group) => {
-          return db("message")
-            .select([
-                "message.id as id",
-                "sender.id as senderId",
-                "responder.id as responderId",
-                "message.groupId as groupId",
-                "message.date as date",
-                "message.message as message",
-                "sender.firstName as senderFirstName",
-                "sender.lastName as senderLastName",
-                "responder.firstName as responderFirstName",
-                "responder.lastName as responderLastName",
-                "message.read as read"
-            ])
-            .where({"groupId": group.groupId})
-            .leftJoin("user as sender", "sender.id", "=", "message.senderId")
-            .leftJoin("user as responder", "responder.id", "=", "message.responderId")
-            .orderBy("id", "desc")
-            .limit(1)
-            .then(data => data[0])
-            .catch(error => {
-                res.status(401);
-                console.log(error);
-                res.json({message: "Server error"});
-            });
-        })
-
-        Promise.all(promises)
-          .then(messages => {
-              let messagesExist = messages.filter((message) => message != null);
-              res.status(200).json({ "messages": messagesExist });
-          })
-          .catch(error => {
-              console.log(error);
-              res.status(401).json({ message: "Server error" });
-          });
-      })
-      .catch(error => {
-          res.status(401);
-          console.log(error);
-          res.json({message: "Server error"});
-      });
-}
 
 // Set a message read
 exports.setMessageRead = (req, res) => {
@@ -154,11 +43,15 @@ exports.getSearchedUsers = (req, res) => {
             "responder.lastName as responderLastName",
             "message.read as read"
           ])
-          .where('groupId', groupId)
-          .andWhere(function() {
-            this.where(function() {
-              this.where("sender.firstName", "like", `${search}%`)
-              .orWhere("responder.firstName", "like", `${search}%`);
+          .whereIn('message.groupId', function () {
+            this.select('groupId')
+              .from('user_group')
+              .where('userId', userId);
+          })
+          .andWhere(function () {
+            this.where(function () {
+              this.where('sender.firstName', 'like', `${search}%`)
+                .orWhere('responder.firstName', 'like', `${search}%`);
             });
           })
           .leftJoin("user as sender", "sender.id", "=", "message.senderId")
