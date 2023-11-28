@@ -535,10 +535,12 @@ exports.getAllUnreadDiscussionsForUser = (req, res) => {
     });
 };
 
-// Function to get all chats for a user with filter by location
-exports.getAllDiscussionsForUserWithLocationFilter = (req, res) => {
+
+
+// location filter 
+exports.getAllDiscussionsForUserWithLocationFilter =  (req, res) => {
   const userId = req.params.userId;
-  const selectedLocation = req.params.selectedLocation;
+  const selectedLocation = req.query.location;
 
   db('user_group')
     .select('groupId')
@@ -548,37 +550,66 @@ exports.getAllDiscussionsForUserWithLocationFilter = (req, res) => {
       const discussionPromises = groupIds.map(group => {
         const groupId = group.groupId;
 
-        return db('message')
-          .select('*')
+       
+        return db('user_group')
+          .select('userId')
           .where('groupId', groupId)
-          .orderBy('date', 'desc')
-          .limit(1)
-          .then(lastMessage => {
-            if (lastMessage.length > 0) {
-             
-              return db('user_group as senderGroup')
-                .select('senderGroup.userId as senderId', 'receiverGroup.userId as receiverId', 'receiverUser.location')
-                .join('user_group as receiverGroup', 'receiverGroup.groupId', '=', 'senderGroup.groupId')
-                .andWhere('senderGroup.groupId', groupId)
-                .andWhere('receiverGroup.userId', '!=', userId)
-                .join('user as receiverUser', 'receiverGroup.userId', '=', 'receiverUser.id')
-                .then(users => {
-                  const receiverLocation = users[0].location;
+          .then(groupMembers => {
+            const userIds = groupMembers.map(member => member.userId);
 
-                 
-                  if (receiverLocation === selectedLocation) {
-                    return {
-                     
-                      lastMessage: lastMessage[0],
-                      
-                    };
-                  } else {
-                    return null;
-                  }
-                });
-            } else {
-              return null;
-            }
+            return db('user')
+              .select('id', 'location')
+              .whereIn('id', userIds)
+              .andWhere('location', selectedLocation) 
+              .then(usersWithSpecificLocation => {
+                if (usersWithSpecificLocation.length > 0) {
+                  return db('message')
+                    .select('*')
+                    .where('groupId', groupId)
+                    .orderBy('date', 'desc')
+                    .limit(1)
+                    .then(lastMessage => {
+                      if (lastMessage.length > 0) {
+                        return db('user_group')
+                          .select('userId')
+                          .where('groupId', groupId)
+                          .andWhereNot('userId', userId)
+                          .then(users => {
+                            const senderId = lastMessage[0].senderId;
+                            const responderId = lastMessage[0].responderId;
+
+                            return db('user')
+                              .select('id', 'firstName', 'lastName')
+                              .whereIn('id', [senderId, responderId])
+                              .then(userDetails => {
+                                const senderDetails = userDetails.find(user => user.id === senderId);
+                                const responderDetails = userDetails.find(user => user.id === responderId);
+
+                                if (senderDetails && responderDetails) {
+                                  return {
+                                    groupId: groupId,
+                                    lastMessage: {
+                                      ...lastMessage[0],
+                                      senderFirstName: senderDetails.firstName,
+                                      senderLastName: senderDetails.lastName,
+                                      responderFirstName: responderDetails.firstName,
+                                      responderLastName: responderDetails.lastName,
+                                    },
+                                    users: users.map(user => user.userId),
+                                  };
+                                } else {
+                                  return null;
+                                }
+                              });
+                          });
+                      } else {
+                        return null;
+                      }
+                    });
+                } else {
+                  return null;
+                }
+              });
           });
       });
 
