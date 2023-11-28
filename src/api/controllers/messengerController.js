@@ -617,7 +617,7 @@ exports.getAllDiscussionsForUserWithLocationFilter =  (req, res) => {
                                               responderLastName: responderDetails.lastName,
                                             },
                                             users: usersDetails,
-                                            usersRead: read
+                                            usersRead: read.map(user => user.userRead)
                                           };
                                         })
                                     } else {
@@ -837,7 +837,7 @@ exports.getTwoUserDiscussions = (req, res) => {
                               responderLastName: responderDetails.lastName,
                             },
                             users: filteredUsers,
-                            usersRead: read
+                            usersRead: read.map(user => user.userRead)
                           };
                         })
                     })
@@ -922,7 +922,7 @@ exports.getGroupUsersDiscussions = (req, res) => {
                         responderLastName: otherUsersDetails[1].lastName,
                       },
                       users : otherUsersDetails,
-                      usersRead: read
+                      usersRead: read.map(user => user.userRead)
                     };
                 })
               }
