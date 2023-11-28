@@ -43,7 +43,11 @@ exports.getSearchedUsers = (req, res) => {
             "responder.lastName as responderLastName",
             "message.read as read"
           ])
-          .where('groupId', groupId)
+          .whereIn('message.groupId', function () {
+            this.select('groupId')
+              .from('user_group')
+              .where('userId', userId); 
+          })
           .andWhere(function() {
             this.where(function() {
               this.where("sender.firstName", "like", `${search}%`)
