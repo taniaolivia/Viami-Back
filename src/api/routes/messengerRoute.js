@@ -43,4 +43,10 @@ server.route('/api/discussions/twoUsers/:userId')
 server.route('/api/discussions/groupUsers/:userId')
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getGroupUsersDiscussions);
 
+server.route('/api/discussions/:userId/unread')
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllUnreadDiscussionsForUser);
+
+
+server.route('/api/discussions/:userId/read')
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllReadDiscussionsForUser);
 }
