@@ -2,13 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const socketIo = require('./socket');
 
 const hostname = "0.0.0.0";
 const port = 3000;
-
 const server = express();
-const io = socketIo;
 
 server.use(logger('dev'));
 
@@ -67,9 +64,9 @@ themeActivityRoute(server);
 const activityImageRoute = require("./routes/activityImageRoute");
 activityImageRoute(server);
 
-
 const messengerRoute = require("./routes/messengerRoute");
 messengerRoute(server);
-
-
-server.listen(port, hostname);
+  
+server.listen(port, hostname, () => {
+    console.log(`Server running at http://${hostname}:${port}/`);
+});

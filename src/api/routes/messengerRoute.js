@@ -3,21 +3,21 @@ module.exports = (server) => {
     const jwtMiddleware = require("../middlewares/jwtMiddleware");
     const cors = require('cors');
 
-server.route("/api/messages/:senderId/messages")
-.get(jwtMiddleware.authenticateUser, cors(), messengerController.listAllMessagesBySenderId);
-
 server.route("/api/messages/discussions/:messageId")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getDiscussionsForMessage);
 
 server.route("/api/messages/:senderId/:responderId/messages")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getMessagesBetweenUsers);
 
-server.route("/api/messages/:senderId/:responderId/message")
-.get(jwtMiddleware.authenticateUser, cors(), messengerController.getLastMessageBySenderResponder);
-
 server.route("/api/messages/:messageId")
-.patch(jwtMiddleware.authenticateUser, cors(), messengerController.setMessageRead)
+.post(jwtMiddleware.authenticateUser, cors(), messengerController.setMessageRead)
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getMessageById);
+
+server.route("/api/groups/:groupId/:userId/users")
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getUsersGroup);
+
+server.route("/api/messages/search/users")
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getSearchedUsers);
 
 server.route("/api/sendMessage")
 .post(jwtMiddleware.authenticateUser, cors(), messengerController.sendMessage);
@@ -25,22 +25,28 @@ server.route("/api/sendMessage")
 server.route("/api/messages/addUserToGroup/:loggedInUserId/:userToAddId/:receiverId")
 .post(jwtMiddleware.authenticateUser, cors(), messengerController.addUserToGroup);
 
-server.get("/api/readDiscussions/:userId", messengerController.getAllReadDiscussionsForUser);
+server.route("/api/readDiscussions/:userId")
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllReadDiscussionsForUser);
 
-server.get("/api/unreadDiscussions/:userId", messengerController.getAllUnreadDiscussionsForUser);
+server.route("/api/unreadDiscussions/:userId")
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllUnreadDiscussionsForUser);
 
-server.get('/api/discussions/:userId/location/:selectedLocation', messengerController.getAllDiscussionsForUserWithLocationFilter);
+server.route("/api/discussions/:userId/location")
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllDiscussionsForUserWithLocationFilter);
+
+server.route('/api/discussions/:userId')
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllDiscussionsForUser);
+
+server.route('/api/discussions/twoUsers/:userId')
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getTwoUserDiscussions); 
+
+server.route('/api/discussions/groupUsers/:userId')
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getGroupUsersDiscussions);
+
+server.route('/api/discussions/:userId/unread')
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllUnreadDiscussionsForUser);
 
 
-server.get('/api/discussions/:userId', messengerController.getAllDiscussionsForUser);
-
-server.get('/api/discussions/:userId', messengerController.getAllDiscussionsForUser);
-
-
-
-
-
-
-
-
+server.route('/api/discussions/:userId/read')
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllReadDiscussionsForUser);
 }
