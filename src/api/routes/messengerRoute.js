@@ -3,23 +3,20 @@ module.exports = (server) => {
     const jwtMiddleware = require("../middlewares/jwtMiddleware");
     const cors = require('cors');
 
-server.route("/api/users/:senderId/messages")
-.get(jwtMiddleware.authenticateUser, cors(), messengerController.listAllMessagesBySenderId);
-
 server.route("/api/messages/discussions/:messageId")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getDiscussionsForMessage);
 
 server.route("/api/messages/:senderId/:responderId/messages")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getMessagesBetweenUsers);
 
-server.route("/api/users/:senderId/:responderId/message")
-.get(jwtMiddleware.authenticateUser, cors(), messengerController.getLastMessageBySenderResponder);
-
 server.route("/api/messages/:messageId")
-.patch(jwtMiddleware.authenticateUser, cors(), messengerController.setMessageRead)
+.post(jwtMiddleware.authenticateUser, cors(), messengerController.setMessageRead)
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getMessageById);
 
-server.route("/api/messages/:senderId/search/users")
+server.route("/api/groups/:groupId/:userId/users")
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getUsersGroup);
+
+server.route("/api/messages/search/users")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getSearchedUsers);
 
 server.route("/api/sendMessage")
@@ -34,7 +31,7 @@ server.route("/api/readDiscussions/:userId")
 server.route("/api/unreadDiscussions/:userId")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllUnreadDiscussionsForUser);
 
-server.route("/api/discussions/:userId/location/:selectedLocation")
+server.route("/api/discussions/:userId/location")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllDiscussionsForUserWithLocationFilter);
 
 server.route('/api/discussions/:userId')

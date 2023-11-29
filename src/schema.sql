@@ -252,7 +252,6 @@ CREATE TABLE `user_group` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
-
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -269,6 +268,19 @@ CREATE TABLE `message` (
   CONSTRAINT `fk_message_sender` FOREIGN KEY (`senderId`) REFERENCES `user` (`id`),
   CONSTRAINT `fk_message_group` FOREIGN KEY (`groupId`) REFERENCES `group` (`id`),
   CONSTRAINT `fk_message_responder` FOREIGN KEY (`responderId`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `message_user_read`;
+CREATE TABLE `message_user_read` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `messageId` int(11) NOT NULL,
+  `userRead` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `messageId` (`messageId`),
+  KEY `userRead` (`userRead`),
+  CONSTRAINT `message_user_read_ibfk_1` FOREIGN KEY (`messageId`) REFERENCES `message` (`id`),
+  CONSTRAINT `message_user_read_ibfk_2` FOREIGN KEY (`userRead`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
