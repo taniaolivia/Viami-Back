@@ -62,3 +62,45 @@ exports.addCommentToUserProfile = (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
       });
   };
+
+
+ // Route to check if a user has left a comment for another user
+exports.hasUserLeftComment = (req, res) => {
+  const userId = req.params.userId;
+  const otherUserId = req.params.otherUserId;
+
+  
+
+  // Function to check if the user has left a comment for the other user
+  const checkComment = (userId, otherUserId) => {
+    return new Promise((resolve, reject) => {
+      db('user_comment')
+        .count('* as count')
+        .where({
+          userId: otherUserId,
+          commenterId: userId
+        })
+        .then(results => {
+          const hasLeftComment = results[0].count > 0;
+          resolve(hasLeftComment);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  };
+
+  // Usage of the function
+  checkComment(userId, otherUserId)
+    .then(hasLeftComment => {
+      const userStatus = hasLeftComment
+        ? { hasUserLeftComment: true }
+        : { hasUserLeftComment: false };
+
+      res.status(200).json(userStatus);
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    });
+};
