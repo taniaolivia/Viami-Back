@@ -635,3 +635,17 @@ exports.getUserStatus = (req, res) => {
       });
   };
   
+
+  // Search for users by first name
+exports.searchUsersByFirstName = (req, res) => {
+    const searchTerm = req.params.search; 
+    db('user')
+        .select('*')
+        .where('firstName',searchTerm ) // Utilisez 'ilike' pour une recherche insensible à la casse
+        .then(data => res.status(200).json({ data }))
+        .catch(error => {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });tania
+        });
+};
+
