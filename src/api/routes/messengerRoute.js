@@ -10,7 +10,7 @@ server.route("/api/messages/:senderId/:responderId/messages")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getMessagesBetweenUsers);
 
 server.route("/api/messages/:messageId")
-.patch(jwtMiddleware.authenticateUser, cors(), messengerController.setMessageRead)
+.post(jwtMiddleware.authenticateUser, cors(), messengerController.setMessageRead)
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getMessageById);
 
 server.route("/api/groups/:groupId/:userId/users")

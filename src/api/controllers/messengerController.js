@@ -4,16 +4,19 @@ const io = require('../socket');
 // Set a message read
 exports.setMessageRead = (req, res) => {
     let messageId = req.params.messageId;
-    
-    db("message")
-        .update("read", "1")
-        .where("id", messageId)
-        .then(data => res.status(200).json({"message": "Message is set to read successfully !"}))
-        .catch(error => {
-            res.status(401);
-            console.log(error);
-            res.json({message: "Server error"});
-        });
+    let userId = req.query.userId;
+
+    db("message_user_read")
+      .insert({
+        "messageId": messageId,
+        "userRead": userId
+      })
+      .then(data => res.status(200).json({"message": "Message is set to read successfully !"}))
+      .catch(error => {
+          res.status(401);
+          console.log(error);
+          res.json({message: "Server error"});
+      });
 }
 
 // Search user by the inserted name in the search input
@@ -600,17 +603,23 @@ exports.getAllDiscussionsForUserWithLocationFilter =  (req, res) => {
                                     usersDetails.push(...usersData);
 
                                     if (senderDetails && responderDetails) {
-                                      return {
-                                        groupId: groupId,
-                                        lastMessage: {
-                                          ...lastMessage[0],
-                                          senderFirstName: senderDetails.firstName,
-                                          senderLastName: senderDetails.lastName,
-                                          responderFirstName: responderDetails.firstName,
-                                          responderLastName: responderDetails.lastName,
-                                        },
-                                        users: usersDetails,
-                                      };
+                                      return db("message_user_read")
+                                        .select("*")
+                                        .where("messageId", lastMessage[0].id)
+                                        .then(read => {
+                                          return {
+                                            groupId: groupId,
+                                            lastMessage: {
+                                              ...lastMessage[0],
+                                              senderFirstName: senderDetails.firstName,
+                                              senderLastName: senderDetails.lastName,
+                                              responderFirstName: responderDetails.firstName,
+                                              responderLastName: responderDetails.lastName,
+                                            },
+                                            users: usersDetails,
+                                            usersRead: read.map(user => user.userRead)
+                                          };
+                                        })
                                     } else {
                                       return null;
                                     }
@@ -663,63 +672,74 @@ exports.getAllDiscussionsForUser = (req, res) => {
           .limit(1)
           .then(lastMessage => {
             if (lastMessage.length > 0) {
-              return db('user_group')
-                .select('userId')
-                .where('groupId', groupId)
-                .andWhereNot('userId', userId)
-                .then(users => {
-                  const senderId = lastMessage[0].senderId;
-                  const responderId = lastMessage[0].responderId;
-                  const usersDetails = [];
 
-                  users.map(async (user) =>  {
-                    let userDetails = await db('user')
-                      .select('id', 'firstName', 'lastName')
-                      .where('id', user.userId)
-                      .then(userData => userData[0])
-                      .catch((error) => null)
-                    
-                      usersDetails.push(userDetails)
-                  })
+              return db("message_user_read")
+                .select("*")
+                .where("messageId", lastMessage[0].id)
+                .then(read => {
 
-                  return db('user')
-                    .select('id', 'firstName', 'lastName')
-                    .whereIn('id', [senderId, responderId])
-                    .then(userDetails => {
-                      const senderDetails = userDetails.find(user => user.id === senderId);
-                      const responderDetails = userDetails.find(user => user.id === responderId);
+                  return db('user_group')
+                    .select('userId')
+                    .where('groupId', groupId)
+                    .andWhereNot('userId', userId)
+                    .then(users => {
+                      const senderId = lastMessage[0].senderId;
+                      const responderId = lastMessage[0].responderId;
+                      const usersDetails = [];
 
-                      if (senderDetails && (responderDetails !== undefined)) {
-                        return {
-                          groupId: groupId,
-                          lastMessage: {
-                            ...lastMessage[0],
-                            senderFirstName: senderDetails.firstName,
-                            senderLastName: senderDetails.lastName,
-                            responderFirstName: responderDetails.firstName,
-                            responderLastName: responderDetails.lastName,
-                          },
-                          users: usersDetails
-                        };
-                      } 
-                      else if (senderDetails && responderDetails == undefined) {
-                        return {
-                          groupId: groupId,
-                          lastMessage: {
-                            ...lastMessage[0],
-                            senderFirstName: senderDetails.firstName,
-                            senderLastName: senderDetails.lastName,
-                            responderFirstName: null,
-                            responderLastName: null,
-                          },
-                          users: usersDetails
-                        };
-                      } 
-                      else {
-                        return null;
-                      }
+                      users.map(async (user) =>  {
+                        let userDetails = await db('user')
+                          .select('id', 'firstName', 'lastName')
+                          .where('id', user.userId)
+                          .then(userData => userData[0])
+                          .catch((error) => null)
+                        
+                          usersDetails.push(userDetails)
+                      })
+
+                      return db('user')
+                        .select('id', 'firstName', 'lastName')
+                        .whereIn('id', [senderId, responderId])
+                        .then(userDetails => {
+                          const senderDetails = userDetails.find(user => user.id === senderId);
+                          const responderDetails = userDetails.find(user => user.id === responderId);
+
+                          if (senderDetails && (responderDetails !== undefined)) {
+                            return {
+                              groupId: groupId,
+                              lastMessage: {
+                                ...lastMessage[0],
+                                senderFirstName: senderDetails.firstName,
+                                senderLastName: senderDetails.lastName,
+                                responderFirstName: responderDetails.firstName,
+                                responderLastName: responderDetails.lastName,
+                              },
+                              users: usersDetails,
+                              usersRead: read.map(user => user.userRead)
+                            };
+                          } 
+                          else if (senderDetails && responderDetails == undefined) {
+                            return {
+                              groupId: groupId,
+                              lastMessage: {
+                                ...lastMessage[0],
+                                senderFirstName: senderDetails.firstName,
+                                senderLastName: senderDetails.lastName,
+                                responderFirstName: null,
+                                responderLastName: null,
+                              },
+                              users: usersDetails,
+                              usersRead: read.map(user => user.userRead)
+                            };
+                          } 
+                          else {
+                            return null;
+                          }
+                        });
                     });
-                });
+                })
+
+              /**/
             } else {
               return null;
             }
@@ -802,19 +822,25 @@ exports.getTwoUserDiscussions = (req, res) => {
                     usersDetails.push(...usersData);
 
                     const filteredUsers = usersDetails.filter(user => user != null);
-
-                    return {
-                      groupId: groupId,
-                      lastMessage: {
-                        ...lastMessage[0],
-                        senderFirstName: senderDetails.firstName,
-                        senderLastName: senderDetails.lastName,
-                        responderFirstName: responderDetails.firstName,
-                        responderLastName: responderDetails.lastName,
-                      },
-                      users: filteredUsers,
-                    };
-                  })
+                    
+                    return db("message_user_read")
+                      .select("*")
+                      .where("messageId", lastMessage[0].id)
+                      .then(read => {
+                          return {
+                            groupId: groupId,
+                            lastMessage: {
+                              ...lastMessage[0],
+                              senderFirstName: senderDetails.firstName,
+                              senderLastName: senderDetails.lastName,
+                              responderFirstName: responderDetails.firstName,
+                              responderLastName: responderDetails.lastName,
+                            },
+                            users: filteredUsers,
+                            usersRead: read.map(user => user.userRead)
+                          };
+                        })
+                    })
               }
             }
 
@@ -882,17 +908,23 @@ exports.getGroupUsersDiscussions = (req, res) => {
                   otherUserIds.map(userId => getUserDetailsById(userId))
                 );
 
-                return {
-                  groupId: groupId,
-                  lastMessage: {
-                    ...lastMessage[0],
-                    senderFirstName: otherUsersDetails[0].firstName,
-                    senderLastName: otherUsersDetails[0].lastName,
-                    responderFirstName: otherUsersDetails[1].firstName,
-                    responderLastName: otherUsersDetails[1].lastName,
-                  },
-                  users : otherUsersDetails,
-                };
+                return db("message_user_read")
+                  .select("*")
+                  .where("messageId", lastMessage[0].id)
+                  .then(read => {
+                    return {
+                      groupId: groupId,
+                      lastMessage: {
+                        ...lastMessage[0],
+                        senderFirstName: otherUsersDetails[0].firstName,
+                        senderLastName: otherUsersDetails[0].lastName,
+                        responderFirstName: otherUsersDetails[1].firstName,
+                        responderLastName: otherUsersDetails[1].lastName,
+                      },
+                      users : otherUsersDetails,
+                      usersRead: read.map(user => user.userRead)
+                    };
+                })
               }
             } else {
               return null;
