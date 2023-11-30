@@ -11,4 +11,6 @@ server.route("/api/users/:userId/comments")
 
 server.post("/api/users/addComment/:userId", jwtMiddleware.authenticateUser, cors(),userCommentController.addCommentToUserProfile);
 
+server.get("/api/users/hasUserLeftComment/:userId/:otherUserId", jwtMiddleware.authenticateUser, cors(),userCommentController.hasUserLeftComment);
+
 }
