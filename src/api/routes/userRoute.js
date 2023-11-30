@@ -30,4 +30,10 @@ server.post("/forgetPassword", cors(), userController.forgetPassword);
 server.post("/setNewPassword", cors(), userController.updateUserPasswordByEmail);
 server.get("/newPasswordForm", cors(), userController.newPasswordForm);
 
+server.route("/api/users/:userId/fcmToken")
+.patch(jwtMiddleware.authenticateUser, cors(), userController.setFcmTokenUser);
+
+server.route("/api/users/search/:search")
+.get(jwtMiddleware.authenticateUser, cors(), userController.searchUsersByFirstName);
+
 }
