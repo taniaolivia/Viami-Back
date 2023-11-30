@@ -540,7 +540,7 @@ exports.getAllUnreadDiscussionsForUser = (req, res) => {
 
 
 
-// location filter 
+// Filter discussions by location
 exports.getAllDiscussionsForUserWithLocationFilter =  (req, res) => {
   const userId = req.params.userId;
   const selectedLocation = req.query.location;
@@ -949,7 +949,7 @@ exports.getGroupUsersDiscussions = (req, res) => {
     });
 };
 
-//filter with not read 
+// get only unread dicussions of a user
 exports.getAllUnreadDiscussionsForUser = async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -1029,9 +1029,7 @@ exports.getAllUnreadDiscussionsForUser = async (req, res) => {
   }
 };
 
-
-
-//filter with read 
+// get only read dicussions of a user
 exports.getAllReadDiscussionsForUser = async (req, res) => {
   try {
     const userId = req.params.userId;

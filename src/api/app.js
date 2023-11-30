@@ -66,6 +66,9 @@ activityImageRoute(server);
 
 const messengerRoute = require("./routes/messengerRoute");
 messengerRoute(server);
+
+const demandSendMessageRoute = require("./routes/demandSendMessageRoute");
+demandSendMessageRoute(server);
   
 server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
