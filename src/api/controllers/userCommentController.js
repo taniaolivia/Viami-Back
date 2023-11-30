@@ -77,8 +77,8 @@ exports.hasUserLeftComment = (req, res) => {
       db('user_comment')
         .count('* as count')
         .where({
-          userId: otherUserId,
-          commenterId: userId
+          userId:userId ,
+          commenterId: otherUserId
         })
         .then(results => {
           const hasLeftComment = results[0].count > 0;
