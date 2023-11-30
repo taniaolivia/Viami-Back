@@ -540,7 +540,7 @@ exports.getAllUnreadDiscussionsForUser = (req, res) => {
 
 
 
-// location filter 
+// Filter discussions by location
 exports.getAllDiscussionsForUserWithLocationFilter =  (req, res) => {
   const userId = req.params.userId;
   const selectedLocation = req.query.location;
@@ -948,3 +948,165 @@ exports.getGroupUsersDiscussions = (req, res) => {
       res.status(500).json({ message: 'Server error' });
     });
 };
+
+// get only unread dicussions of a user
+exports.getAllUnreadDiscussionsForUser = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const groupIds = await db('user_group')
+      .select('groupId')
+      .where('userId', userId)
+      .groupBy('groupId');
+
+    const discussionPromises = groupIds.map(async (group) => {
+      const groupId = group.groupId;
+
+      const lastMessage = await db('message')
+        .select('*')
+        .where('groupId', groupId)
+        .orderBy('date', 'desc')
+        .limit(1)
+        .first();
+
+      if (lastMessage) {
+        const usersInGroup = await db('user_group')
+          .select('userId')
+          .where('groupId', groupId)
+          .andWhereNot('userId', userId);
+
+        const senderId = lastMessage.senderId;
+        const responderId = lastMessage.responderId;
+
+        const userDetails = await db('user')
+          .select('id', 'firstName', 'lastName')
+          .whereIn('id', [senderId, responderId]);
+
+        const senderDetails = userDetails.find((user) => user.id === senderId);
+        const responderDetails = userDetails.find((user) => user.id === responderId);
+
+        const usersDetails = await Promise.all(
+          usersInGroup.map(async (user) => {
+            const userData = await db('user')
+              .select('id', 'firstName', 'lastName')
+              .where('id', user.userId)
+              .first();
+
+            return userData;
+          })
+        );
+
+        const usersRead = await db('message_user_read')
+          .select('userRead')
+          .where('messageId', lastMessage.id);
+
+        if (!usersRead.some((readUser) => readUser.userRead === userId)) {
+          return {
+            groupId: groupId,
+            lastMessage: {
+              ...lastMessage,
+              senderFirstName: senderDetails.firstName,
+              senderLastName: senderDetails.lastName,
+              responderFirstName: responderDetails.firstName,
+              responderLastName: responderDetails.lastName,
+            },
+            users: usersDetails,
+            usersRead: usersRead.map((user) => user.userRead),
+          };
+        }
+      }
+
+      return null;
+    });
+
+    const discussions = await Promise.all(discussionPromises);
+    const filteredDiscussions = discussions.filter((discussion) => discussion !== null);
+
+    res.status(200).json({ discussions: filteredDiscussions });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// get only read dicussions of a user
+exports.getAllReadDiscussionsForUser = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const groupIds = await db('user_group')
+      .select('groupId')
+      .where('userId', userId)
+      .groupBy('groupId');
+
+    const discussionPromises = groupIds.map(async (group) => {
+      const groupId = group.groupId;
+
+      const lastMessage = await db('message')
+        .select('*')
+        .where('groupId', groupId)
+        .orderBy('date', 'desc')
+        .limit(1)
+        .first();
+
+      if (lastMessage) {
+        const usersInGroup = await db('user_group')
+          .select('userId')
+          .where('groupId', groupId)
+          .andWhereNot('userId', userId);
+
+        const senderId = lastMessage.senderId;
+        const responderId = lastMessage.responderId;
+
+        const userDetails = await db('user')
+          .select('id', 'firstName', 'lastName')
+          .whereIn('id', [senderId, responderId]);
+
+        const senderDetails = userDetails.find((user) => user.id === senderId);
+        const responderDetails = userDetails.find((user) => user.id === responderId);
+
+        const usersDetails = await Promise.all(
+          usersInGroup.map(async (user) => {
+            const userData = await db('user')
+              .select('id', 'firstName', 'lastName')
+              .where('id', user.userId)
+              .first();
+
+            return userData;
+          })
+        );
+
+        const usersRead = await db('message_user_read')
+          .select('userRead')
+          .where('messageId', lastMessage.id);
+
+        if (usersRead.some((readUser) => readUser.userRead === userId)) {
+          return {
+            groupId: groupId,
+            lastMessage: {
+              ...lastMessage,
+              senderFirstName: senderDetails.firstName,
+              senderLastName: senderDetails.lastName,
+              responderFirstName: responderDetails.firstName,
+              responderLastName: responderDetails.lastName,
+            },
+            users: usersDetails,
+            usersRead: usersRead.map((user) => user.userRead),
+          };
+        }
+      }
+
+      return null;
+    });
+
+    const discussions = await Promise.all(discussionPromises);
+    const filteredDiscussions = discussions.filter((discussion) => discussion !== null);
+
+    res.status(200).json({ discussions: filteredDiscussions });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
