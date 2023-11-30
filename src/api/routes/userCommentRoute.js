@@ -13,4 +13,6 @@ server.post("/api/users/addComment/:userId", jwtMiddleware.authenticateUser, cor
 
 server.get("/api/users/hasUserLeftComment/:userId/:otherUserId", jwtMiddleware.authenticateUser, cors(), userCommentController.hasUserLeftComment);
 
+server.get("/api/users/hasUserLeftComment/:userId/:otherUserId", jwtMiddleware.authenticateUser, cors(),userCommentController.hasUserLeftComment);
+
 }

@@ -635,25 +635,25 @@ exports.getUserStatus = (req, res) => {
       });
   };
 
-  
 // Update the fcm token of a user
 exports.setFcmTokenUser = (req, res) => {
-let fcmToken = req.query.fcmToken;
-let userId = req.params.userId;
+  let fcmToken = req.query.fcmToken;
+  let userId = req.params.userId;
 
-db("user")
+  db("user")
     .update({"fcmToken": fcmToken})
     .where("id", userId)
     .then((response) => {
-    res.status(200).json({
-        message: "Successfully updating the fcm token of a user"
-    });
+      res.status(200).json({
+          message: "Successfully updating the fcm token of a user"
+      });
     })
     .catch((error) => {
-    res.status(400).json({
-        message: "Failed updating the fcm token of a user"
-    });
-    console.log(error);
+      res.status(400).json({
+          message: "Failed updating the fcm token of a user"
+      });
+    
+      console.log(error);
     });
 }
 
