@@ -64,6 +64,7 @@ CREATE TABLE `user` (
   `verifyEmailToken` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `emailVerified` enum('0','1') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `plan` enum('free','premium') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'free',
+  `fcmToken` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -284,3 +285,16 @@ CREATE TABLE `message_user_read` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
+DROP TABLE IF EXISTS `request_message_user`;
+CREATE TABLE `request_message_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `requesterId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `receiverId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `accept` tinyint(2) DEFAULT NULL,
+  `chat` tinyint(2) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `requesterId` (`requesterId`),
+  KEY `receiverId` (`receiverId`),
+  CONSTRAINT `request_message_user_ibfk_1` FOREIGN KEY (`requesterId`) REFERENCES `user` (`id`),
+  CONSTRAINT `request_message_user_ibfk_2` FOREIGN KEY (`receiverId`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
