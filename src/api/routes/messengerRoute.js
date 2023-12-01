@@ -43,9 +43,9 @@ server.route('/api/discussions/groupUsers/:userId')
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getGroupUsersDiscussions);
 
 server.route('/api/discussions/:userId/unread')
-.get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllUnreadDiscussionsForUser);
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllUnreadDiscussionsForUserFilter);
 
 
 server.route('/api/discussions/:userId/read')
-.get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllReadDiscussionsForUser);
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllReadDiscussionsForUserFilter);
 }
