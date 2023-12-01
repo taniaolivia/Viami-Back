@@ -55,7 +55,8 @@ exports.userRegister = (req, res) => {
                                         connected: "0",
                                         profileImage: null,
                                         verifyEmailToken: tokenEmail,
-                                        emailVerified: "0"
+                                        emailVerified: "0",
+                                        fcmToken: newUser.fcmToken
                                     })
                                     .then(data => {
                                         exports.sendVerificationMail(newUser.email, tokenEmail);
