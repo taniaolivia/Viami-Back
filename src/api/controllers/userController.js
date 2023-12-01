@@ -640,7 +640,7 @@ exports.getUserStatus = (req, res) => {
     const searchTerm = req.params.search; 
     db('user')
         .select('*')
-        .where('firstName',searchTerm ) // Utilisez 'ilike' pour une recherche insensible à la casse
+        .where('firstName',searchTerm ) 
         .then(data => res.status(200).json({ data }))
         .catch(error => {
             console.error(error);
