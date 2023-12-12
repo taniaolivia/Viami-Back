@@ -214,77 +214,87 @@ exports.getUsersGroup = (req, res) => {
       });
 }
 
-// Send message 
-exports.sendMessage = (req, res) => {
-  const { message, senderId, responderId } = req.body;
+// Add user to group
+async function addUserInGroup(trx, groupId, ...userIds) {
+  const usersInGroup = userIds.map(userId => ({ userId, groupId }));
 
-  // Check if a group already exists between the two users
-  db('user_group')
-    .select('groupId')
-    .whereIn('userId', [senderId, responderId])
-    .groupBy('groupId')
-    .havingRaw('COUNT(DISTINCT userId) >= 2') // group can have 2 user min
-    .then(existingGroups => {
-      if (existingGroups.length > 0) {
-        const groupId = existingGroups[0].groupId;
-        // Use the ID of the existing group to send the message
-        sendGroupMessage(groupId, message, senderId,responderId, res);
-      } else {
-        // Create a new group between the two users
-        db('group')
-          .insert({})
-          .then(groupIds => {
-            const groupId = groupIds[0];
-            // Add both users to the new group
-            db('user_group')
-              .insert([
-                { userId: senderId, groupId: groupId },
-                { userId: responderId, groupId: groupId }
-              ])
-              .then(() => {
-                // Use the ID of the new group to send the message
-                sendGroupMessage(groupId, message, senderId,responderId, res);
-              })
-              .catch(error => {
-                console.error(error);
-                res.status(500).json({ message: 'Failed to create group and send message' });
-              });
-          })
-          .catch(error => {
-            console.error(error);
-            res.status(500).json({ message: 'Failed to create group and send message' });
-          });
-      }
-    })
-    .catch(error => {
-      console.error(error);
-      res.status(500).json({ message: 'Internal server error' });
+  console.log('Adding users to group:', usersInGroup);
+
+  await trx('user_group')
+    .insert(usersInGroup);
+}
+
+// Create a new group
+async function createNewGroup(trx, userIds) {
+  const [newGroupId] = await trx('group').insert({});
+  return newGroupId;
+}
+
+// Send message
+exports.sendMessage = async (req, res) => {
+  const { groupId, message, senderId, responderId } = req.body;
+
+  try {
+    await db.transaction(async (trx) => {
+      const finalGroupId = groupId || await createNewGroup(trx, [responderId, senderId]);
+      const userIds = [responderId, senderId];
+      await addUserInGroup(trx, finalGroupId, ...userIds);
+      await sendGroupMessage(trx, finalGroupId, message, senderId, responderId);
+
+      // Déplacez trx.commit() ici
+      await trx.commit();
+      res.status(201).json({ message: 'Message sent successfully' });
     });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to send group message' });
+  }
 };
 
 // Function to send the message to a group
-function sendGroupMessage(groupId, message, senderId,responderId, res) {
+async function sendGroupMessage(trx, groupId, message, senderId, responderId) {
   const groupMessage = {
     message: message,
     senderId: senderId,
     groupId: groupId,
-    responderId:responderId,
+    responderId: responderId,
     date: new Date(),
-    read: "0",
+    read: '0',
   };
 
-  db('message')
-    .insert(groupMessage)
-    .then(() => {
-      io.emit(`group-${groupId}`, groupMessage);
-      res.status(201).json({ message: 'Message sent successfully' });
-    })
-    .catch(error => {
-      console.error(error);
-      res.status(500).json({ message: 'Failed to send group message' });
-    });
-}
-  
+  const [messageId] = await trx('message').insert(groupMessage);
+
+  await trx('message')
+    .where('id', messageId)
+    .update({ read: '1' });
+
+  await trx('message_user_read').insert({ messageId, userRead: senderId });
+};
+
+
+// Function to send the message to a group
+async function sendGroupMessage(trx, groupId, message, senderId, responderId) {
+  const groupMessage = {
+    message: message,
+    senderId: senderId,
+    groupId: groupId,
+    responderId: responderId,
+    date: new Date(),
+    read: '0',
+  };
+
+  const [messageId] = await trx('message').insert(groupMessage);
+
+  await trx('message')
+    .where('id', messageId)
+    .update({ read: '1' });
+
+  await trx('message_user_read').insert({ messageId, userRead: senderId });
+};
+
+
+
+
 // Get All messages between sender and other user
 exports.getMessagesBetweenUsers = (req, res) => {
   const senderId = req.params.senderId;
