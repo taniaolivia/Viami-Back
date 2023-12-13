@@ -213,15 +213,16 @@ exports.getUsersGroup = (req, res) => {
           res.json({message: "Server error"});
       });
 }
-
 // Add user to group
 async function addUserInGroup(trx, groupId, ...userIds) {
-  const usersInGroup = userIds.map(userId => ({ userId, groupId }));
+  if (!groupId) {
+    const usersInGroup = userIds.map(userId => ({ userId, groupId }));
 
-  console.log('Adding users to group:', usersInGroup);
+    console.log('Adding users to group:', usersInGroup);
 
-  await trx('user_group')
-    .insert(usersInGroup);
+    await trx('user_group')
+      .insert(usersInGroup);
+  }
 }
 
 // Create a new group
@@ -241,7 +242,7 @@ exports.sendMessage = async (req, res) => {
       await addUserInGroup(trx, finalGroupId, ...userIds);
       await sendGroupMessage(trx, finalGroupId, message, senderId, responderId);
 
-      // Déplacez trx.commit() ici
+      
       await trx.commit();
       res.status(201).json({ message: 'Message sent successfully' });
     });
@@ -272,24 +273,21 @@ async function sendGroupMessage(trx, groupId, message, senderId, responderId) {
 };
 
 
-// Function to send the message to a group
-async function sendGroupMessage(trx, groupId, message, senderId, responderId) {
-  const groupMessage = {
-    message: message,
-    senderId: senderId,
-    groupId: groupId,
-    responderId: responderId,
-    date: new Date(),
-    read: '0',
-  };
+// get user count in group 
+exports.getUserCountInGroup = (req, res) => {
+  const groupId = req.params.groupId;
 
-  const [messageId] = await trx('message').insert(groupMessage);
-
-  await trx('message')
-    .where('id', messageId)
-    .update({ read: '1' });
-
-  await trx('message_user_read').insert({ messageId, userRead: senderId });
+  db('user_group')
+    .count('userId as userCount')
+    .where({ groupId })
+    .then(result => {
+      const userCount = result[0].userCount;
+      res.status(200).json({ success: true,count: userCount, groupId });
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Internal server error' });
+    });
 };
 
 
