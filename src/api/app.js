@@ -66,6 +66,9 @@ activityImageRoute(server);
 
 const messengerRoute = require("./routes/messengerRoute");
 messengerRoute(server);
+
+const activityCommentRoute = require("./routes/activityCommentRoute");
+activityCommentRoute(server);
   
 server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);

@@ -283,4 +283,19 @@ CREATE TABLE `message_user_read` (
   CONSTRAINT `message_user_read_ibfk_2` FOREIGN KEY (`userRead`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+DROP TABLE IF EXISTS `activity_comment`;
+CREATE TABLE `activity_comment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `activityId` int(100) NOT NULL,
+  `commenterId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `commentId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `activityId` (`activityId`),
+  KEY `commenterId` (`commenterId`),
+  KEY `commentId` (`commentId`),
+  CONSTRAINT `activity_comment_ibfk_1` FOREIGN KEY (`activityId`) REFERENCES `activity` (`id`),
+  CONSTRAINT `activity_comment_ibfk_2` FOREIGN KEY (`commenterId`) REFERENCES `user` (`id`),
+  CONSTRAINT `activity_comment_ibfk_3` FOREIGN KEY (`commentId`) REFERENCES `comment` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
