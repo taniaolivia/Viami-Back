@@ -69,6 +69,9 @@ messengerRoute(server);
 
 const activityCommentRoute = require("./routes/activityCommentRoute");
 activityCommentRoute(server);
+
+const faqRoute = require("./routes/faqRoute");
+faqRoute(server);
   
 server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);

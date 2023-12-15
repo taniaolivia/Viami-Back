@@ -298,4 +298,13 @@ CREATE TABLE `activity_comment` (
   CONSTRAINT `activity_comment_ibfk_3` FOREIGN KEY (`commentId`) REFERENCES `comment` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+DROP TABLE IF EXISTS `faq`;
+CREATE TABLE `faq` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `question` varchar(1000) NOT NULL,
+  `answer` text NOT NULL,
+  `isFrequented` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
