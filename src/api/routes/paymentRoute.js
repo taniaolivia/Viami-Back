@@ -4,6 +4,6 @@ module.exports = (server) => {
     const cors = require('cors');
 
 server.route("/api/payment")
-.post(jwtMiddleware.authenticateUser, cors(), paymentController.payPremium);
+.post( cors(), paymentController.payPremium);
 
 }
