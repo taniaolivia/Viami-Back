@@ -1,7 +1,7 @@
 const functions = require("firebase-functions");
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-// Charge user to subscribe to Viami premium plan
+// Pay for premium plan
 exports.payPremium = async (req, res) => {
   const amount = req.body.amount;
 
@@ -29,3 +29,20 @@ exports.payPremium = async (req, res) => {
     res.status(500).send(message);
   }
 }
+
+// Confirm the payment
+exports.confirmPayment = async (req, res) => {
+    const paymentMethodId = req.body.paymentMethodId;
+    const paymentIntentId = req.body.paymentIntentId;
+  
+    try {
+      const paymentIntent = await stripe.paymentIntents.confirm(paymentIntentId, {
+        payment_method: paymentMethodId,
+      });
+  
+      res.status(200).json({ paymentIntent });
+    } catch (err) {
+      console.error('Error confirming PaymentIntent:', err);
+      res.status(500).send('Error confirming PaymentIntent');
+    }
+  }

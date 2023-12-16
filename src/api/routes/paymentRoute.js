@@ -6,4 +6,7 @@ module.exports = (server) => {
 server.route("/api/payment")
 .post( cors(), paymentController.payPremium);
 
+server.route("/api/confirm/payment")
+.post( cors(), paymentController.confirmPayment);
+
 }
