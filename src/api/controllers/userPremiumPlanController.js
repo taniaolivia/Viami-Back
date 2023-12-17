@@ -12,7 +12,7 @@ exports.getUserLastPremiumPlan = (req, res) => {
         .limit(1)
         .then((response) => {
             res.status(200);
-            res.json({plans: response});
+            res.json(response);
         })
         .catch((error) => {
             console.log(error);
