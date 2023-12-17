@@ -70,8 +70,11 @@ messengerRoute(server);
 const demandSendMessageRoute = require("./routes/demandSendMessageRoute");
 demandSendMessageRoute(server);
 
-const paymentRoute = require("./routes/paymentRoute");
-paymentRoute(server);
+const premiumPlanRoute = require("./routes/premiumPlanRoute");
+premiumPlanRoute(server);
+
+const userPremiumPlanRoute = require("./routes/userPremiumPlanRoute");
+userPremiumPlanRoute(server);
   
 server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
