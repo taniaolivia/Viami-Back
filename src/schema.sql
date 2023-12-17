@@ -244,7 +244,7 @@ DROP TABLE IF EXISTS `user_group`;
 CREATE TABLE `user_group` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `groupId` int(11) NOT NULL,
+  `groupId` int(11)  NULL,
   PRIMARY KEY (`userId`,`groupId`),
   UNIQUE KEY `id` (`id`),
   KEY `fk_user_group_group` (`groupId`),
@@ -258,7 +258,7 @@ CREATE TABLE `message` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `message` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `senderId` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `groupId` INT NOT NULL,
+  `groupId` INT  NULL,
   `responderId` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `date` DATETIME NOT NULL,
   `read` ENUM('0', '1') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
