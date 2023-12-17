@@ -322,3 +322,29 @@ CREATE TABLE `request_message_user` (
   CONSTRAINT `request_message_user_ibfk_1` FOREIGN KEY (`requesterId`) REFERENCES `user` (`id`),
   CONSTRAINT `request_message_user_ibfk_2` FOREIGN KEY (`receiverId`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `premium_plan`;
+CREATE TABLE `premium_plan` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `plan` varchar(100) NOT NULL,
+  `price` varchar(100) NOT NULL,
+  `by` varchar(100) NOT NULL,
+  `description` varchar(700) NOT NULL,
+  `popular` tinyint(2) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `user_premium_plan`;
+CREATE TABLE `user_premium_plan` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `planId` int(11) NOT NULL,
+  `token` varchar(300) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `userId` (`userId`),
+  KEY `planId` (`planId`),
+  CONSTRAINT `user_premium_plan_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
+  CONSTRAINT `user_premium_plan_ibfk_2` FOREIGN KEY (`planId`) REFERENCES `premium_plan` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

@@ -42,4 +42,7 @@ server.route("/api/users/:userId/fcmToken")
 server.route("/api/users/search/:search")
 .get(jwtMiddleware.authenticateUser, cors(), userController.searchUsersByFirstName);
 
+server.route("/api/users/:userId/plan")
+.patch(jwtMiddleware.authenticateUser, cors(), userController.updateUserPlan)
+
 }

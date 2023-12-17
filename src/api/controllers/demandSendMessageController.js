@@ -75,45 +75,48 @@ exports.answerRequestMessageTwoUsers = (req, res) => {
 
       if(answer === 1) {
         db("request_message_user")
-        .select("*")
-        .where("id", requestId)
-        .then((request) => {
+          .select("*")
+          .where("id", requestId)
+          .then((request) => {
 
-          db("group")
-            .insert({})
-            .then((groupId) => {
-            
-              db("user_group")
-                .insert({
-                  "userId": request[0].requesterId,
-                  "groupId": groupId
-                })
-                .then(() => {
-  
-                  db("user_group")
-                    .insert({
-                      "userId": request[0].receiverId,
-                      "groupId": groupId
-                    })
-                    .then((response) => {
-                      exports.sendNotificationPush(fcmToken, title, content, res);
-                    })
-                    .catch((error) => {
+            db("group")
+              .insert({})
+              .then((groupId) => {
+              
+                db("user_group")
+                  .insert({
+                    "userId": request[0].requesterId,
+                    "groupId": groupId
+                  })
+                  .then(() => {
+    
+                    db("user_group")
+                      .insert({
+                        "userId": request[0].receiverId,
+                        "groupId": groupId
+                      })
+                      .then((response) => {
+                        exports.sendNotificationPush(fcmToken, title, content, res);
+                      })
+                      .catch((error) => {
+                        console.log(error)
+    
+                        res.status(400).json({
+                          message: "Failed answering the request message of a user"
+                        });
+                      })
+                  })
+                  .catch((error) => {
                       console.log(error)
-  
-                      res.status(400).json({
-                        message: "Failed answering the request message of a user"
-                      });
-                    })
-                })
-                .catch((error) => {
-                    console.log(error)
-                })
-          })
-          .catch((error) => {
-            console.log(error)
-          })
+                  })
+            })
+            .catch((error) => {
+              console.log(error)
+            })
         })
+      }
+      else {
+        exports.sendNotificationPush(fcmToken, title, content, res);    
       }
     })
     .catch((error) => {
