@@ -37,7 +37,6 @@ exports.addCommentToUserProfile = (req, res) => {
     const commenterId = req.body.commenterId; 
     const commentText = req.body.commentText; 
   
-   
     db('comment')
       .insert({ comment: commentText })
       .then(commentIds => {
@@ -64,14 +63,11 @@ exports.addCommentToUserProfile = (req, res) => {
   };
 
 
- // Route to check if a user has left a comment for another user
+// Function to check if the user has left a comment for the other user
 exports.hasUserLeftComment = (req, res) => {
   const userId = req.params.userId;
   const otherUserId = req.params.otherUserId;
 
-  
-
-  // Function to check if the user has left a comment for the other user
   const checkComment = (userId, otherUserId) => {
     return new Promise((resolve, reject) => {
       db('user_comment')
@@ -90,7 +86,6 @@ exports.hasUserLeftComment = (req, res) => {
     });
   };
 
-  // Usage of the function
   checkComment(userId, otherUserId)
     .then(hasLeftComment => {
       const userStatus = hasLeftComment

@@ -13,8 +13,7 @@ server.route("/api/messages/:messageId")
 .post(jwtMiddleware.authenticateUser, cors(), messengerController.setMessageRead)
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getMessageById);
 
-server.route("/api/groups/:groupId/:userId/users")
-.get(jwtMiddleware.authenticateUser, cors(), messengerController.getUsersGroup);
+
 
 server.route("/api/messages/search/users")
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getSearchedUsers);
@@ -22,7 +21,7 @@ server.route("/api/messages/search/users")
 server.route("/api/sendMessage")
 .post(jwtMiddleware.authenticateUser, cors(), messengerController.sendMessage);
 
-server.route("/api/messages/addUserToGroup/:loggedInUserId/:userToAddId/:receiverId")
+server.route("/api/messages/addUserToGroup/:userToAddId/:groupId")
 .post(jwtMiddleware.authenticateUser, cors(), messengerController.addUserToGroup);
 
 server.route("/api/readDiscussions/:userId")
@@ -44,9 +43,8 @@ server.route('/api/discussions/groupUsers/:userId')
 .get(jwtMiddleware.authenticateUser, cors(), messengerController.getGroupUsersDiscussions);
 
 server.route('/api/discussions/:userId/unread')
-.get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllUnreadDiscussionsForUser);
-
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllUnreadDiscussionsForUserFilter);
 
 server.route('/api/discussions/:userId/read')
-.get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllReadDiscussionsForUser);
+.get(jwtMiddleware.authenticateUser, cors(), messengerController.getAllReadDiscussionsForUserFilter);
 }

@@ -323,44 +323,68 @@ exports.getMessagesBetweenUsers = (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     });
 };
-
-// Add a user to an existing group
+// Add a user to an existing group or create a new group
 exports.addUserToGroup = (req, res) => {
-  const loggedInUserId = req.params.loggedInUserId;
   const userToAddId = req.params.userToAddId;
-  const receiverId = req.params.receiverId;
+  const groupId = req.params.groupId;
 
+  
   db('user_group')
-    .select('groupId')
-    .whereIn('userId', [loggedInUserId, receiverId])
-    .groupBy('groupId')
-    .havingRaw('COUNT(DISTINCT userId) >= 2')
-    .then(groupIds => {
-      if (groupIds.length > 0) {
-        const groupId = groupIds[0].groupId;
-
-
+    .where({
+      userId: userToAddId,
+      groupId: groupId
+    })
+    .then(existingUser => {
+      if (existingUser.length > 0) {
+       
+        res.status(400).json({ success: false, message: 'User already exists in this group', groupId: groupId });
+      } else {
+        
         db('user_group')
           .select('userId')
           .where('groupId', groupId)
-          .andWhere('userId', userToAddId)
-          .then(existingUser => {
-            if (existingUser.length === 0) {
+          .then(usersInGroup => {
+            if (usersInGroup.length == 2) {
+              // Create a new group and retrieve its ID
+              db('group')
+                .insert({})
+                .returning('id')
+                .then(newGroupId => {
+                  
+                  const combinedUserIds = [...usersInGroup.map(user => user.userId), userToAddId];
+                  const newGroupInserts = combinedUserIds.map(userId => ({ userId, groupId: newGroupId[0] }));
+
+                  db('user_group')
+                    .insert(newGroupInserts)
+                    .then(() => {
+                      res.status(200).json({ success: true, message: 'User added to the new group successfully', groupId: newGroupId[0] });
+                    })
+                    .catch(error => {
+                      console.error(error);
+                      res.status(500).json({ success: false, message: 'Failed to add user to the new group' });
+                    });
+                })
+                .catch(error => {
+                  console.error(error);
+                  res.status(500).json({ success: false, message: 'Failed to create a new group' });
+                });
+            } else {
+            
               db('user_group')
                 .insert({ userId: userToAddId, groupId: groupId })
                 .then(() => {
-                  res.status(200).json({ success: true, message: 'User added to the group successfully' });
+                  res.status(200).json({ success: true, message: 'User added to the group successfully', groupId: groupId });
                 })
                 .catch(error => {
                   console.error(error);
                   res.status(500).json({ success: false, message: 'Failed to add user to the group' });
                 });
-            } else {
-              res.status(400).json({ success: false, message: 'User is already in the group' });
             }
+          })
+          .catch(error => {
+            console.error(error);
+            res.status(500).json({ success: false, message: 'Internal server error' });
           });
-      } else {
-        res.status(404).json({ success: false, message: 'Group not found' });
       }
     })
     .catch(error => {
@@ -368,6 +392,7 @@ exports.addUserToGroup = (req, res) => {
       res.status(500).json({ success: false, message: 'Internal server error' });
     });
 };
+
 
 // Get discussions for a specific message
 exports.getDiscussionsForMessage = (req, res) => {
@@ -540,7 +565,7 @@ exports.getAllUnreadDiscussionsForUser = (req, res) => {
 
 
 
-// location filter 
+// Filter discussions by location
 exports.getAllDiscussionsForUserWithLocationFilter =  (req, res) => {
   const userId = req.params.userId;
   const selectedLocation = req.query.location;
@@ -949,8 +974,8 @@ exports.getGroupUsersDiscussions = (req, res) => {
     });
 };
 
-//filter with not read 
-exports.getAllUnreadDiscussionsForUser = async (req, res) => {
+// get only unread dicussions of a user
+exports.getAllUnreadDiscussionsForUserFilter = async (req, res) => {
   try {
     const userId = req.params.userId;
 
@@ -1030,9 +1055,8 @@ exports.getAllUnreadDiscussionsForUser = async (req, res) => {
 };
 
 
-
-//filter with read 
-exports.getAllReadDiscussionsForUser = async (req, res) => {
+// get only read dicussions of a user
+exports.getAllReadDiscussionsForUserFilter = async (req, res) => {
   try {
     const userId = req.params.userId;
 

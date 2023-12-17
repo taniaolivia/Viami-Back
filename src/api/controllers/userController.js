@@ -612,7 +612,7 @@ exports.passwordChangedSuccess = (email) => {
     }); 
 }
 
-// Route to get user status
+// Get the status of a user
 exports.getUserStatus = (req, res) => {
     const userId = req.params.userId;
   
@@ -635,18 +635,79 @@ exports.getUserStatus = (req, res) => {
       });
   };
 
-  
 
-  // Search for users by first name
+// Update the fcm token of a user
+exports.setFcmTokenUser = (req, res) => {
+  let fcmToken = req.query.fcmToken;
+  let userId = req.params.userId;
+
+  db("user")
+    .update({"fcmToken": fcmToken})
+    .where("id", userId)
+    .then((response) => {
+      res.status(200).json({
+          message: "Successfully updating the fcm token of a user"
+      });
+    })
+    .catch((error) => {
+      res.status(400).json({
+          message: "Failed updating the fcm token of a user"
+      });
+    
+      console.log(error);
+    });
+}
+
+// Search for users by first name
 exports.searchUsersByFirstName = (req, res) => {
     const searchTerm = req.params.search; 
+
     db('user')
         .select('*')
-        .where('firstName',searchTerm ) // Utilisez 'ilike' pour une recherche insensible à la casse
+        .where('firstName', searchTerm) 
         .then(data => res.status(200).json({ data }))
         .catch(error => {
             console.error(error);
-            res.status(500).json({ message: 'Internal server error' });tania
+            res.status(500).json({ message: 'Internal server error' });
         });
 };
 
+// Function to get users with whom a specific user has had a conversation
+exports.getUsersWithConversation = (req, res) => {
+    const userId = req.params.userId;
+
+    db("user_group")
+        .select("groupId")
+        .where("userId", userId)
+        .then(groups => {
+            const groupIds = groups.map(group => group.groupId);
+
+            
+            db("user_group")
+                .select("userId")
+                .whereIn("groupId", groupIds)
+                .andWhere("userId", "<>", userId)
+                .distinct("userId")
+                .then(userIds => {
+                    const userIdsArray = userIds.map(user => user.userId);
+
+                   
+                    db("user")
+                        .select("*")
+                        .whereIn("id", userIdsArray)
+                        .then(data => res.status(200).json({data}))
+                        .catch(error => {
+                            console.error(error);
+                            res.status(500).json({ message: "Server error" });
+                        });
+                })
+                .catch(error => {
+                    console.error(error);
+                    res.status(500).json({ message: "Server error" });
+                });
+        })
+        .catch(error => {
+            console.error(error);
+            res.status(500).json({ message: "Server error" });
+        });
+}

@@ -9,7 +9,9 @@ server.route("/api/usersComments")
 server.route("/api/users/:userId/comments")
 .get(jwtMiddleware.authenticateUser, cors(), userCommentController.getUserCommentsById);
 
-server.post("/api/users/addComment/:userId", jwtMiddleware.authenticateUser, cors(),userCommentController.addCommentToUserProfile);
+server.post("/api/users/addComment/:userId", jwtMiddleware.authenticateUser, cors(), userCommentController.addCommentToUserProfile);
+
+server.get("/api/users/hasUserLeftComment/:userId/:otherUserId", jwtMiddleware.authenticateUser, cors(), userCommentController.hasUserLeftComment);
 
 server.get("/api/users/hasUserLeftComment/:userId/:otherUserId", jwtMiddleware.authenticateUser, cors(),userCommentController.hasUserLeftComment);
 
