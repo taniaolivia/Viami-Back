@@ -242,7 +242,6 @@ exports.sendMessage = async (req, res) => {
       await addUserInGroup(trx, finalGroupId, ...userIds);
       await sendGroupMessage(trx, finalGroupId, message, senderId, responderId);
 
-      
       await trx.commit();
       res.status(201).json({ message: 'Message sent successfully' });
     });
@@ -262,6 +261,9 @@ async function sendGroupMessage(trx, groupId, message, senderId, responderId) {
     date: new Date(),
     read: '0',
   };
+
+  console.log("Group message data before insertion into database:");
+  console.log(groupMessage);
 
   const [messageId] = await trx('message').insert(groupMessage);
 
