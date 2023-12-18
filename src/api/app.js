@@ -66,6 +66,21 @@ activityImageRoute(server);
 
 const messengerRoute = require("./routes/messengerRoute");
 messengerRoute(server);
+
+const activityCommentRoute = require("./routes/activityCommentRoute");
+activityCommentRoute(server);
+
+const faqRoute = require("./routes/faqRoute");
+faqRoute(server);
+
+const demandSendMessageRoute = require("./routes/demandSendMessageRoute");
+demandSendMessageRoute(server);
+
+const premiumPlanRoute = require("./routes/premiumPlanRoute");
+premiumPlanRoute(server);
+
+const userPremiumPlanRoute = require("./routes/userPremiumPlanRoute");
+userPremiumPlanRoute(server);
   
 server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);

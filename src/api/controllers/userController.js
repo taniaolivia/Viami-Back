@@ -55,7 +55,8 @@ exports.userRegister = (req, res) => {
                                         connected: "0",
                                         profileImage: null,
                                         verifyEmailToken: tokenEmail,
-                                        emailVerified: "0"
+                                        emailVerified: "0",
+                                        fcmToken: newUser.fcmToken
                                     })
                                     .then(data => {
                                         exports.sendVerificationMail(newUser.email, tokenEmail);
@@ -120,7 +121,7 @@ exports.userLogin = (req, res) => {
 
                         }
                         else {
-                            jwt.sign(userData, process.env.JWT_KEY, {expiresIn: "14 days"}, (error, token) => {
+                            jwt.sign(userData, process.env.JWT_KEY, (error, token) => {
                                 if(error){
                                     res.status(500);
                                     res.json({message: "Impossible to generate a token"});
@@ -184,16 +185,18 @@ exports.userLogout = (req, res) => {
 exports.checkToken = (req, res) => {
     let token = req.params.token;
 
-    jwt.verify(token, process.env.JWT_KEY, function(err, decoded) {
-        if (err) {
-            err = {
-              name: 'TokenExpiredError',
+    jwt.verify(token, process.env.JWT_KEY, function(error, decoded) {
+        if (error) {
+            error = {
               message: 'Token expired',
             }
 
-            res.status(200).json({ message: err });
+            res.status(200).json({ message: error });
         }
-      });
+        else {
+            res.status(200).json({ message: "Token not expired" });
+        }
+    });
 }
 
 // Show list of users
@@ -612,7 +615,7 @@ exports.passwordChangedSuccess = (email) => {
     }); 
 }
 
-// Route to get user status
+// Get the status of a user
 exports.getUserStatus = (req, res) => {
     const userId = req.params.userId;
   
@@ -634,19 +637,63 @@ exports.getUserStatus = (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
       });
   };
-  
-  // Search for users by first name
-  exports.searchUsersByFirstName = (req, res) => {
+
+
+// Update the fcm token of a user
+exports.setFcmTokenUser = (req, res) => {
+  let fcmToken = req.query.fcmToken;
+  let userId = req.params.userId;
+
+  db("user")
+    .update({"fcmToken": fcmToken})
+    .where("id", userId)
+    .then((response) => {
+      res.status(200).json({
+          message: "Successfully updating the fcm token of a user"
+      });
+    })
+    .catch((error) => {
+      res.status(400).json({
+          message: "Failed updating the fcm token of a user"
+      });
+    
+      console.log(error);
+    });
+}
+
+// Search for users by first name
+exports.searchUsersByFirstName = (req, res) => {
     const searchTerm = req.params.search; 
+
     db('user')
         .select('*')
-        .where('firstName',searchTerm ) 
+        .where('firstName', searchTerm) 
         .then(data => res.status(200).json({ data }))
         .catch(error => {
             console.error(error);
-            res.status(500).json({ message: 'Internal server error' });tania
+            res.status(500).json({ message: 'Internal server error' });
         });
 };
+
+// Update user's plan
+exports.updateUserPlan = (req, res) => {
+    const userId = req.params.userId;
+    const plan = req.body.plan;
+
+    db("user")
+        .update("plan", plan)
+        .where({"id": userId})
+        .then(() => {
+            res.status(201);
+            res.json({message: "User's plan is updated successfully"});
+        })
+        .catch((error) => {
+            console.log(error);
+            res.status(401);
+            res.json({message: "Server error"});
+        })
+
+}
 
 // Function to get users with whom a specific user has had a conversation
 exports.getUsersWithConversation = (req, res) => {
@@ -687,5 +734,3 @@ exports.getUsersWithConversation = (req, res) => {
             res.status(500).json({ message: "Server error" });
         });
 }
-
-

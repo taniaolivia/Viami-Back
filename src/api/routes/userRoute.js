@@ -36,7 +36,13 @@ server.route("/api/users/:userId/conversations")
 .get(jwtMiddleware.authenticateUser, cors(), userController.getUsersWithConversation);
 
 
+server.route("/api/users/:userId/fcmToken")
+.patch(jwtMiddleware.authenticateUser, cors(), userController.setFcmTokenUser);
+
 server.route("/api/users/search/:search")
 .get(jwtMiddleware.authenticateUser, cors(), userController.searchUsersByFirstName);
+
+server.route("/api/users/:userId/plan")
+.patch(jwtMiddleware.authenticateUser, cors(), userController.updateUserPlan)
 
 }

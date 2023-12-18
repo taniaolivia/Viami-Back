@@ -64,6 +64,7 @@ CREATE TABLE `user` (
   `verifyEmailToken` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `emailVerified` enum('0','1') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `plan` enum('free','premium') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'free',
+  `fcmToken` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -283,4 +284,67 @@ CREATE TABLE `message_user_read` (
   CONSTRAINT `message_user_read_ibfk_2` FOREIGN KEY (`userRead`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+DROP TABLE IF EXISTS `activity_comment`;
+CREATE TABLE `activity_comment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `activityId` int(100) NOT NULL,
+  `commenterId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `commentId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `activityId` (`activityId`),
+  KEY `commenterId` (`commenterId`),
+  KEY `commentId` (`commentId`),
+  CONSTRAINT `activity_comment_ibfk_1` FOREIGN KEY (`activityId`) REFERENCES `activity` (`id`),
+  CONSTRAINT `activity_comment_ibfk_2` FOREIGN KEY (`commenterId`) REFERENCES `user` (`id`),
+  CONSTRAINT `activity_comment_ibfk_3` FOREIGN KEY (`commentId`) REFERENCES `comment` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+DROP TABLE IF EXISTS `faq`;
+CREATE TABLE `faq` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `question` varchar(1000) NOT NULL,
+  `answer` text NOT NULL,
+  `isFrequented` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `request_message_user`;
+CREATE TABLE `request_message_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `requesterId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `receiverId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `accept` tinyint(2) DEFAULT NULL,
+  `chat` tinyint(2) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `requesterId` (`requesterId`),
+  KEY `receiverId` (`receiverId`),
+  CONSTRAINT `request_message_user_ibfk_1` FOREIGN KEY (`requesterId`) REFERENCES `user` (`id`),
+  CONSTRAINT `request_message_user_ibfk_2` FOREIGN KEY (`receiverId`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `premium_plan`;
+CREATE TABLE `premium_plan` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `plan` varchar(100) NOT NULL,
+  `price` varchar(100) NOT NULL,
+  `by` varchar(100) NOT NULL,
+  `description` varchar(700) NOT NULL,
+  `popular` tinyint(2) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `user_premium_plan`;
+CREATE TABLE `user_premium_plan` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `planId` int(11) NOT NULL,
+  `token` varchar(300) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `userId` (`userId`),
+  KEY `planId` (`planId`),
+  CONSTRAINT `user_premium_plan_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
+  CONSTRAINT `user_premium_plan_ibfk_2` FOREIGN KEY (`planId`) REFERENCES `premium_plan` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

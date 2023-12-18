@@ -984,8 +984,7 @@ exports.getGroupUsersDiscussions = (req, res) => {
     });
 };
 
-
-//filter with not read 
+// get only unread dicussions of a user
 exports.getAllUnreadDiscussionsForUserFilter = async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -1066,8 +1065,7 @@ exports.getAllUnreadDiscussionsForUserFilter = async (req, res) => {
 };
 
 
-
-//filter with read 
+// get only read dicussions of a user
 exports.getAllReadDiscussionsForUserFilter = async (req, res) => {
   try {
     const userId = req.params.userId;
