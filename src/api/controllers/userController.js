@@ -638,6 +638,7 @@ exports.getUserStatus = (req, res) => {
       });
   };
 
+
 // Update the fcm token of a user
 exports.setFcmTokenUser = (req, res) => {
   let fcmToken = req.query.fcmToken;
@@ -691,4 +692,45 @@ exports.updateUserPlan = (req, res) => {
             res.status(401);
             res.json({message: "Server error"});
         })
+
+}
+
+// Function to get users with whom a specific user has had a conversation
+exports.getUsersWithConversation = (req, res) => {
+    const userId = req.params.userId;
+
+    db("user_group")
+        .select("groupId")
+        .where("userId", userId)
+        .then(groups => {
+            const groupIds = groups.map(group => group.groupId);
+
+            
+            db("user_group")
+                .select("userId")
+                .whereIn("groupId", groupIds)
+                .andWhere("userId", "<>", userId)
+                .distinct("userId")
+                .then(userIds => {
+                    const userIdsArray = userIds.map(user => user.userId);
+
+                   
+                    db("user")
+                        .select("*")
+                        .whereIn("id", userIdsArray)
+                        .then(data => res.status(200).json({data}))
+                        .catch(error => {
+                            console.error(error);
+                            res.status(500).json({ message: "Server error" });
+                        });
+                })
+                .catch(error => {
+                    console.error(error);
+                    res.status(500).json({ message: "Server error" });
+                });
+        })
+        .catch(error => {
+            console.error(error);
+            res.status(500).json({ message: "Server error" });
+        });
 }

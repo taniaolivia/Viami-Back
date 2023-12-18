@@ -244,7 +244,7 @@ DROP TABLE IF EXISTS `user_group`;
 CREATE TABLE `user_group` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `groupId` int(11) NOT NULL,
+  `groupId` int(11)  NULL,
   PRIMARY KEY (`userId`,`groupId`),
   UNIQUE KEY `id` (`id`),
   KEY `fk_user_group_group` (`groupId`),
@@ -258,7 +258,7 @@ CREATE TABLE `message` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `message` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `senderId` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `groupId` INT NOT NULL,
+  `groupId` INT  NULL,
   `responderId` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `date` DATETIME NOT NULL,
   `read` ENUM('0', '1') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
@@ -282,6 +282,30 @@ CREATE TABLE `message_user_read` (
   KEY `userRead` (`userRead`),
   CONSTRAINT `message_user_read_ibfk_1` FOREIGN KEY (`messageId`) REFERENCES `message` (`id`),
   CONSTRAINT `message_user_read_ibfk_2` FOREIGN KEY (`userRead`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+DROP TABLE IF EXISTS `activity_comment`;
+CREATE TABLE `activity_comment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `activityId` int(100) NOT NULL,
+  `commenterId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `commentId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `activityId` (`activityId`),
+  KEY `commenterId` (`commenterId`),
+  KEY `commentId` (`commentId`),
+  CONSTRAINT `activity_comment_ibfk_1` FOREIGN KEY (`activityId`) REFERENCES `activity` (`id`),
+  CONSTRAINT `activity_comment_ibfk_2` FOREIGN KEY (`commenterId`) REFERENCES `user` (`id`),
+  CONSTRAINT `activity_comment_ibfk_3` FOREIGN KEY (`commentId`) REFERENCES `comment` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+DROP TABLE IF EXISTS `faq`;
+CREATE TABLE `faq` (
+  `id` int(100) NOT NULL AUTO_INCREMENT,
+  `question` varchar(1000) NOT NULL,
+  `answer` text NOT NULL,
+  `isFrequented` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
