@@ -490,135 +490,160 @@ exports.getDiscussionsForMessage = (req, res) => {
         const senderId = messageDetails[0].senderId;
         const responderId = messageDetails[0].responderId;
         const groupId = messageDetails[0].groupId;
+       
+
+        let messagesWithDetails = [];
 
      
-        db('user')
-          .select('firstName', 'lastName')
-          .where('id', senderId)
-          .then(senderDetails => {
-            if (senderDetails.length === 0) {
-              res.status(404).json({ message: 'Sender not found' });
-            } else {
-           
-              db('user')
-                .select('firstName', 'lastName')
-                .where('id', responderId)
-                .then(responderDetails => {
-                  if (responderDetails.length === 0) {
-                    res.status(404).json({ message: 'Responder not found' });
-                  } else {
+       
                   
-                    db('message')
+                  db('message')
                       .select('*')
                       .where('groupId', groupId)
                       .orderBy('date', 'asc')
                       .then(messages => {
-                        
-                        const messagesWithDetails = messages.map(message => ({
-                          ...message,
-                          senderFirstName: senderDetails[0].firstName,
-                          senderLastName: senderDetails[0].lastName,
-                          responderFirstName: responderDetails[0].firstName,
-                          responderLastName: responderDetails[0].lastName,
-                        }));
-                        
-                        res.status(200).json({ messages: messagesWithDetails });
+                       const promise = messages.map(message => {
+                        return db('user')
+                        .select('firstName', 'lastName')
+                        .where('id', message.senderId)
+                        .then(senderDetails => {
+                          if (senderDetails.length === 0) {
+                            res.status(404).json({ message: 'Sender not found' });
+                          } else {
+                         
+                            return db('user')
+                              .select('firstName', 'lastName')
+                              .where('id', message.responderId)
+                              .then(responderDetails => {
+                                if (responderDetails.length === 0) {
+                                  res.status(404).json({ message: 'Responder not found' });
+                                } else {
+                                  messagesWithDetails.push({
+                                    ...message,
+                                    senderFirstName: senderDetails[0].firstName,
+                                    senderLastName: senderDetails[0].lastName,
+                                    responderFirstName: responderDetails[0].firstName,
+                                    responderLastName: responderDetails[0].lastName,
+                                  })
+                                  return {
+                                    ...message,
+                                    senderFirstName: senderDetails[0].firstName,
+                                    senderLastName: senderDetails[0].lastName,
+                                    responderFirstName: responderDetails[0].firstName,
+                                    responderLastName: responderDetails[0].lastName,
+                                  };
+
+                                 
+                                }
+                              })
+                            }
+                          }
+                        )})
+                       
+                        Promise.all(promise)
+                        .then(messages => {
+                          res.status(200).json({ messages: messages });
+                        })
+                            
+                       
                       })
                       .catch(error => {
                         console.error(error);
                         res.status(500).json({ message: 'Internal server error' });
                       });
                   }
-                })
-                .catch(error => {
-                  console.error(error);
-                  res.status(500).json({ message: 'Internal server error' });
-                });
-            }
-          })
-          .catch(error => {
-            console.error(error);
-            res.status(500).json({ message: 'Internal server error' });
-          });
-      }
+         
     })
+    
     .catch(error => {
       console.error(error);
       res.status(500).json({ message: 'Internal server error' });
     });
 };
 
-// Get discussions for a specific group
+// Get discussions for a specific group 
 exports.getDiscussionsForGroup = (req, res) => {
-  const groupId = req.params.groupId;
-
-  db('message')
-    .select('senderId', 'responderId', 'groupId')
-    .where('id', groupId)
-    .then(messageDetails => {
-      if (messageDetails.length === 0) {
-        res.status(404).json({ message: 'Message not found' });
-      } else {
-        const senderId = messageDetails[0].senderId;
-        const responderId = messageDetails[0].responderId;
-        const groupId = messageDetails[0].groupId;
-
-     
-        db('user')
-          .select('firstName', 'lastName')
-          .where('id', senderId)
-          .then(senderDetails => {
-            if (senderDetails.length === 0) {
-              res.status(404).json({ message: 'Sender not found' });
-            } else {
-           
-              db('user')
-                .select('firstName', 'lastName')
-                .where('id', responderId)
-                .then(responderDetails => {
-                  if (responderDetails.length === 0) {
-                    res.status(404).json({ message: 'Responder not found' });
-                  } else {
-                  
+    const groupId = req.params.groupId;
+    db('message')
+      .select('senderId', 'responderId', 'groupId')
+      .where('groupId', groupId)
+      .then(messageDetails => {
+        if (messageDetails.length === 0) {
+          res.status(404).json({ message: 'Group not found' });
+        } else {
+          const senderId = messageDetails[0].senderId;
+          const responderId = messageDetails[0].responderId;
+          const groupId = messageDetails[0].groupId;
+          
+  
+          let messagesWithDetails = [];
+  
+       
+         
+                    
                     db('message')
-                      .select('*')
-                      .where('groupId', groupId)
-                      .orderBy('date', 'asc')
-                      .then(messages => {
+                        .select('*')
+                        .where('groupId', groupId)
+                        .orderBy('date', 'asc')
+                        .then(messages => {
+                         const promise = messages.map(message => {
+                          return db('user')
+                          .select('firstName', 'lastName')
+                          .where('id', message.senderId)
+                          .then(senderDetails => {
+                            if (senderDetails.length === 0) {
+                              res.status(404).json({ message: 'Sender not found' });
+                            } else {
+                           
+                              return db('user')
+                                .select('firstName', 'lastName')
+                                .where('id', message.responderId)
+                                .then(responderDetails => {
+                                  if (responderDetails.length === 0) {
+                                    res.status(404).json({ message: 'Responder not found' });
+                                  } else {
+                                    messagesWithDetails.push({
+                                      ...message,
+                                      senderFirstName: senderDetails[0].firstName,
+                                      senderLastName: senderDetails[0].lastName,
+                                      responderFirstName: responderDetails[0].firstName,
+                                      responderLastName: responderDetails[0].lastName,
+                                    })
+                                    return {
+                                      ...message,
+                                      senderFirstName: senderDetails[0].firstName,
+                                      senderLastName: senderDetails[0].lastName,
+                                      responderFirstName: responderDetails[0].firstName,
+                                      responderLastName: responderDetails[0].lastName,
+                                    };
+  
+                                   
+                                  }
+                                })
+                              }
+                            }
+                          )})
                         
-                        const messagesWithDetails = messages.map(message => ({
-                          ...message,
-                          senderFirstName: senderDetails[0].firstName,
-                          senderLastName: senderDetails[0].lastName,
-                          responderFirstName: responderDetails[0].firstName,
-                          responderLastName: responderDetails[0].lastName,
-                        }));
-                        
-                        res.status(200).json({ messages: messagesWithDetails });
-                      })
-                      .catch(error => {
-                        console.error(error);
-                        res.status(500).json({ message: 'Internal server error' });
-                      });
-                  }
-                })
-                .catch(error => {
-                  console.error(error);
-                  res.status(500).json({ message: 'Internal server error' });
-                });
-            }
-          })
-          .catch(error => {
-            console.error(error);
-            res.status(500).json({ message: 'Internal server error' });
-          });
-      }
-    })
-    .catch(error => {
-      console.error(error);
-      res.status(500).json({ message: 'Internal server error' });
-    });
-};
+                          Promise.all(promise)
+                          .then(messages => {
+                            res.status(200).json({ messages: messages });
+                          })
+                              
+                         
+                        })
+                        .catch(error => {
+                          console.error(error);
+                          res.status(500).json({ message: 'Internal server error' });
+                        });
+                    }
+          
+      })
+      
+      .catch(error => {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+      });
+  };
 
 // Function to get all chats with read messages for a user
 exports.getAllReadDiscussionsForUser = (req, res) => {
