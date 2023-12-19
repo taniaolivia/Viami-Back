@@ -14,6 +14,14 @@ exports.getAllActivitiesImages = (req, res) => {
             "activity.nbParticipant as nbParticipant",
             "activity.isRecommended as isRecommended",
             "activity.imageName as imageName",
+            "activity.url as url",
+            "activity.telephone as telephone",
+            "activity.address as address",
+            "activity.latitude as latitude",
+            "activity.longitude as longitude",
+            "activity.schedule as schedule",
+            "activity.language as language",
+            "activity.accessibility as accessibility",
             "image.image as image",
             "activity.note as note"
         ])
@@ -42,6 +50,14 @@ exports.getActivityImagesById = (req, res) => {
         "activity.nbParticipant as nbParticipant",
         "activity.isRecommended as isRecommended",
         "activity.imageName as imageName",
+        "activity.url as url",
+        "activity.telephone as telephone",
+        "activity.address as address",
+        "activity.latitude as latitude",
+        "activity.longitude as longitude",
+        "activity.schedule as schedule",
+        "activity.language as language",
+        "activity.accessibility as accessibility",
         "image.image as image",
         "activity.note as note"
     ])
