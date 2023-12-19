@@ -6,7 +6,7 @@ exports.getAllPremiumPlans = (req, res) => {
     db("premium_plan")
         .select("*")
         .then((response) => {
-            res.status(401);
+            res.status(200);
             res.json({plans: response});
         })
         .catch((error) => {
@@ -24,7 +24,7 @@ exports.getPremiumPlanById = (req, res) => {
         .select("*")
         .where("id", planId)
         .then((response) => {
-            res.status(401);
+            res.status(200);
             res.json(response);
         })
         .catch((error) => {

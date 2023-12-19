@@ -32,13 +32,13 @@ exports.getTravelImagesById = (req, res) => {
     db("travel_image")
     .select([
         "travel_image.id as id",
-            "travel_image.idImage as idImage",
-            "travel_image.idTravel as idTravel",
-            "travel.name as name",
-            "travel.description as travelDescription",
-            "travel.location as location",
-            "travel.nbParticipant as nbParticipant",
-            "image.image as imageName",
+        "travel_image.idImage as idImage",
+        "travel_image.idTravel as idTravel",
+        "travel.name as name",
+        "travel.description as travelDescription",
+        "travel.location as location",
+        "travel.nbParticipant as nbParticipant",
+        "image.image as imageName",
     ])
     .where({idTravel: id})
     .join("travel", "travel.id", "=", "travel_image.idTravel")
