@@ -28,7 +28,10 @@ server.route("/api/popular/activities")
 server.route("/api/popularFive/activities")
 .get(jwtMiddleware.authenticateUser, cors(), activityController.getTopFivePopularActivities);
 
+server.route("/api/near/activities")
+.get(jwtMiddleware.authenticateUser, cors(), activityController.getAllActivitiesByUserPosition);
+
 server.route("/api/newNote/:activityId")
-.post(jwtMiddleware.authenticateUser, cors(), activityController.updateNoteActivity);
+.get(jwtMiddleware.authenticateUser, cors(), activityController.updateNoteActivity);
 
 }

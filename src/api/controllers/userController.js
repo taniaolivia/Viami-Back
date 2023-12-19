@@ -399,10 +399,12 @@ exports.sendVerificationMail = async(to, token) =>{
         html: html});
 
     const transporter = nodemailer.createTransport({
-        service: "gmail",
+        host: process.env.VIAMI_HOST,
+        port: process.env.VIAMI_PORT, 
+        secure: true,
         auth: {
-        user: process.env.VIAMI_EMAIL,
-        pass: process.env.VIAMI_PASSWORD,
+            user: process.env.VIAMI_EMAIL,
+            pass: process.env.VIAMI_PASSWORD,
         },
     });
 
@@ -481,12 +483,14 @@ exports.sendEmailVerified = async(to) =>{
         html: html});
    
     const transporter = nodemailer.createTransport({
-        service: "gmail",
+        host: process.env.VIAMI_HOST,
+        port: process.env.VIAMI_PORT, 
+        secure: true,
         auth: {
-          user: process.env.VIAMI_EMAIL,
-          pass: process.env.VIAMI_PASSWORD,
+            user: process.env.VIAMI_EMAIL,
+            pass: process.env.VIAMI_PASSWORD,
         },
-      });
+    });
   
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
@@ -521,10 +525,12 @@ exports.forgetPassword = async(req, res) => {
             html: html});
     
         const transporter = nodemailer.createTransport({
-            service: "gmail",
+            host: process.env.VIAMI_HOST,
+            port: process.env.VIAMI_PORT, 
+            secure: true,
             auth: {
-            user: process.env.VIAMI_EMAIL,
-            pass: process.env.VIAMI_PASSWORD,
+                user: process.env.VIAMI_EMAIL,
+                pass: process.env.VIAMI_PASSWORD,
             },
         });
     
@@ -596,13 +602,15 @@ exports.passwordChangedSuccess = (email) => {
         html: html});
    
     const transporter = nodemailer.createTransport({
-        service: "gmail",
+        host: process.env.VIAMI_HOST,
+        port: process.env.VIAMI_PORT, 
+        secure: true,
         auth: {
-          user: process.env.VIAMI_EMAIL,
-          pass: process.env.VIAMI_PASSWORD,
+            user: process.env.VIAMI_EMAIL,
+            pass: process.env.VIAMI_PASSWORD,
         },
-      });
-  
+    });
+
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             console.error(error);

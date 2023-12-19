@@ -1,4 +1,4 @@
-const firebasePrivateKey = process.env.FIREBASE_PRIVATE_KEY_1 + process.env.FIREBASE_PRIVATE_KEY_2 + process.env.FIREBASE_PRIVATE_KEY_3;
+const firebasePrivateKey = process.env.FIREBASE_PRIVATE_KEY_1 + process.env.FIREBASE_PRIVATE_KEY_2 + process.env.FIREBASE_PRIVATE_KEY_3 + process.env.FIREBASE_PRIVATE_KEY_4 + process.env.FIREBASE_PRIVATE_KEY_5;
 const encodedFirebasePrivateKey = Buffer.from(firebasePrivateKey, 'base64').toString('utf-8');
 
 module.exports = {

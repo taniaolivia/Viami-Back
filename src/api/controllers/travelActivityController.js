@@ -15,7 +15,15 @@ exports.getAllTravelsActivities = (req, res) => {
             "activity.imageName as imageName",
             "activity.location as activityLocation",
             "activity.isRecommended as isRecommended",
-            "activity.nbParticipant as activityNbParticipant"
+            "activity.nbParticipant as activityNbParticipant",
+            "activity.url as activityUrl",
+            "activity.telephone as activityTelephone",
+            "activity.address as activityAddress",
+            "activity.latitude as activityLatitude",
+            "activity.longitude as activityLongitude",
+            "activity.schedule as activitySchedule",
+            "activity.language as activityLanguage",
+            "activity.accessibility as accessibility"
         ])
         .join("travel", "travel.id", "=", "travel_activity.idTravel")
         .join("activity", "activity.id", "=", "travel_activity.idActivity")
@@ -44,7 +52,15 @@ exports.getTravelActivitiesById = (req, res) => {
         "activity.imageName as imageName",
         "activity.location as activityLocation",
         "activity.isRecommended as isRecommended",
-        "activity.nbParticipant as activityNbParticipant"
+        "activity.nbParticipant as activityNbParticipant",
+        "activity.url as activityUrl",
+        "activity.telephone as activityTelephone",
+        "activity.address as activityAddress",
+        "activity.latitude as activityLatitude",
+        "activity.longitude as activityLongitude",
+        "activity.schedule as activitySchedule",
+        "activity.language as activityLanguage",
+        "activity.accessibility as accessibility"
     ])
     .where({idTravel: id})
     .join("travel", "travel.id", "=", "travel_activity.idTravel")

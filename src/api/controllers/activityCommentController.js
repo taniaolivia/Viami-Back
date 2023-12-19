@@ -1,12 +1,9 @@
 const db = require("../knex");
 
-
  // Route to check if a user has left a comment for another user
  exports.hasUserLeftComment = (req, res) => {
     const activityId = req.params.activityId;
     const otherUserId = req.params.otherUserId;
-  
-    
   
     // Function to check if the user has left a comment for the other user
     const checkComment = (activityId, otherUserId) => {
