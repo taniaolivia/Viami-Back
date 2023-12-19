@@ -140,12 +140,19 @@ DROP TABLE IF EXISTS `activity`;
 CREATE TABLE `activity` (
   `id` int(100) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
-  `description` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `url` varchar(200) NOT NULL,
+  `telephone` varchar(100) NOT NULL,
+  `address` varchar(200) NOT NULL,
+  `latitude` varchar(200) NOT NULL,
+  `longitude` varchar(200) NOT NULL,
+  `schedule` varchar(300) NOT NULL,
+  `language` varchar(200) NOT NULL,
+  `accessibility` varchar(200) NOT NULL,
   `imageName` varchar(200) NOT NULL,
+  `description` varchar(500) DEFAULT NULL,
   `location` varchar(200) NOT NULL,
   `isRecommended` tinyint(1) NOT NULL DEFAULT 0,
   `nbParticipant` int(100) DEFAULT NULL,
-  `note` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
