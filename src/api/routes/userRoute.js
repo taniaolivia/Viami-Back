@@ -39,5 +39,8 @@ server.route("/api/users/search/:search")
 server.route("/api/users/:userId/plan")
 .patch(jwtMiddleware.authenticateUser, cors(), userController.updateUserPlan);
 
+server.route("/api/users/:userId/conversations")
+.get(jwtMiddleware.authenticateUser, cors(), userController.getUsersWithConversation);
+
 
 }
