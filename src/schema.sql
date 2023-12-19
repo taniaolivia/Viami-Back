@@ -153,7 +153,7 @@ CREATE TABLE `activity` (
   `location` varchar(200) NOT NULL,
   `isRecommended` tinyint(1) NOT NULL DEFAULT 0,
   `nbParticipant` int(100) DEFAULT NULL,
-  `note` int(11) NOT NULL,
+  `note` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
