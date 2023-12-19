@@ -223,7 +223,7 @@ exports.getUsersGroup = (req, res) => {
 }
 
 // Send notification push
-exports.sendNotificationPushMessage = (fcmToken, text,name) => {
+exports.sendNotificationPushMessage = (fcmToken, text,name,res) => {
   const receivedToken = fcmToken;
   const title = name;
   const content = text;
@@ -270,7 +270,7 @@ async function sendNotificationToGroup(groupId, senderId, message, res) {
         console.log(fcmToken);
         console.log(senderFirstName['firstName']);
         
-        notifications.push(exports.sendNotificationPushMessage(fcmToken, message, senderFirstName['firstName']));
+        notifications.push(exports.sendNotificationPushMessage(fcmToken, message, senderFirstName['firstName'],res));
       }
     });
 
