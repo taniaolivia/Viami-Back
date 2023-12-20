@@ -1,5 +1,13 @@
+const { initializeApp } = require('firebase-admin/app');
+const { getMessaging } = require("firebase-admin/messaging");
+const admin = require("firebase-admin");
+const firebaseConfig = require("../viami-402918-firebase-adminsdk-6nvif-9e01aebec8.js").firebase;
 const db = require("../knex");
 const io = require('../socket');
+
+
+
+
 
 // Set a message read
 exports.setMessageRead = (req, res) => {
@@ -214,77 +222,151 @@ exports.getUsersGroup = (req, res) => {
       });
 }
 
-// Send message 
-exports.sendMessage = (req, res) => {
-  const { message, senderId, responderId } = req.body;
-
-  // Check if a group already exists between the two users
-  db('user_group')
-    .select('groupId')
-    .whereIn('userId', [senderId, responderId])
-    .groupBy('groupId')
-    .havingRaw('COUNT(DISTINCT userId) >= 2') // group can have 2 user min
-    .then(existingGroups => {
-      if (existingGroups.length > 0) {
-        const groupId = existingGroups[0].groupId;
-        // Use the ID of the existing group to send the message
-        sendGroupMessage(groupId, message, senderId,responderId, res);
-      } else {
-        // Create a new group between the two users
-        db('group')
-          .insert({})
-          .then(groupIds => {
-            const groupId = groupIds[0];
-            // Add both users to the new group
-            db('user_group')
-              .insert([
-                { userId: senderId, groupId: groupId },
-                { userId: responderId, groupId: groupId }
-              ])
-              .then(() => {
-                // Use the ID of the new group to send the message
-                sendGroupMessage(groupId, message, senderId,responderId, res);
-              })
-              .catch(error => {
-                console.error(error);
-                res.status(500).json({ message: 'Failed to create group and send message' });
-              });
-          })
-          .catch(error => {
-            console.error(error);
-            res.status(500).json({ message: 'Failed to create group and send message' });
-          });
-      }
+// Send notification push
+exports.sendNotificationPushMessage = (fcmToken, text,name,res) => {
+  const receivedToken = fcmToken;
+  const title = name;
+  const content = text;
+  
+  const message = {
+    notification: {
+      title: title,
+      body: content
+    },
+    token: receivedToken
+  };
+  
+  getMessaging()
+    .send(message)
+    .then((response) => {
+      res.status(200).json({message: "Successfully sent message notification"})
     })
-    .catch(error => {
-      console.error(error);
-      res.status(500).json({ message: 'Internal server error' });
+    .catch((error) => {
+      console.log("Error sending message:", error);
     });
+}
+
+//send notif to all users in group 
+async function sendNotificationToGroup(groupId, senderId, message, res) {
+  try {
+    const senderFirstName = await db('user')
+      .where('id', senderId)
+      .select('firstName')
+      .first();
+
+    const users = await db('user_group')
+      .select('userId', 'fcmToken')
+      .where('groupId', groupId)
+      .join("user", "user.id", "=", "user_group.userId")
+      ;
+
+    const notifications = [];
+
+    users.forEach((user) => {
+      // Exclure le sender de la notification
+      if (user.userId !== senderId) {
+        const { fcmToken } = user;
+        console.log("fcmToken");
+        console.log(fcmToken);
+        console.log(senderFirstName['firstName']);
+        
+        notifications.push(exports.sendNotificationPushMessage(fcmToken, message, senderFirstName['firstName'],res));
+      }
+    });
+
+    console.log('Notifications envoyées avec succès.');
+    res.status(200).json({ message: 'Message sent successfully' });
+  } catch (error) {
+    console.error('Erreur lors de l\'envoi des notifications :', error);
+    res.status(500).json({ message: 'Failed to send notifications' });
+  }
+}
+
+// Add user to group
+async function addUserInGroup(trx, groupId, ...userIds) {
+  if (!groupId) {
+    const usersInGroup = userIds.map(userId => ({ userId, groupId }));
+
+    console.log('Adding users to group:', usersInGroup);
+
+    await trx('user_group')
+      .insert(usersInGroup);
+  }
+}
+
+// Create a new group
+async function createNewGroup(trx, userIds) {
+  const [newGroupId] = await trx('group').insert({});
+  return newGroupId;
+}
+
+// Send message
+exports.sendMessage = async (req, res) => {
+  const { groupId, message, senderId, responderId } = req.body;
+  
+
+  try {
+    await db.transaction(async (trx) => {
+      const finalGroupId = groupId || await createNewGroup(trx, [responderId, senderId]);
+      const userIds = [responderId, senderId];
+      await addUserInGroup(trx, finalGroupId, ...userIds);
+      await sendGroupMessage(trx, finalGroupId, message, senderId, responderId);
+      await sendNotificationToGroup(finalGroupId, senderId, message, res);
+
+
+      await trx.commit();
+      res.status(201).json({ message: 'Message sent successfully' });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to send group message' });
+  }
 };
 
 // Function to send the message to a group
-function sendGroupMessage(groupId, message, senderId,responderId, res) {
+async function sendGroupMessage(trx, groupId, message, senderId, responderId) {
   const groupMessage = {
     message: message,
     senderId: senderId,
     groupId: groupId,
-    responderId:responderId,
+    responderId: responderId,
     date: new Date(),
-    read: "0",
+    read: '0',
   };
 
-  db('message')
-    .insert(groupMessage)
-    .then(() => {
-      io.emit(`group-${groupId}`, groupMessage);
-      res.status(201).json({ message: 'Message sent successfully' });
+  console.log("Group message data before insertion into database:");
+  console.log(groupMessage);
+
+  const [messageId] = await trx('message').insert(groupMessage);
+
+  await trx('message')
+    .where('id', messageId)
+    .update({ read: '1' });
+
+  await trx('message_user_read').insert({ messageId, userRead: senderId });
+};
+
+
+// get user count in group 
+exports.getUserCountInGroup = (req, res) => {
+  const groupId = req.params.groupId;
+
+  db('user_group')
+    .count('userId as userCount')
+    .where({ groupId })
+    .then(result => {
+      const userCount = result[0].userCount;
+      res.status(200).json({ success: true,count: userCount, groupId });
     })
     .catch(error => {
       console.error(error);
-      res.status(500).json({ message: 'Failed to send group message' });
+      res.status(500).json({ success: false, message: 'Internal server error' });
     });
-}
-  
+};
+
+
+
+
 // Get All messages between sender and other user
 exports.getMessagesBetweenUsers = (req, res) => {
   const senderId = req.params.senderId;
@@ -408,64 +490,160 @@ exports.getDiscussionsForMessage = (req, res) => {
         const senderId = messageDetails[0].senderId;
         const responderId = messageDetails[0].responderId;
         const groupId = messageDetails[0].groupId;
+       
+
+        let messagesWithDetails = [];
 
      
-        db('user')
-          .select('firstName', 'lastName')
-          .where('id', senderId)
-          .then(senderDetails => {
-            if (senderDetails.length === 0) {
-              res.status(404).json({ message: 'Sender not found' });
-            } else {
-           
-              db('user')
-                .select('firstName', 'lastName')
-                .where('id', responderId)
-                .then(responderDetails => {
-                  if (responderDetails.length === 0) {
-                    res.status(404).json({ message: 'Responder not found' });
-                  } else {
+       
                   
-                    db('message')
+                  db('message')
                       .select('*')
                       .where('groupId', groupId)
                       .orderBy('date', 'asc')
                       .then(messages => {
-                        
-                        const messagesWithDetails = messages.map(message => ({
-                          ...message,
-                          senderFirstName: senderDetails[0].firstName,
-                          senderLastName: senderDetails[0].lastName,
-                          responderFirstName: responderDetails[0].firstName,
-                          responderLastName: responderDetails[0].lastName,
-                        }));
-                        
-                        res.status(200).json({ messages: messagesWithDetails });
+                       const promise = messages.map(message => {
+                        return db('user')
+                        .select('firstName', 'lastName')
+                        .where('id', message.senderId)
+                        .then(senderDetails => {
+                          if (senderDetails.length === 0) {
+                            res.status(404).json({ message: 'Sender not found' });
+                          } else {
+                         
+                            return db('user')
+                              .select('firstName', 'lastName')
+                              .where('id', message.responderId)
+                              .then(responderDetails => {
+                                if (responderDetails.length === 0) {
+                                  res.status(404).json({ message: 'Responder not found' });
+                                } else {
+                                  messagesWithDetails.push({
+                                    ...message,
+                                    senderFirstName: senderDetails[0].firstName,
+                                    senderLastName: senderDetails[0].lastName,
+                                    responderFirstName: responderDetails[0].firstName,
+                                    responderLastName: responderDetails[0].lastName,
+                                  })
+                                  return {
+                                    ...message,
+                                    senderFirstName: senderDetails[0].firstName,
+                                    senderLastName: senderDetails[0].lastName,
+                                    responderFirstName: responderDetails[0].firstName,
+                                    responderLastName: responderDetails[0].lastName,
+                                  };
+
+                                 
+                                }
+                              })
+                            }
+                          }
+                        )})
+                       
+                        Promise.all(promise)
+                        .then(messages => {
+                          res.status(200).json({ messages: messages });
+                        })
+                            
+                       
                       })
                       .catch(error => {
                         console.error(error);
                         res.status(500).json({ message: 'Internal server error' });
                       });
                   }
-                })
-                .catch(error => {
-                  console.error(error);
-                  res.status(500).json({ message: 'Internal server error' });
-                });
-            }
-          })
-          .catch(error => {
-            console.error(error);
-            res.status(500).json({ message: 'Internal server error' });
-          });
-      }
+         
     })
+    
     .catch(error => {
       console.error(error);
       res.status(500).json({ message: 'Internal server error' });
     });
 };
 
+// Get discussions for a specific group 
+exports.getDiscussionsForGroup = (req, res) => {
+    const groupId = req.params.groupId;
+    db('message')
+      .select('senderId', 'responderId', 'groupId')
+      .where('groupId', groupId)
+      .then(messageDetails => {
+        if (messageDetails.length === 0) {
+          res.status(404).json({ message: 'Group not found' });
+        } else {
+          const senderId = messageDetails[0].senderId;
+          const responderId = messageDetails[0].responderId;
+          const groupId = messageDetails[0].groupId;
+          
+  
+          let messagesWithDetails = [];
+  
+       
+         
+                    
+                    db('message')
+                        .select('*')
+                        .where('groupId', groupId)
+                        .orderBy('date', 'asc')
+                        .then(messages => {
+                         const promise = messages.map(message => {
+                          return db('user')
+                          .select('firstName', 'lastName')
+                          .where('id', message.senderId)
+                          .then(senderDetails => {
+                            if (senderDetails.length === 0) {
+                              res.status(404).json({ message: 'Sender not found' });
+                            } else {
+                           
+                              return db('user')
+                                .select('firstName', 'lastName')
+                                .where('id', message.responderId)
+                                .then(responderDetails => {
+                                  if (responderDetails.length === 0) {
+                                    res.status(404).json({ message: 'Responder not found' });
+                                  } else {
+                                    messagesWithDetails.push({
+                                      ...message,
+                                      senderFirstName: senderDetails[0].firstName,
+                                      senderLastName: senderDetails[0].lastName,
+                                      responderFirstName: responderDetails[0].firstName,
+                                      responderLastName: responderDetails[0].lastName,
+                                    })
+                                    return {
+                                      ...message,
+                                      senderFirstName: senderDetails[0].firstName,
+                                      senderLastName: senderDetails[0].lastName,
+                                      responderFirstName: responderDetails[0].firstName,
+                                      responderLastName: responderDetails[0].lastName,
+                                    };
+  
+                                   
+                                  }
+                                })
+                              }
+                            }
+                          )})
+                        
+                          Promise.all(promise)
+                          .then(messages => {
+                            res.status(200).json({ messages: messages });
+                          })
+                              
+                         
+                        })
+                        .catch(error => {
+                          console.error(error);
+                          res.status(500).json({ message: 'Internal server error' });
+                        });
+                    }
+          
+      })
+      
+      .catch(error => {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+      });
+  };
 
 // Function to get all chats with read messages for a user
 exports.getAllReadDiscussionsForUser = (req, res) => {
