@@ -5,7 +5,6 @@ const logger = require('morgan');
 
 const hostname = "0.0.0.0";
 const port = 3000;
-
 const server = express();
 
 //SWAGGER (Documentation)
@@ -22,6 +21,7 @@ const swaggerOptions={
             contact:{
                 name:'OLIVIA Tania',
                 email:'tania.olivia@my-digital-school.org', 
+                
             },
             servers:[process.env.SWAGGER_SERVER],
         },
@@ -65,6 +65,7 @@ userImageRoute(server);
 
 const travelRoute = require("./routes/travelRoute");
 travelRoute(server);
+
 const commentRoute = require("./routes/commentRoute");
 commentRoute(server);
 
@@ -77,4 +78,36 @@ activityRoute(server);
 const travelActivityRoute = require("./routes/travelActivityRoute");
 travelActivityRoute(server);
 
-server.listen(port, hostname);
+const travelImageRoute = require("./routes/travelImageRoute");
+travelImageRoute(server);
+
+const themeRoute = require("./routes/themeRoute");
+themeRoute(server);
+
+const themeActivityRoute = require("./routes/themeActivityRoute");
+themeActivityRoute(server);
+
+const activityImageRoute = require("./routes/activityImageRoute");
+activityImageRoute(server);
+
+const messengerRoute = require("./routes/messengerRoute");
+messengerRoute(server);
+
+const activityCommentRoute = require("./routes/activityCommentRoute");
+activityCommentRoute(server);
+
+const faqRoute = require("./routes/faqRoute");
+faqRoute(server);
+
+const demandSendMessageRoute = require("./routes/demandSendMessageRoute");
+demandSendMessageRoute(server);
+
+const premiumPlanRoute = require("./routes/premiumPlanRoute");
+premiumPlanRoute(server);
+
+const userPremiumPlanRoute = require("./routes/userPremiumPlanRoute");
+userPremiumPlanRoute(server);
+  
+server.listen(port, hostname, () => {
+    console.log(`Server running at http://${hostname}:${port}/`);
+});

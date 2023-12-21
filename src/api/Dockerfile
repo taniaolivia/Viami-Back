@@ -1,8 +1,8 @@
 # User official image of Node.js
 FROM node:lts
 
-# Define the environnement as development
-ENV NODE_ENV=development
+# Define the environnement as production
+ENV NODE_ENV=production
 
 # Set the user as root
 USER root
@@ -11,10 +11,10 @@ USER root
 WORKDIR /app
 
 # Copy the package file to the project
-COPY ["package.json", "package-lock.json*", "./"]
+COPY ["package.json", "package-lock.json", "./"]
 
 # Install all the dependencies needed 
-RUN npm install --development
+RUN npm install --production
 
 # Install nodemon package so that the project can run using the command run watch
 RUN npm install -g nodemon

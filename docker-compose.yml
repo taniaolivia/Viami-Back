@@ -4,7 +4,7 @@ services:
     image: node:lts
     build:
       context: .
-      dockerfile: ./src/api/Dockerfile
+      dockerfile: ./src/api/Dockerfile-dev
     env_file: ./src/.env
     working_dir: /home/node/app
     volumes:

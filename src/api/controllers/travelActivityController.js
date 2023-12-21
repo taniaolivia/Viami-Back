@@ -10,17 +10,27 @@ exports.getAllTravelsActivities = (req, res) => {
             "travel.name as name",
             "travel.description as travelDescription",
             "travel.location as location",
-            "travel.nbPepInt as nbPepInt",
+            "travel.nbParticipant as nbParticipant",
             "activity.name as activityName",
             "activity.imageName as imageName",
-            "activity.location as activityLocation"
+            "activity.location as activityLocation",
+            "activity.isRecommended as isRecommended",
+            "activity.nbParticipant as activityNbParticipant",
+            "activity.url as activityUrl",
+            "activity.telephone as activityTelephone",
+            "activity.address as activityAddress",
+            "activity.latitude as activityLatitude",
+            "activity.longitude as activityLongitude",
+            "activity.schedule as activitySchedule",
+            "activity.language as activityLanguage",
+            "activity.accessibility as accessibility"
         ])
         .join("travel", "travel.id", "=", "travel_activity.idTravel")
         .join("activity", "activity.id", "=", "travel_activity.idActivity")
         .then(data => res.status(200).json({data}))
         .catch(error => {
             res.status(401);
-            console.log(error);
+         
             res.json({message: "Server error"});
         });
 }
@@ -37,10 +47,20 @@ exports.getTravelActivitiesById = (req, res) => {
         "travel.name as name",
         "travel.description as travelDescription",
         "travel.location as location",
-        "travel.nbPepInt as nbPepInt",
+        "travel.nbParticipant as nbParticipant",
         "activity.name as activityName",
         "activity.imageName as imageName",
-        "activity.location as activityLocation"
+        "activity.location as activityLocation",
+        "activity.isRecommended as isRecommended",
+        "activity.nbParticipant as activityNbParticipant",
+        "activity.url as activityUrl",
+        "activity.telephone as activityTelephone",
+        "activity.address as activityAddress",
+        "activity.latitude as activityLatitude",
+        "activity.longitude as activityLongitude",
+        "activity.schedule as activitySchedule",
+        "activity.language as activityLanguage",
+        "activity.accessibility as accessibility"
     ])
     .where({idTravel: id})
     .join("travel", "travel.id", "=", "travel_activity.idTravel")
@@ -48,7 +68,7 @@ exports.getTravelActivitiesById = (req, res) => {
     .then(data => res.status(200).json({"travelActivities": data}))
     .catch(error => {
         res.status(401);
-        console.log(error);
+       
         res.json({message: "Server error"});
     });
 
@@ -56,16 +76,11 @@ exports.getTravelActivitiesById = (req, res) => {
 
 // Add activity to travel's data
 exports.addActivityToTravel = (req, res) => {
-    const {name, imageName, location} = req.body;
-    let newActivity = req.body.activity;
+    let activity = req.body;
     let travelId = req.params.travelId;
 
     db("activity")
-        .insert({
-            name:name,
-            imageName:imageName,
-            location:location
-        })
+        .insert(activity)
         .then(data => {
             db("travel_activity")
                 .insert({
@@ -80,24 +95,19 @@ exports.addActivityToTravel = (req, res) => {
                             res.status(200).json({
                                 message: `Activity is added to travel's data`,
                                 travel: travelData,
-                                activity: {
-                                    id: data[0],
-                                    name:name,
-                                    imageName:imageName,
-                                    location:location
-                                }
+                                activity: activity
                             }) 
                         })
                 })
                 .catch(error => {
                     res.status(401);
-                    console.log(error);
+                    
                     res.json({message: "Invalid request"});
                 })
         })
         .catch(error => {
             res.status(401);
-            console.log(error);
+           
             res.json({message: "Invalid request"});
         });
 }
@@ -126,13 +136,13 @@ exports.deleteTravelActivity = (req, res) => {
                 })
                 .catch(error => {
                     res.status(401);
-                    console.log(error);
+                  
                     res.json({message: "Invalid request"});
                 })
         })
         .catch(error => {
             res.status(401);
-            console.log(error);
+           
             res.json({message: "Invalid request"});
         })
 }
