@@ -151,8 +151,9 @@ exports.getSearchedUsers = (req, res) => {
           
           Promise.all(promises)
             .then(discussionsF => {
-              console.log(discussionsF)
-              res.status(200).json({ discussions: discussionsF });
+              const filteredDiscussion = discussionsF.filter((discussion) => discussion != null && discussion != undefined)
+              
+              res.status(200).json({ discussions: filteredDiscussion });
           })
           .catch(error => {
             console.error(error);
@@ -409,7 +410,8 @@ exports.getDiscussionsForMessage = (req, res) => {
         const responderId = messageDetails[0].responderId;
         const groupId = messageDetails[0].groupId;
 
-     
+        console.log("sender: ", senderId);
+        console.log("responder: ", responderId);
         db('user')
           .select('firstName', 'lastName')
           .where('id', senderId)
