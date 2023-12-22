@@ -124,7 +124,7 @@ server.route("/api/faq/:faqId")
  */
 server.route("/api/frequentedFive/faq")
 .get(jwtMiddleware.authenticateUser, cors(),faqController.getTopFiveFrequentedFaq)
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFmZDU1MGYyLWM0NjUtNGUxYi1iOGRhLTNkY2U0OWQyYjliZCIsImVtYWlsIjoidGFuaWFAZ21haWwuY29tIiwicGFzc3dvcmQiOiIkMmEkMTAkeUZCRWFHSG52REFxalA3aGZGVVRmdVA2SHZ3NzBzVVkwdlI4Sm5TTTVRQ1RYQVdtQkM0TVciLCJpYXQiOjE3MDMyMzc1MjB9.P2KA49XB9OvfOEOaIcYrcG-6LPy8xb0iGLb8xkQJAGo
+
 
 
 
