@@ -212,7 +212,7 @@ server.route("/api/usersImages")
  *               example:
  *                 message: "Server error during image deletion."
  */
-server.route("/api/users/{userId}/images")
+server.route("/api/users/:userId/images")
   .get(jwtMiddleware.authenticateUser, cors(), userImageController.getUserImagesById)
   .post(jwtMiddleware.authenticateUser, upload.single('image'), cors(), userImageController.addUserImage)
   .delete(jwtMiddleware.authenticateUser, cors(), userImageController.deleteUserImage);

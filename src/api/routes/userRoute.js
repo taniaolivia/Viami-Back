@@ -230,7 +230,7 @@ server.route("/api/users/userStatus/:userId").get(jwtMiddleware.authenticateUser
 
 
 
-server.route("/api/users/:userId")
+
 /**
  * @openapi
  * paths:
@@ -345,6 +345,7 @@ server.route("/api/users/:userId")
  *       500:
  *         description: "Internal Server Error."
  */
+server.route("/api/users/:userId")
 .get(jwtMiddleware.authenticateUser, cors(), userController.getUserById)
 .put(jwtMiddleware.authenticateUser, cors(), userController.updateUserById)
 .patch(jwtMiddleware.authenticateUser, cors(), userController.updateUserPasswordById)

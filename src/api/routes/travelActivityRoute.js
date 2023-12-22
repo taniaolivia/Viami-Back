@@ -265,7 +265,7 @@ server.route("/api/travelActivities")
  *               example:
  *                 message: "Invalid request or server error during activity deletion from travel."
  */
-server.route("/api/travels/{travelId}/activities")
+server.route("/api/travels/:travelId/activities")
   .get(jwtMiddleware.authenticateUser, cors(), travelActivityController.getTravelActivitiesById)
   .post(jwtMiddleware.authenticateUser, cors(), travelActivityController.addActivityToTravel)
   .delete(jwtMiddleware.authenticateUser, cors(), travelActivityController.deleteTravelActivity);
