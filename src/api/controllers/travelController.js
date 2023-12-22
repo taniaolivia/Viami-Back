@@ -152,6 +152,7 @@ exports.listAllTravels = (req, res) => {
         .then(data => res.status(200).json({"travels": data}))
         .catch(error => {
             res.status(401);
+            console.log(error);
             res.json({message: "Server error"});
         });   
 }
@@ -173,7 +174,7 @@ exports.saveTravel = (req,res) => {
         })
         .then(() => res.status(201).json({ message: "New travel is successfully saved." }))
         .catch(error => {
-           
+            console.error(error);
             res.status(500).json({ message: "Error while saving the new travel." });
         });
 }

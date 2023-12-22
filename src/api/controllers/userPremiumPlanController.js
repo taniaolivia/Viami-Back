@@ -15,7 +15,7 @@ exports.getUserLastPremiumPlan = (req, res) => {
             res.json(response);
         })
         .catch((error) => {
-          
+            console.log(error);
             res.status(401);
             res.json({message: "Server error"});
         })
@@ -31,7 +31,7 @@ exports.addUserPremiumPlan = (req, res) => {
 
     jwt.sign({id: userId}, process.env.JWT_KEY, {expiresIn: "7d"}, (error, token) => {
         if(error){
-         
+            console.log(error);
             res.status(500);
             res.json({message: "Impossible to generate a token"});
         }
@@ -51,7 +51,7 @@ exports.addUserPremiumPlan = (req, res) => {
                             res.json(response);
                         })
                         .catch((error) => {
-                           
+                            console.log(error);
                             res.status(401);
                             res.json({message: "Server error"});
                         })

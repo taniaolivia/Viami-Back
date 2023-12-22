@@ -7,7 +7,8 @@ exports.listThemes= (req, res) => {
         .orderBy("theme", "asc")
         .then(data => res.status(200).json({'themes' : data }))
         .catch(error => {
-            res.status(401); 
+            res.status(401);
+            console.log(error);
             res.json({ message: "Server error" });
         });
 }
@@ -22,6 +23,7 @@ exports.getFiveThemes= (req, res) => {
         .then(data => res.status(200).json({'themes' : data }))
         .catch(error => {
             res.status(401);
+            console.log(error);
             res.json({ message: "Server error" });
         });
 }

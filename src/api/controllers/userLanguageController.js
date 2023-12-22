@@ -8,7 +8,8 @@ exports.getAllUsersLanguages = (req, res) => {
         .join("language", "language.id", "=", "user_language.languageId")
         .then(data => res.status(200).json({data}))
         .catch(error => {
-            res.status(401);     
+            res.status(401);
+            console.log(error);
             res.json({message: "Server error"});
         });
 }
@@ -25,6 +26,7 @@ exports.getUserLanguagesById = (req, res) => {
         .then(data => res.status(200).json({"userLanguages": data}))
         .catch(error => {
             res.status(401);
+            console.log(error);
             res.json({message: "Server error"});
         });
 }
@@ -43,6 +45,7 @@ exports.getLanguageUsersById = (req, res) => {
         ))
         .catch(error => {
             res.status(401);
+            console.log(error);
             res.json({message: "Server error"});
         });
 }
@@ -75,7 +78,8 @@ exports.addUserLanguage = (req, res) => {
                 })
         })
         .catch(error => {
-            res.status(401);  
+            res.status(401);
+            console.log(error);
             res.json({message: "Invalid request"});
         })
 }
@@ -98,6 +102,7 @@ exports.deleteUserLanguage = (req, res) => {
         })
         .catch(error => {
             res.status(401);
+            console.log(error);
             res.json({message: "Invalid request"});
         })
 }

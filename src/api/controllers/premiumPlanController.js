@@ -10,7 +10,7 @@ exports.getAllPremiumPlans = (req, res) => {
             res.json({plans: response});
         })
         .catch((error) => {
-           
+            console.log(error);
             res.status(401);
             res.json({message: "Server error"});
         })
@@ -28,7 +28,7 @@ exports.getPremiumPlanById = (req, res) => {
             res.json(response);
         })
         .catch((error) => {
-           
+            console.log(error);
             res.status(401);
             res.json({message: "Server error"});
         })
