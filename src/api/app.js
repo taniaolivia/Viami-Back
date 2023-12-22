@@ -7,50 +7,6 @@ const hostname = "0.0.0.0";
 const port = 3000;
 const server = express();
 
-//SWAGGER (Documentation)
-const swaggerJSDoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
-
-const swaggerOptions={
-    definition:{
-        openapi:'3.0.0',
-        info:{
-            title: 'Viami Documentation API',
-            version:'1.0.0',
-            description:'Documentation for Viami API',
-            contact:{
-                name:'OLIVIA Tania',
-                email:'tania.olivia@my-digital-school.org', 
-                
-            },
-            servers:[process.env.SWAGGER_SERVER],
-           
-            
-        },
-
-    
-        components:{
-            securitySchemes:{
-                ApiKeyAth:{
-                    type:'apiKey',
-                    in:'header',
-                    name:'Authorization',
-                }
-            }
-        },
-
-        security:[{
-            ApiKeyAth:[]
-        }]
-        
-        
-    },
-    apis:["./routes/*.js"]
-}
-
-const swaggerSpec = swaggerJSDoc(swaggerOptions)
-server.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
-
 server.use(logger('dev'));
 
 server.use(express.urlencoded({ extended: false }));

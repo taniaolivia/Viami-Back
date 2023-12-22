@@ -22,7 +22,7 @@ exports.getAllUsersImages = (req, res) => {
         .then(data => res.status(200).json({data}))
         .catch(error => {
             res.status(401);
-            
+            console.log(error);
             res.json({message: "Server error"});
         });
 }
@@ -39,7 +39,7 @@ exports.getUserImagesById = (req, res) => {
         .then(data => res.status(200).json({"userImages": data}))
         .catch(error => {
             res.status(401);
-            
+            console.log(error);
             res.json({message: "Server error"});
         });
 }
@@ -79,7 +79,7 @@ exports.addUserImage = async (req, res) => {
                 image: `${process.env.CDN_URL}/assets/usersImages/${imageName}`
             })
             .then(data => {
-                
+                console.log(data);
                 db("user_image")
                     .insert({
                         imageId: data[0],
@@ -102,17 +102,17 @@ exports.addUserImage = async (req, res) => {
                     })
                     .catch(error => {
                         res.status(401);
-                        
+                        console.log(error);
                         res.json({message: "Invalid request"});
                     })
             })
             .catch(error => {
                 res.status(401);
-               
+                console.log(error);
                 res.json({message: "Invalid request"});
             });
     } catch (error) {
-        
+        console.error("Error uploading file to S3:", error);
     }
 }
 
@@ -150,16 +150,16 @@ exports.deleteUserImage = async (req, res) => {
                     })
                     .catch(error => {
                         res.status(401);
-                      
+                        console.log(error);
                         res.json({message: "Invalid request"});
                     })
             })
             .catch(error => {
                 res.status(401);
-               
+                console.log(error);
                 res.json({message: "Invalid request"});
             })
     } catch (error) {
-        
+        console.error("Error deleting image:", error);
     }
 }

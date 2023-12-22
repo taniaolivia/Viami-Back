@@ -34,7 +34,7 @@ const db = require("../knex");
         res.status(200).json(userStatus);
       })
       .catch(error => {
-       
+        console.error(error);
         res.status(500).json({ message: 'Internal server error' });
       });
   };
@@ -62,12 +62,12 @@ exports.addCommentToActivity = (req, res) => {
             res.status(200).json({ message: 'Comment added successfully' });
           })
           .catch(error => {
-          
+            console.error(error);
             res.status(500).json({ message: 'Internal server error' });
           });
       })
       .catch(error => {
-       
+        console.error(error);
         res.status(500).json({ message: 'Internal server error' });
       });
   };

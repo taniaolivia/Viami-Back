@@ -18,7 +18,7 @@ exports.userRegister = (req, res) => {
         bcrypt.hash(newUser.password, 10, (error, hash) => {
             if(error){
                 res.status(401);
-                
+                console.log(error);
                 res.json({message: "Impossible to encrypt the password"});
             }
             else{
@@ -68,7 +68,7 @@ exports.userRegister = (req, res) => {
                                     })
                                     .catch(error => {
                                         res.status(401);
-                                    
+                                        console.log(error);
                                         res.json({message: "Invalid request"});
                                     });
                             })
@@ -79,7 +79,7 @@ exports.userRegister = (req, res) => {
     }
     else{
         res.status(401);
-        
+        console.log(error);
         res.json({message: "Missing password", error: req.body});
     }
 }
@@ -114,7 +114,7 @@ exports.userLogin = (req, res) => {
                                     })
                                     .catch(error => {
                                         res.status(401);
-                                      
+                                        console.log(error);
                                         res.json({message: "User not found"});
                                     });
                             })
@@ -150,14 +150,14 @@ exports.userLogin = (req, res) => {
             }
             else{
                 res.status(401);
-               
+                console.log(error);
                 res.json({message: "Missing password", error: req.body});
             }
             
         })
         .catch((error) => {
             res.status(500);
-       
+            console.log(error);
             res.json({message: "User not found"});
         });
 }
@@ -177,7 +177,7 @@ exports.userLogout = (req, res) => {
         res.status(200).json({ message: `Disconnected user :  ${userId}` });
       })
       .catch((error) => {
-       
+        console.error('Error disconnecting :', error);
         res.status(500).json({ message: 'Server error' });
       });
 }
@@ -207,7 +207,7 @@ exports.listAllUsers = (req, res) => {
     .then(data => res.status(200).json({data}))
     .catch(error => {
         res.status(401);
-       
+        console.log(error);
         res.json({message: "Server error"});
     });   
 }
@@ -244,7 +244,7 @@ exports.updateUserById = (req, res) => {
             bcrypt.hash(newData.password, 10, (error, hash) => {
                 if(error){
                     res.status(401);
-                   
+                    console.log(error);
                     res.json({message: "Impossible to encrypt the password"});
                 }
                 else{
@@ -291,7 +291,7 @@ exports.updateUserPasswordById = (req, res) => {
     bcrypt.hash(password, 10, (error, hash) => {
        if(error){
           res.status(401);
-         
+          console.log(error);
           res.json({message: "Impossible to encrypt the password"});
        }
        else{
@@ -304,7 +304,7 @@ exports.updateUserPasswordById = (req, res) => {
               })
               .catch(error => {
                   res.status(401);
-                  
+                  console.log(error);
                   res.json({message: "User not found"});
               });    
        }
@@ -323,7 +323,7 @@ exports.updateUserPasswordByEmail = (req, res) => {
             bcrypt.hash(password, 10, (error, hash) => {
                 if(error){
                     res.status(401);
-                    
+                    console.log(error);
                     res.json({message: "Impossible to encrypt the password"});
                 }
                 else{
@@ -340,7 +340,7 @@ exports.updateUserPasswordByEmail = (req, res) => {
                         })
                         .catch(error => {
                             res.status(401);
-                           
+                            console.log(error);
                             res.json({message: "User not found"});
                         });    
                 }
@@ -362,7 +362,7 @@ exports.updateUserDescriptionById = (req, res) => {
         })
         .catch(error => {
             res.status(401);
-            
+            console.log(error);
             res.json({message: "User not found"});
         });
 }
@@ -377,7 +377,7 @@ exports.deleteUserById =(req,res) => {
         res.status(200).json({ message: ` The user with ID ${userId} has been deleted ` });
       })
       .catch((error) => {
-      
+        console.error('Deletion error :', error);
         res.status(500).json({ message: 'Server error' });
       });
 }
@@ -410,7 +410,7 @@ exports.sendVerificationMail = async(to, token) =>{
 
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-           
+            console.error(error);
             res.status(401);
             res.json({message: `Error sending verification email`});
         } else {
@@ -453,14 +453,14 @@ exports.verifiedEmailUserByToken = (req, res) => {
                             res.send(htmlContent);
                         })
                         .catch((error) => {
-                           
+                            console.log(error);
                             res.status(401);
                             res.json({message: "User not found"});
                         })
                 })
                 .catch(error => {
                     res.status(401);
-                  
+                    console.log(error);
                     res.json({message: "User not found"});
                 });
         }
@@ -494,7 +494,7 @@ exports.sendEmailVerified = async(to) =>{
   
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-          
+            console.error(error);
             res.status(401);
             res.json({message: `Error sending email`});
         } else {
@@ -536,7 +536,7 @@ exports.forgetPassword = async(req, res) => {
     
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                
+                console.error(error);
                 res.status(401);
                 res.json({message: `Error sending email`});
             } else {
@@ -579,7 +579,7 @@ exports.newPasswordForm = (req, res) => {
                 })
                 .catch(error => {
                     res.status(401);
-                   
+                    console.log(error);
                     res.json({message: "User not found"});
                 });
             }
@@ -613,7 +613,7 @@ exports.passwordChangedSuccess = (email) => {
 
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            
+            console.error(error);
             res.status(401);
             res.json({message: `Error sending email`});
         } else {
@@ -641,7 +641,7 @@ exports.getUserStatus = (req, res) => {
         }
       })
       .catch(error => {
-        
+        console.error(error);
         res.status(500).json({ message: 'Internal server error' });
       });
   };
@@ -665,7 +665,7 @@ exports.setFcmTokenUser = (req, res) => {
           message: "Failed updating the fcm token of a user"
       });
     
-    
+      console.log(error);
     });
 }
 
@@ -678,7 +678,7 @@ exports.searchUsersByFirstName = (req, res) => {
         .where('firstName', searchTerm) 
         .then(data => res.status(200).json({ data }))
         .catch(error => {
-           
+            console.error(error);
             res.status(500).json({ message: 'Internal server error' });
         });
 };
@@ -696,7 +696,7 @@ exports.updateUserPlan = (req, res) => {
             res.json({message: "User's plan is updated successfully"});
         })
         .catch((error) => {
-            
+            console.log(error);
             res.status(401);
             res.json({message: "Server error"});
         })
@@ -728,17 +728,17 @@ exports.getUsersWithConversation = (req, res) => {
                         .whereIn("id", userIdsArray)
                         .then(data => res.status(200).json({data}))
                         .catch(error => {
-                           
+                            console.error(error);
                             res.status(500).json({ message: "Server error" });
                         });
                 })
                 .catch(error => {
-                    
+                    console.error(error);
                     res.status(500).json({ message: "Server error" });
                 });
         })
         .catch(error => {
-            
+            console.error(error);
             res.status(500).json({ message: "Server error" });
         });
 }

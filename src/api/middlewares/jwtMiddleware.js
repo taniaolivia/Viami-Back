@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const jwtKey = process.env.JWT_KEY;
 
 exports.authenticateUser = (req, res, next) => {
-    let token = req.headers['authorization'] || req.body.token || req.query.token;
+    let token = req.headers['authorization'];
 
     if(token !== undefined){
         jwt.verify(token, jwtKey, (error, user) => {
