@@ -12,8 +12,7 @@ exports.listActivitiesByTheme = (req, res) => {
         .orderBy("activity.name", "asc")
         .then(data => res.status(200).json({'activities' : data }))
         .catch(error => {
-            res.status(401);
-            console.log(error);
+            res.status(401); 
             res.json({ message: "Server error" });
         });
 }
@@ -33,7 +32,6 @@ exports.getFirstFiveActivitiesByTheme = (req, res) => {
         .then(data => res.status(200).json({'activities' : data }))
         .catch(error => {
             res.status(401);
-            console.log(error);
             res.json({ message: "Server error" });
         });
 }

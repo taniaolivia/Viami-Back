@@ -402,6 +402,7 @@ exports.getMessagesBetweenUsers = (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     });
 };
+
 // Add a user to an existing group or create a new group
 exports.addUserToGroup = (req, res) => {
   const userToAddId = req.params.userToAddId;

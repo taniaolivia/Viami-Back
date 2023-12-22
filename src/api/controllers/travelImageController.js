@@ -20,7 +20,7 @@ exports.getAllTravelsImages = (req, res) => {
         .then(data => res.status(200).json({data}))
         .catch(error => {
             res.status(401);
-            console.log(error);
+          
             res.json({message: "Server error"});
         });
 }
@@ -46,7 +46,7 @@ exports.getTravelImagesById = (req, res) => {
     .then(data => res.status(200).json({"travelImages": data}))
     .catch(error => {
         res.status(401);
-        console.log(error);
+      
         res.json({message: "Server error"});
     });
 
@@ -84,13 +84,13 @@ exports.addImageToTravel = (req, res) => {
                 })
                 .catch(error => {
                     res.status(401);
-                    console.log(error);
+                   
                     res.json({message: "Invalid request"});
                 })
         })
         .catch(error => {
             res.status(401);
-            console.log(error);
+           
             res.json({message: "Invalid request"});
         });
 }
@@ -119,13 +119,11 @@ exports.deleteTravelImage = (req, res) => {
                 })
                 .catch(error => {
                     res.status(401);
-                    console.log(error);
                     res.json({message: "Invalid request"});
                 })
         })
         .catch(error => {
             res.status(401);
-            console.log(error);
             res.json({message: "Invalid request"});
         })
 }
