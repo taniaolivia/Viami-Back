@@ -24,7 +24,25 @@ const swaggerOptions={
                 
             },
             servers:[process.env.SWAGGER_SERVER],
+           
+            
         },
+
+    
+        components:{
+            securitySchemes:{
+                ApiKeyAth:{
+                    type:'apiKey',
+                    in:'header',
+                    name:'Authorization',
+                }
+            }
+        },
+
+        security:[{
+            ApiKeyAth:[]
+        }]
+        
         
     },
     apis:["./routes/*.js"]

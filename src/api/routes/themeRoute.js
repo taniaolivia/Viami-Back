@@ -12,8 +12,7 @@ module.exports = (server) => {
  *         - Themes
  *       summary: "Get all themes ordered by theme name"
  *       description: "Get all themes ordered ascending by theme name."
- *       security:
- *         - bearerAuth: []
+ *       
  *       responses:
  *         '200':
  *           description: "List of all themes retrieved successfully."
@@ -57,8 +56,7 @@ server.route("/api/themes")
  *         - Themes
  *       summary: "Get five themes ordered by theme name"
  *       description: "Get five themes ordered ascending by theme name."
- *       security:
- *         - bearerAuth: []
+ *      
  *       responses:
  *         '200':
  *           description: "List of five themes retrieved successfully."

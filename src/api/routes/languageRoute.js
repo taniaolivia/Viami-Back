@@ -15,8 +15,7 @@ module.exports = (server) => {
  *       description: "Retrieve a list of all languages."
  *       tags:
  *         - Language
- *       security:
- *         - bearerAuth: []
+ *       
  *       responses:
  *         '200':
  *           description: "Successful operation. Returns a list of languages."
@@ -49,8 +48,7 @@ module.exports = (server) => {
  *       description: "Retrieve information about a specific language by providing its ID."
  *       tags:
  *         - Language
- *       security:
- *         - bearerAuth: []
+ *      
  *       parameters:
  *         - in: path
  *           name: languageId

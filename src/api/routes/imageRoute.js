@@ -14,8 +14,7 @@ module.exports = (server) => {
  *       description: Retrieve a list of all images.
  *       tags:
  *         - Image
- *       security:
- *         - bearerAuth: []
+ *       
  *       responses:
  *         '200':
  *           description: Successful operation. Returns a list of images.
@@ -53,8 +52,7 @@ server.route("/api/images")
  *       description: Add a new image to the server by uploading a file.
  *       tags:
  *         - Image
- *       security:
- *         - bearerAuth: []
+ *       
  *       requestBody:
  *         content:
  *           multipart/form-data:
@@ -91,8 +89,7 @@ server.route("/api/images")
  *       description: Delete an existing image from the server.
  *       tags:
  *         - Image
- *       security:
- *         - bearerAuth: []
+ *       
  *       requestBody:
  *         content:
  *           application/json:
@@ -134,8 +131,7 @@ server.route("/api/image")
  *       description: Retrieve information about a specific image using its ID.
  *       tags:
  *         - Image
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - name: imageId
  *           in: path
@@ -170,8 +166,7 @@ server.route("/api/image")
  *       description: Update an existing image on the server by its ID.
  *       tags:
  *         - Image
- *       security:
- *         - bearerAuth: []
+ *      
  *       parameters:
  *         - name: imageId
  *           in: path

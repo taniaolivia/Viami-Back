@@ -19,8 +19,7 @@ module.exports = (server) => {
  *         - Activity Images
  *       summary: "Get all images with their associated activities"
  *       description: "Get all images along with details of the activities they are associated with."
- *       security:
- *         - bearerAuth: []
+ *       
  *       responses:
  *         '200':
  *           description: "Activity images retrieved successfully."
@@ -79,8 +78,7 @@ server.route("/api/activityImages")
  *         - Activity Images
  *       summary: "Get all images of an activity by ID"
  *       description: "Get all images associated with a specific activity identified by its ID."
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: path
  *           name: activityId
@@ -131,8 +129,7 @@ server.route("/api/activityImages")
  *         - Activity Images
  *       summary: "Add image to activity"
  *       description: "Add an image to the data of a specific activity."
- *       security:
- *         - bearerAuth: []
+ *      
  *       parameters:
  *         - in: path
  *           name: activityId
@@ -171,8 +168,7 @@ server.route("/api/activityImages")
  *         - Activity Images
  *       summary: "Delete image from activity"
  *       description: "Delete an image from the data of a specific activity."
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: path
  *           name: activityId
@@ -206,7 +202,7 @@ server.route("/api/activityImages")
  *               example:
  *                 message: "Internal server error during image deletion."
  */
-server.route("/api/activities/{activityId}/images")
+server.route("/api/activities/:activityId/images")
     .get(jwtMiddleware.authenticateUser, cors(), activityImageController.getActivityImagesById)
     .post(jwtMiddleware.authenticateUser, cors(), activityImageController.addImageToActivity)
     .delete(jwtMiddleware.authenticateUser, cors(), activityImageController.deleteActivityImage);

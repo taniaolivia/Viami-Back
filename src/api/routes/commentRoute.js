@@ -11,8 +11,7 @@ module.exports = (server) => {
  *         - Comments
  *       summary: "List all comments"
  *       description: "Get a list of all comments."
- *       security:
- *         - bearerAuth: []
+ *       
  *       responses:
  *         '200':
  *           description: "Comments retrieved successfully."
@@ -48,8 +47,7 @@ server.route("/api/comments")
  *         - Comments
  *       summary: "Get comment by ID"
  *       description: "Get details of a comment by its ID."
- *       security:
- *         - bearerAuth: []
+ *     
  *       parameters:
  *         - in: path
  *           name: commentId

@@ -18,8 +18,7 @@ module.exports = (server) => {
      *       summary: "Get a list of interests"
      *       description: "Retrieve a list of all interests."
      *       tags: [Interest]
-     *       security:
-     *         - bearerAuth: []
+     *      
      *       responses:
      *         '200':
      *           description: "Successful operation. Returns a list of interests."
@@ -57,8 +56,7 @@ module.exports = (server) => {
      *       summary: "Get an interest by ID"
      *       description: "Retrieve information about a specific interest by providing its ID."
      *       tags: [Interest]
-     *       security:
-     *         - bearerAuth: []
+     *       
      *       parameters:
      *         - in: path
      *           name: interestId

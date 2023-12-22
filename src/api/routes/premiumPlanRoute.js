@@ -12,8 +12,7 @@ module.exports = (server) => {
  *         - Premium Plans
  *       summary: "Get all premium plans"
  *       description: "Get details of all available premium plans."
- *       security:
- *         - bearerAuth: []
+ *      
  *       responses:
  *         '200':
  *           description: "List of premium plans retrieved successfully."
@@ -58,8 +57,7 @@ server.route("/api/premiumPlans")
  *         - Premium Plans
  *       summary: "Get premium plan by ID"
  *       description: "Get details of a premium plan by its ID."
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: path
  *           name: planId

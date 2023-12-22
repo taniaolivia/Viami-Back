@@ -11,8 +11,7 @@ module.exports = (server) => {
  *         - Demmand
  *       summary: "Send a request to talk to a user"
  *       description: "Send a request to be able to talk to a user."
- *       security:
- *         - bearerAuth: []
+ *       
  *       requestBody:
  *         required: true
  *         content:
@@ -60,8 +59,7 @@ server.route("/api/send/requestMessage")
  *         - Demmand
  *       summary: "Respond to a request of a user"
  *       description: "Respond to a request of a user. Accept or reject a request."
- *       security:
- *         - bearerAuth: []
+ *       
  *       requestBody:
  *         required: true
  *         content:
@@ -110,8 +108,7 @@ server.route("/api/send/answerRequest")
  *         - Demmand
  *       summary: "Display all requests that a user has"
  *       description: "Display all requests that a user has. Retrieves pending requests for a user."
- *       security:
- *         - bearerAuth: []
+ *      
  *       parameters:
  *         - in: path
  *           name: receiverId
@@ -178,8 +175,7 @@ server.route("/api/requestsMessages/:receiverId")
  *         - Demmand
  *       summary: "Display all the accepted requests of a user"
  *       description: "Display all the accepted requests of a user. Retrieves accepted requests for a user."
- *       security:
- *         - bearerAuth: []
+ *      
  *       parameters:
  *         - in: path
  *           name: userId
@@ -246,8 +242,7 @@ server.route("/api/requestsMessages/:userId/accepted")
  *         - Demmand
  *       summary: "Update the chat value of a request"
  *       description: "Update the chat value of a request. Marks a request as having an active chat."
- *       security:
- *         - bearerAuth: []
+ *      
  *       parameters:
  *         - in: path
  *           name: requestId

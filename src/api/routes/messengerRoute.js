@@ -14,8 +14,7 @@ module.exports = (server) => {
  *       summary: "Get discussions for a specific message"
  *       description: "Retrieve discussions related to a specific message."
  *       tags: [Message]
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: path
  *           name: messageId
@@ -77,8 +76,7 @@ server.route("/api/messages/discussions/:messageId")
  *       summary: "Get discussions for a specific group"
  *       description: "Retrieve discussions related to a specific group."
  *       tags: [Message]
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: path
  *           name: groupId
@@ -142,8 +140,7 @@ server.route("/api/messages/discussions/group/:groupId")
  *       summary: "Get all messages between sender and responder"
  *       description: "Retrieve all messages between a sender and a responder."
  *       tags: [Message]
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: path
  *           name: senderId
@@ -205,8 +202,7 @@ server.route("/api/messages/:senderId/:responderId/messages")
  *       summary: "Set a message as read"
  *       description: "Mark a message as read for a specific user."
  *       tags: [Message]
- *       security:
- *         - bearerAuth: []
+ *      
  *       parameters:
  *         - in: path
  *           name: messageId
@@ -243,8 +239,7 @@ server.route("/api/messages/:senderId/:responderId/messages")
  *       summary: "Get a message by ID"
  *       description: "Retrieve information about a specific message by providing its ID."
  *       tags: [Message]
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: path
  *           name: messageId
@@ -302,8 +297,7 @@ server.route("/api/messages/:messageId")
  *       summary: "Search users by name"
  *       description: "Search users by the inserted name in the search input."
  *       tags: [Message]
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: query
  *           name: search
@@ -373,8 +367,7 @@ server.route("/api/messages/search/users")
  *       summary: "Send a message"
  *       description: "Send a message to a group or user."
  *       tags: [Message]
- *       security:
- *         - bearerAuth: []
+ *       
  *       requestBody:
  *         required: true
  *         content:
@@ -430,8 +423,7 @@ server.route("/api/sendMessage")
  *       summary: "Get user count in group"
  *       description: "Retrieve the count of users in a specific group."
  *       tags: [Message]
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: path
  *           name: groupId
@@ -479,8 +471,7 @@ server.route("/api/getUserCountInGroup/:groupId")
  *       summary: "Add a user to an existing group or create a new group"
  *       description: "Add a user to an existing group or create a new group if the group has two members already."
  *       tags: [Message]
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: path
  *           name: userToAddId
@@ -534,8 +525,7 @@ server.route("/api/messages/addUserToGroup/:userToAddId/:groupId")
  *       summary: "Get all chats with read messages for a user"
  *       description: "Retrieve all discussions with read messages for a specific user."
  *       tags: [Message]
- *       security:
- *         - bearerAuth: []
+ *      
  *       parameters:
  *         - in: path
  *           name: userId
@@ -591,8 +581,7 @@ server.route("/api/readDiscussions/:userId")
  *       summary: "Get all chats with unread messages for a user"
  *       description: "Retrieve all discussions with unread messages for a specific user."
  *       tags: [Message]
- *       security:
- *         - bearerAuth: []
+ *      
  *       parameters:
  *         - in: path
  *           name: userId
@@ -648,8 +637,7 @@ server.route("/api/unreadDiscussions/:userId")
  *       summary: "Get discussions for a user with location filter"
  *       description: "Retrieve discussions for a specific user filtered by location."
  *       tags: [Message]
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: path
  *           name: userId
@@ -718,8 +706,7 @@ server.route("/api/discussions/:userId/location")
  *       summary: "Get all discussions for a user"
  *       description: "Retrieve all discussions for a specific user."
  *       tags: [Message]
- *       security:
- *         - bearerAuth: []
+ *      
  *       parameters:
  *         - in: path
  *           name: userId
@@ -782,8 +769,7 @@ server.route("/api/discussions/:userId")
  *       summary: "Get two-user discussions for a user"
  *       description: "Retrieve discussions between the user and one other person."
  *       tags: [Message]
- *       security:
- *         - bearerAuth: []
+ *      
  *       parameters:
  *         - in: path
  *           name: userId
@@ -841,8 +827,7 @@ server.route("/api/discussions/twoUsers/:userId")
  *       summary: "Get group discussions for a user with three or more users"
  *       description: "Retrieve discussions where the group is composed of three users or more."
  *       tags: [Message]
- *       security:
- *         - bearerAuth: []
+ *     
  *       parameters:
  *         - in: path
  *           name: userId
@@ -899,8 +884,7 @@ server.route('/api/discussions/groupUsers/:userId')
  *       summary: "Get unread discussions for a user"
  *       description: "Retrieve unread discussions for a specific user."
  *       tags: [Message]
- *       security:
- *         - bearerAuth: []
+ *      
  *       parameters:
  *         - in: path
  *           name: userId
@@ -957,8 +941,7 @@ server.route('/api/discussions/:userId/unread')
  *       summary: "Get unread discussions for a user"
  *       description: "Retrieve unread discussions for a specific user."
  *       tags: [Message]
- *       security:
- *         - bearerAuth: []
+ *      
  *       parameters:
  *         - in: path
  *           name: userId

@@ -11,8 +11,7 @@ module.exports = (server) => {
  *         - Activity Comments
  *       summary: "Check if user has left comment for another user"
  *       description: "Check if a user has left a comment for another user regarding a specific activity."
- *       security:
- *         - bearerAuth: []
+ *      
  *       parameters:
  *         - in: path
  *           name: activityId
@@ -46,7 +45,7 @@ module.exports = (server) => {
  *               example:
  *                 message: "Internal server error during comment status retrieval."
  */
-server.get("/api/activities/hasUserLeftComment/{activityId}/{otherUserId}", jwtMiddleware.authenticateUser, cors(), activityCommentController.hasUserLeftComment);
+server.get("/api/activities/hasUserLeftComment/:activityId/:otherUserId", jwtMiddleware.authenticateUser, cors(), activityCommentController.hasUserLeftComment);
 /**
  * @openapi
  * paths:
@@ -56,8 +55,7 @@ server.get("/api/activities/hasUserLeftComment/{activityId}/{otherUserId}", jwtM
  *         - Activity Comments
  *       summary: "Add comment to activity"
  *       description: "Add a comment to a specific activity."
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: path
  *           name: activityId
@@ -92,6 +90,6 @@ server.get("/api/activities/hasUserLeftComment/{activityId}/{otherUserId}", jwtM
  *               example:
  *                 message: "Internal server error during comment addition."
  */
-server.post("/api/activities/addComment/{activityId}", jwtMiddleware.authenticateUser, cors(), activityCommentController.addCommentToActivity);
+server.post("/api/activities/addComment/:activityId", jwtMiddleware.authenticateUser, cors(), activityCommentController.addCommentToActivity);
 
 }

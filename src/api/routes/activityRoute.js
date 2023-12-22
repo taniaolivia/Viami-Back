@@ -12,8 +12,7 @@ module.exports = (server) => {
  *         - Activity
  *       summary: "Get all activities"
  *       description: "Get a list of all activities."
- *       security:
- *         - bearerAuth: []
+ *      
  *       responses:
  *         '200':
  *           description: "Activities retrieved successfully."
@@ -62,8 +61,7 @@ server.route("/api/activities")
  *         - Activity
  *       summary: "Save a new activity"
  *       description: "Save a new activity."
- *       security:
- *         - bearerAuth: []
+ *     
  *       requestBody:
  *         required: true
  *         content:
@@ -115,8 +113,7 @@ server.route("/api/save/activity")
  *         - Activity
  *       summary: "Get activity by ID"
  *       description: "Get details of an activity by its ID."
- *       security:
- *         - bearerAuth: []
+ *      
  *       parameters:
  *         - in: path
  *           name: activityId
@@ -173,8 +170,7 @@ server.route("/api/activities/:activityId")
  *         - Activity
  *       summary: "Get recommended activity by ID"
  *       description: "Get details of a recommended activity by its ID."
- *       security:
- *         - bearerAuth: []
+ *      
  *       parameters:
  *         - in: path
  *           name: activityId
@@ -231,8 +227,7 @@ server.route("/api/recommend/activities/:activityId")
  *         - Activity
  *       summary: "List all recommended activities"
  *       description: "Get a list of all recommended activities."
- *       security:
- *         - bearerAuth: []
+ *       
  *       responses:
  *         '200':
  *           description: "Recommended activities retrieved successfully."
@@ -281,8 +276,7 @@ server.route("/api/recommend/activities")
  *         - Activity
  *       summary: "Get top five recommended activities"
  *       description: "Get a list of the top five recommended activities."
- *       security:
- *         - bearerAuth: []
+ *       
  *       responses:
  *         '200':
  *           description: "Top five recommended activities retrieved successfully."
@@ -331,8 +325,7 @@ server.route("/api/recommendFive/activities")
  *         - Activity
  *       summary: "List all popular activities"
  *       description: "Get a list of all popular activities."
- *       security:
- *         - bearerAuth: []
+ *      
  *       responses:
  *         '200':
  *           description: "Popular activities retrieved successfully."
@@ -381,8 +374,7 @@ server.route("/api/popular/activities")
  *         - Activity
  *       summary: "Get top five popular activities"
  *       description: "Get a list of the top five popular activities."
- *       security:
- *         - bearerAuth: []
+ *      
  *       responses:
  *         '200':
  *           description: "Top five popular activities retrieved successfully."
@@ -431,8 +423,7 @@ server.route("/api/popularFive/activities")
  *         - Activity
  *       summary: "Get all activities by user position"
  *       description: "Get a list of all activities near the user's position."
- *       security:
- *         - bearerAuth: []
+ *      
  *       parameters:
  *         - in: query
  *           name: lat
@@ -501,8 +492,7 @@ server.route("/api/near/activities")
  *         - Activity
  *       summary: "Update note for activity"
  *       description: "Update the note for a specific activity."
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: path
  *           name: activityId

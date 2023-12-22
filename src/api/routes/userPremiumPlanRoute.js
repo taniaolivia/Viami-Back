@@ -19,8 +19,7 @@ module.exports = (server) => {
  *           required: true
  *           schema:
  *             type: string
- *       security:
- *         - bearerAuth: []
+ * 
  *       responses:
  *         '200':
  *           description: "Latest premium plan retrieved successfully."
@@ -74,8 +73,7 @@ server.route("/api/users/:userId/premiumPlan").get(jwtMiddleware.authenticateUse
  *                 type: string
  *                 description: "ID of the premium plan to add."
  *                 example: "premium_plan_1"
- *       security:
- *         - bearerAuth: []
+ * 
  *       responses:
  *         '201':
  *           description: "New premium plan added successfully."

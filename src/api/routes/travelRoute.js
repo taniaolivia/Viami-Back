@@ -13,8 +13,7 @@ module.exports = (server) => {
  *         - Travel
  *       summary: "List all travels"
  *       description: "Get a list of all travels."
- *       security:
- *         - bearerAuth: []
+ *       
  *       responses:
  *         '200':
  *           description: "List of travels retrieved successfully."
@@ -57,8 +56,7 @@ server.route("/api/travels").get(jwtMiddleware.authenticateUser, cors(),  travel
  *         - Travel
  *       summary: "Save a new travel"
  *       description: "Save details of a new travel."
- *       security:
- *         - bearerAuth: []
+ *       
  *       requestBody:
  *         description: "Travel details"
  *         required: true
@@ -106,8 +104,7 @@ server.route("/api/save/travel").post(jwtMiddleware.authenticateUser, cors(), tr
  *         - Travel
  *       summary: "Search travels"
  *       description: "Search travels based on location."
- *       security:
- *         - bearerAuth: []
+ *     
  *       parameters:
  *         - in: query
  *           name: location
@@ -158,8 +155,7 @@ server.route("/api/search/travels").get(jwtMiddleware.authenticateUser, cors(), 
  *         - Travel
  *       summary: "Get travel by ID"
  *       description: "Get details of a specific travel by ID."
- *       security:
- *         - bearerAuth: []
+ *      
  *       parameters:
  *         - in: path
  *           name: travelId
@@ -205,8 +201,7 @@ server.route("/api/travels/:travelId").get(jwtMiddleware.authenticateUser, cors(
  *         - Travel
  *       summary: "Get users for a travel"
  *       description: "Get details of users for a specific travel based on location and date."
- *       security:
- *         - bearerAuth: []
+ *       
  *       responses:
  *         '200':
  *           description: "List of users for the travel retrieved successfully."
@@ -249,8 +244,7 @@ server.route("/api/travelUsers").get(jwtMiddleware.authenticateUser, cors(), tra
  *         - Travel
  *       summary: "Join a travel"
  *       description: "Join a specific travel based on location and date."
- *       security:
- *         - bearerAuth: []
+ *      
  *       requestBody:
  *         description: "Travel details"
  *         required: true

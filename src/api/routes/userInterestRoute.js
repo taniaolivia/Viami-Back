@@ -12,8 +12,7 @@ module.exports = (server) => {
  *         - User
  *       summary: "Get all interests with their users"
  *       description: "Retrieve all users with their associated interests."
- *       security:
- *         - bearerAuth: []
+ *     
  *       responses:
  *         '200':
  *           description: "Users with their associated interests retrieved successfully."
@@ -66,8 +65,7 @@ server.route("/api/usersInterests").get(jwtMiddleware.authenticateUser, cors(), 
  *           required: true
  *           schema:
  *             type: string
- *       security:
- *         - bearerAuth: []
+ *      
  *       responses:
  *         '200':
  *           description: "Interests associated with the user retrieved successfully."
@@ -123,8 +121,7 @@ server.route("/api/usersInterests").get(jwtMiddleware.authenticateUser, cors(), 
  *               interestId:
  *                 type: string
  *                 description: "ID of the interest to be added."
- *       security:
- *         - bearerAuth: []
+ *     
  *       responses:
  *         '200':
  *           description: "Interest added to user's data successfully."
@@ -169,8 +166,7 @@ server.route("/api/usersInterests").get(jwtMiddleware.authenticateUser, cors(), 
  *               interestId:
  *                 type: string
  *                 description: "ID of the interest to be deleted."
- *       security:
- *         - bearerAuth: []
+ *     
  *       responses:
  *         '200':
  *           description: "Interest deleted from user's data successfully."
@@ -212,8 +208,8 @@ server.route("/api/users/:userId/interests")
  *           required: true
  *           schema:
  *             type: string
- *       security:
- *         - bearerAuth: []
+ *     
+ * 
  *       responses:
  *         '200':
  *           description: "Users with the same interest retrieved successfully."

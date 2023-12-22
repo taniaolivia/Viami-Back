@@ -15,8 +15,7 @@ module.exports = (server) => {
  *         - User
  *       summary: "Get all images with their users"
  *       description: "Retrieve all images with associated user information."
- *       security:
- *         - bearerAuth: []
+ *       
  *       responses:
  *         '200':
  *           description: "Images with users retrieved successfully."
@@ -74,8 +73,7 @@ server.route("/api/usersImages")
  *           description: "ID of the user"
  *           schema:
  *             type: string
- *       security:
- *         - bearerAuth: []
+ *       
  *       responses:
  *         '200':
  *           description: "Images of the user retrieved successfully."
@@ -135,8 +133,7 @@ server.route("/api/usersImages")
  *                 image:
  *                   type: string
  *                   format: binary
- *       security:
- *         - bearerAuth: []
+ *      
  *       responses:
  *         '200':
  *           description: "Image added to user's data successfully."
@@ -194,8 +191,7 @@ server.route("/api/usersImages")
  *                   type: string
  *                   description: "URL of the image to delete"
  *                   example: "https://example.com/image.jpg"
- *       security:
- *         - bearerAuth: []
+ *       
  *       responses:
  *         '200':
  *           description: "Image deleted from user's data successfully."

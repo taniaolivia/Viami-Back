@@ -162,8 +162,7 @@ server.post("/api/logout/:userId", cors(), userController.userLogout);
  *         - User
  *       summary: "Show list of users"
  *       description: "Retrieve a list of all users."
- *       security:
- *         - bearerAuth: []
+ * 
  *       responses:
  *         '200':
  *           description: "List of users retrieved successfully."
@@ -204,8 +203,7 @@ server.route("/api/users").get(jwtMiddleware.authenticateUser, cors(), userContr
  *           required: true
  *           schema:
  *             type: string
- *       security:
- *         - bearerAuth: []
+ * 
  *       responses:
  *         '200':
  *           description: "User status retrieved successfully."
@@ -378,8 +376,7 @@ server.route("/api/users/:userId")
  *               properties:
  *                 description:
  *                   type: string
- *       security:
- *         - bearerAuth: []
+ * 
  *       responses:
  *         '200':
  *           description: "User's description updated successfully."
@@ -617,8 +614,7 @@ server.get("/newPasswordForm", cors(), userController.newPasswordForm);
  *           required: true
  *           schema:
  *             type: string
- *       security:
- *         - bearerAuth: []
+ * 
  *       responses:
  *         '200':
  *           description: "FCM token updated successfully."
@@ -664,8 +660,7 @@ server.route("/api/users/:userId/fcmToken").patch(jwtMiddleware.authenticateUser
  *           required: true
  *           schema:
  *             type: string
- *       security:
- *         - bearerAuth: []
+ * 
  *       responses:
  *         '200':
  *           description: "Users found successfully."
@@ -721,8 +716,7 @@ server.route("/api/users/search/:search").get(jwtMiddleware.authenticateUser, co
  *           required: true
  *           schema:
  *             type: string
- *       security:
- *         - bearerAuth: []
+ * 
  *       responses:
  *         '201':
  *           description: "User's plan updated successfully."
@@ -762,8 +756,7 @@ server.route("/api/users/:userId/plan").patch(jwtMiddleware.authenticateUser, co
  *           required: true
  *           schema:
  *             type: string
- *       security:
- *         - bearerAuth: []
+ * 
  *       responses:
  *         '200':
  *           description: "Users with conversations retrieved successfully."

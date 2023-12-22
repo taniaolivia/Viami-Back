@@ -12,8 +12,7 @@ module.exports = (server) => {
  *         - Travel
  *       summary: "Get all activities with their travel"
  *       description: "Get all activities along with their associated travel details."
- *       security:
- *         - bearerAuth: []
+ *      
  *       responses:
  *         '200':
  *           description: "List of all activities with their associated travel details retrieved successfully."
@@ -88,8 +87,7 @@ server.route("/api/travelActivities")
  *         - Travel
  *       summary: "Get all activities of a travel by ID"
  *       description: "Get all activities associated with a specific travel by providing the travel ID."
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: path
  *           name: travelId
@@ -161,8 +159,7 @@ server.route("/api/travelActivities")
  *         - Travel
  *       summary: "Add activity to travel's data"
  *       description: "Add a new activity to the specified travel by providing the travel ID."
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: path
  *           name: travelId
@@ -233,8 +230,7 @@ server.route("/api/travelActivities")
  *         - Travel
  *       summary: "Delete an activity in travel's data"
  *       description: "Delete an activity from the specified travel by providing the travel ID."
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: path
  *           name: travelId

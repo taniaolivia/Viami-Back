@@ -8,38 +8,45 @@ module.exports = (server) => {
  * tags:
  *   name: FAQ
  *   description: Operations related to Frequently Asked Questions (FAQ)
- * 
- * paths:
- *   /api/faq:
- *     get:
- *       summary: List all FAQ
- *       description: Retrieve a list of all Frequently Asked Questions.
- *       tags:
- *         - FAQ
- *       security:
- *         - bearerAuth: []
- *       responses:
- *         '200':
- *           description: Successful operation. Returns a list of FAQ.
- *           content:
- *             application/json:
- *               example:
- *                 faq:
- *                   - id: 1
- *                     question: "What is FAQ?"
- *                     answer: "FAQ stands for Frequently Asked Questions..."
- *                   - id: 2
- *                     question: "How can I contact support?"
- *                     answer: "You can contact support by..."
- *         '401':
- *           description: Unauthorized. User not authenticated or server error.
- *           content:
- *             application/json:
- *               example:
- *                 message: "Server error"
+ *       
+ *
+ * /api/faq:
+ *   get:
+ *     summary: List all FAQ
+ *     description: Retrieve a list of all Frequently Asked Questions.
+ *     tags:
+ *       - FAQ
+ *     parameters:
+ *       - in: header
+ *         name: authorization
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Successful operation. Returns a list of FAQ.
+ *         content:
+ *           application/json:
+ *             example:
+ *               faq:
+ *                 - id: 1
+ *                   question: "What is FAQ?"
+ *                   answer: "FAQ stands for Frequently Asked Questions..."
+ *                 - id: 2
+ *                   question: "How can I contact support?"
+ *                   answer: "You can contact support by..."
+ *       '401':
+ *         description: Unauthorized. User not authenticated or server error.
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Server error"
  */
+
 server.route("/api/faq")
-.get(jwtMiddleware.authenticateUser, cors(), faqController.listAllFaq);
+  .get(jwtMiddleware.authenticateUser, cors(), faqController.listAllFaq);
+
+
 /**
  * @openapi
  * tags:
@@ -53,8 +60,7 @@ server.route("/api/faq")
  *       description: Retrieve information about a specific FAQ using its ID.
  *       tags:
  *         - FAQ
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - name: faqId
  *           in: path
@@ -95,8 +101,7 @@ server.route("/api/faq/:faqId")
  *       description: Retrieve a list of the top five frequently accessed FAQ.
  *       tags:
  *         - FAQ
- *       security:
- *         - bearerAuth: []
+ *       
  *       responses:
  *         '200':
  *           description: Successful operation. Returns a list of the top five frequented FAQ.
@@ -119,6 +124,7 @@ server.route("/api/faq/:faqId")
  */
 server.route("/api/frequentedFive/faq")
 .get(jwtMiddleware.authenticateUser, cors(),faqController.getTopFiveFrequentedFaq)
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFmZDU1MGYyLWM0NjUtNGUxYi1iOGRhLTNkY2U0OWQyYjliZCIsImVtYWlsIjoidGFuaWFAZ21haWwuY29tIiwicGFzc3dvcmQiOiIkMmEkMTAkeUZCRWFHSG52REFxalA3aGZGVVRmdVA2SHZ3NzBzVVkwdlI4Sm5TTTVRQ1RYQVdtQkM0TVciLCJpYXQiOjE3MDMyMzc1MjB9.P2KA49XB9OvfOEOaIcYrcG-6LPy8xb0iGLb8xkQJAGo
 
 
 

@@ -12,8 +12,7 @@ module.exports = (server) => {
  *         - User Language
  *       summary: "Get all users with their languages"
  *       description: "Retrieve all users along with their associated languages."
- *       security:
- *         - bearerAuth: []
+ * 
  *       responses:
  *         '200':
  *           description: "Users with languages retrieved successfully."
@@ -55,8 +54,7 @@ server.route("/api/usersLanguages").get(jwtMiddleware.authenticateUser, cors(), 
  *           required: true
  *           schema:
  *             type: string
- *       security:
- *         - bearerAuth: []
+ * 
  *       responses:
  *         '200':
  *           description: "User languages retrieved successfully."
@@ -118,8 +116,7 @@ server.route("/api/users/:userId/languages").get(jwtMiddleware.authenticateUser,
  *                 languageId:
  *                   type: string
  *                   description: "ID of the language to add"
- *       security:
- *         - bearerAuth: []
+ * 
  *       responses:
  *         '200':
  *           description: "Language added to user's data successfully."
@@ -175,8 +172,7 @@ server.route("/api/users/:userId/languages").post(jwtMiddleware.authenticateUser
  *                 languageId:
  *                   type: string
  *                   description: "ID of the language to delete"
- *       security:
- *         - bearerAuth: []
+ * 
  *       responses:
  *         '200':
  *           description: "Language deleted from user's data successfully."
@@ -216,8 +212,7 @@ server.route("/api/users/:userId/languages").delete(jwtMiddleware.authenticateUs
  *           required: true
  *           schema:
  *             type: string
- *       security:
- *         - bearerAuth: []
+ * 
  *       responses:
  *         '200':
  *           description: "Users with the same language retrieved successfully."

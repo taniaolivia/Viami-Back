@@ -12,8 +12,7 @@ module.exports = (server) => {
  *         - Travel
  *       summary: "Get all images with their travel"
  *       description: "Get all images associated with their respective travels."
- *       security:
- *         - bearerAuth: []
+ *       
  *       responses:
  *         '200':
  *           description: "List of all travel images retrieved successfully."
@@ -64,8 +63,7 @@ server.route("/api/travelImages")
  *         - Travel
  *       summary: "Get all images of a travel by ID"
  *       description: "Get all images associated with a specific travel by ID."
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: path
  *           name: travelId
@@ -113,8 +111,7 @@ server.route("/api/travelImages")
  *         - Travel
  *       summary: "Add image to travel's data"
  *       description: "Add an image to a specific travel's data."
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: path
  *           name: travelId
@@ -162,8 +159,7 @@ server.route("/api/travelImages")
  *         - Travel
  *       summary: "Delete an image in travel's data"
  *       description: "Delete an image from a specific travel's data."
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: path
  *           name: travelId

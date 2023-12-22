@@ -12,8 +12,7 @@ module.exports = (server) => {
  *         - Themes
  *       summary: "Get all activities by theme id"
  *       description: "Get all activities associated with a theme by theme id."
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: path
  *           name: themeId
@@ -66,8 +65,7 @@ server.route("/api/themes/:themeId/activities")
  *         - Themes
  *       summary: "Get first five activities by theme id"
  *       description: "Get the first five activities associated with a theme by theme id."
- *       security:
- *         - bearerAuth: []
+ *       
  *       parameters:
  *         - in: path
  *           name: themeId

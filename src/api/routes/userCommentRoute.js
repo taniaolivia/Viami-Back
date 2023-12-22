@@ -12,8 +12,7 @@ module.exports = (server) => {
  *         - User
  *       summary: "Get all comments with their users"
  *       description: "Retrieve all comments with associated users."
- *       security:
- *         - bearerAuth: []
+ *       
  *       responses:
  *         '200':
  *           description: "Comments with users retrieved successfully."
@@ -64,8 +63,7 @@ server.route("/api/usersComments")
  *           description: "ID of the user"
  *           schema:
  *             type: string
- *       security:
- *         - bearerAuth: []
+ *      
  *       responses:
  *         '200':
  *           description: "Comments of the user retrieved successfully."
@@ -124,8 +122,7 @@ server.route("/api/users/{userId}/comments")
  *             example:
  *               commenterId: "commenter_id_here"
  *               commentText: "Comment text here"
- *       security:
- *         - bearerAuth: []
+ *       
  *       responses:
  *         '200':
  *           description: "Comment added successfully."
@@ -171,8 +168,7 @@ server.post("/api/users/addComment/{userId}", jwtMiddleware.authenticateUser, co
  *           description: "ID of the other user"
  *           schema:
  *             type: string
- *       security:
- *         - bearerAuth: []
+ *       
  *       responses:
  *         '200':
  *           description: "Check result retrieved successfully."
