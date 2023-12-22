@@ -281,7 +281,15 @@ async function sendNotificationToGroup(groupId, senderId, message, res) {
 
 // Add user to group
 async function addUserInGroup(trx, groupId, ...userIds) {
-  if (groupId) {
+  if (!groupId) {
+    const usersInGroup = userIds.map(userId => ({ userId, groupId }));
+
+    console.log('Adding users to group:', usersInGroup);
+
+    await trx('user_group')
+      .insert(usersInGroup);
+  }
+  else {
     const usersInGroup = userIds.map(userId => ({ userId, groupId }));
 
     console.log('Adding users to group:', usersInGroup);
