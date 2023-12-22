@@ -5,10 +5,6 @@ const firebaseConfig = require("../viami-402918-firebase-adminsdk-6nvif-9e01aebe
 const db = require("../knex");
 const io = require('../socket');
 
-
-
-
-
 // Set a message read
 exports.setMessageRead = (req, res) => {
     let messageId = req.params.messageId;
@@ -159,8 +155,9 @@ exports.getSearchedUsers = (req, res) => {
           
           Promise.all(promises)
             .then(discussionsF => {
-              console.log(discussionsF)
-              res.status(200).json({ discussions: discussionsF });
+              const filteredDiscussion = discussionsF.filter((discussion) => discussion != null && discussion != undefined)
+              
+              res.status(200).json({ discussions: filteredDiscussion });
           })
           .catch(error => {
             console.error(error);
@@ -284,7 +281,7 @@ async function sendNotificationToGroup(groupId, senderId, message, res) {
 
 // Add user to group
 async function addUserInGroup(trx, groupId, ...userIds) {
-  if (!groupId) {
+  if (groupId) {
     const usersInGroup = userIds.map(userId => ({ userId, groupId }));
 
     console.log('Adding users to group:', usersInGroup);
@@ -292,6 +289,7 @@ async function addUserInGroup(trx, groupId, ...userIds) {
     await trx('user_group')
       .insert(usersInGroup);
   }
+  
 }
 
 // Create a new group
@@ -304,15 +302,20 @@ async function createNewGroup(trx, userIds) {
 exports.sendMessage = async (req, res) => {
   const { groupId, message, senderId, responderId } = req.body;
   
-
   try {
     await db.transaction(async (trx) => {
-      const finalGroupId = groupId || await createNewGroup(trx, [responderId, senderId]);
-      const userIds = [responderId, senderId];
-      await addUserInGroup(trx, finalGroupId, ...userIds);
-      await sendGroupMessage(trx, finalGroupId, message, senderId, responderId);
-      await sendNotificationToGroup(finalGroupId, senderId, message, res);
-
+      if(groupId){
+        const finalGroupId = groupId;
+        await sendGroupMessage(trx, finalGroupId, message, senderId, responderId);
+        await sendNotificationToGroup(finalGroupId, senderId, message, res);
+      }
+      else if(!groupId) {
+        const finalGroupId = await createNewGroup(trx, [responderId, senderId]);
+        const userIds = [responderId, senderId];
+        await addUserInGroup(trx, finalGroupId, ...userIds);
+        await sendGroupMessage(trx, finalGroupId, message, senderId, responderId);
+        await sendNotificationToGroup(finalGroupId, senderId, message, res);  
+      }
 
       await trx.commit();
       res.status(201).json({ message: 'Message sent successfully' });
@@ -405,6 +408,7 @@ exports.getMessagesBetweenUsers = (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     });
 };
+
 // Add a user to an existing group or create a new group
 exports.addUserToGroup = (req, res) => {
   const userToAddId = req.params.userToAddId;
@@ -487,72 +491,63 @@ exports.getDiscussionsForMessage = (req, res) => {
       if (messageDetails.length === 0) {
         res.status(404).json({ message: 'Message not found' });
       } else {
-        const senderId = messageDetails[0].senderId;
-        const responderId = messageDetails[0].responderId;
         const groupId = messageDetails[0].groupId;
-       
 
         let messagesWithDetails = [];
 
-     
-       
+        db('message')
+            .select('*')
+            .where('groupId', groupId)
+            .orderBy('date', 'asc')
+            .then(messages => {
+              const promise = messages.map(message => {
+                return db('user')
+                .select('firstName', 'lastName')
+                .where('id', message.senderId)
+                .then(senderDetails => {
+                  if (senderDetails.length === 0) {
+                    res.status(404).json({ message: 'Sender not found' });
+                  } else {
                   
-                  db('message')
-                      .select('*')
-                      .where('groupId', groupId)
-                      .orderBy('date', 'asc')
-                      .then(messages => {
-                       const promise = messages.map(message => {
-                        return db('user')
-                        .select('firstName', 'lastName')
-                        .where('id', message.senderId)
-                        .then(senderDetails => {
-                          if (senderDetails.length === 0) {
-                            res.status(404).json({ message: 'Sender not found' });
-                          } else {
-                         
-                            return db('user')
-                              .select('firstName', 'lastName')
-                              .where('id', message.responderId)
-                              .then(responderDetails => {
-                                if (responderDetails.length === 0) {
-                                  res.status(404).json({ message: 'Responder not found' });
-                                } else {
-                                  messagesWithDetails.push({
-                                    ...message,
-                                    senderFirstName: senderDetails[0].firstName,
-                                    senderLastName: senderDetails[0].lastName,
-                                    responderFirstName: responderDetails[0].firstName,
-                                    responderLastName: responderDetails[0].lastName,
-                                  })
-                                  return {
-                                    ...message,
-                                    senderFirstName: senderDetails[0].firstName,
-                                    senderLastName: senderDetails[0].lastName,
-                                    responderFirstName: responderDetails[0].firstName,
-                                    responderLastName: responderDetails[0].lastName,
-                                  };
-
-                                 
-                                }
-                              })
-                            }
-                          }
-                        )})
-                       
-                        Promise.all(promise)
-                        .then(messages => {
-                          res.status(200).json({ messages: messages });
-                        })
-                            
-                       
+                    return db('user')
+                      .select('firstName', 'lastName')
+                      .where('id', message.responderId)
+                      .then(responderDetails => {
+                        if (responderDetails.length === 0) {
+                          res.status(404).json({ message: 'Responder not found' });
+                        } else {
+                          messagesWithDetails.push({
+                            ...message,
+                            senderFirstName: senderDetails[0].firstName,
+                            senderLastName: senderDetails[0].lastName,
+                            responderFirstName: responderDetails[0].firstName,
+                            responderLastName: responderDetails[0].lastName,
+                          })
+                          return {
+                            ...message,
+                            senderFirstName: senderDetails[0].firstName,
+                            senderLastName: senderDetails[0].lastName,
+                            responderFirstName: responderDetails[0].firstName,
+                            responderLastName: responderDetails[0].lastName,
+                          };
+                        }
                       })
-                      .catch(error => {
-                        console.error(error);
-                        res.status(500).json({ message: 'Internal server error' });
-                      });
+                    }
                   }
-         
+                )})
+              
+              Promise.all(promise)
+              .then(messages => {
+                res.status(200).json({ messages: messages });
+              })
+                  
+              
+            })
+            .catch(error => {
+              console.error(error);
+              res.status(500).json({ message: 'Internal server error' });
+            });
+        }
     })
     
     .catch(error => {

@@ -7,7 +7,6 @@ exports.listAllComments = (req, res) => {
         .then(data => res.status(200).json({"comments": data}))
         .catch(error => {
             res.status(401);
-            console.log(error);
             res.json({message: "Server error"});
         });
 }
@@ -22,7 +21,6 @@ exports.getCommentById = (req, res) => {
         .then(data => res.status(200).json({data}))
         .catch(error => {
             res.status(401);
-            console.log(error);
             res.json({message: "Server error"});
         });
 }

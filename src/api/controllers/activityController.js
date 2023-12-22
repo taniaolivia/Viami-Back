@@ -35,7 +35,7 @@ exports.saveActivity = (req,res) => {
         .insert(activity)
         .then(() => res.status(201).json({ message: "Activity is successfully saved."}))
         .catch(error => {
-            console.error(error);
+            
             res.status(500).json({ message: "Invalid request"});
         });
 }
@@ -49,7 +49,7 @@ exports.listRecommendedActivities = (req, res) => {
         .then(data => res.status(200).json({'activities' : data}))
         .catch(error => {
             res.status(401);
-            console.log(error);
+            
             res.json({ message: "Server error" });
         });
 }
@@ -63,7 +63,7 @@ exports.listPopularActivities = (req, res) => {
         .then(data => res.status(200).json({'activities' : data}))
         .catch(error => {
             res.status(401);
-            console.log(error);
+            
             res.json({ message: "Server error" });
         });
 }
@@ -79,7 +79,7 @@ exports.getTopFivePopularActivities = (req, res) => {
         .then(data => res.status(200).json({'activities' : data }))
         .catch(error => {
             res.status(401);
-            console.log(error);
+           
             res.json({ message: "Server error" });
         });
 }
@@ -95,7 +95,6 @@ exports.getTopFiveRecommendedActivities = (req, res) => {
         .then(data => res.status(200).json({"activities": data}))
         .catch(error => {
             res.status(401);
-            console.log(error);
             res.json({message: "Server error"});
         });   
 }
@@ -138,7 +137,6 @@ exports.updateNoteActivity=(req,res) => {
     })
     .catch(error => {
         res.status(401);
-        console.log(error);
         res.json({message: "Activity not found"});
     });
 }
