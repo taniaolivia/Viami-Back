@@ -281,7 +281,7 @@ async function sendNotificationToGroup(groupId, senderId, message, res) {
 
 // Add user to group
 async function addUserInGroup(trx, groupId, ...userIds) {
-  if (!groupId) {
+  if (groupId) {
     const usersInGroup = userIds.map(userId => ({ userId, groupId }));
 
     console.log('Adding users to group:', usersInGroup);
@@ -302,15 +302,20 @@ async function createNewGroup(trx, userIds) {
 exports.sendMessage = async (req, res) => {
   const { groupId, message, senderId, responderId } = req.body;
   
-
   try {
     await db.transaction(async (trx) => {
-      const finalGroupId = groupId || await createNewGroup(trx, [responderId, senderId]);
-      const userIds = [responderId, senderId];
-      await addUserInGroup(trx, finalGroupId, ...userIds);
-      await sendGroupMessage(trx, finalGroupId, message, senderId, responderId);
-      await sendNotificationToGroup(finalGroupId, senderId, message, res);
-
+      if(groupId){
+        const finalGroupId = groupId;
+        await sendGroupMessage(trx, finalGroupId, message, senderId, responderId);
+        await sendNotificationToGroup(finalGroupId, senderId, message, res);
+      }
+      else if(!groupId) {
+        const finalGroupId = await createNewGroup(trx, [responderId, senderId]);
+        const userIds = [responderId, senderId];
+        await addUserInGroup(trx, finalGroupId, ...userIds);
+        await sendGroupMessage(trx, finalGroupId, message, senderId, responderId);
+        await sendNotificationToGroup(finalGroupId, senderId, message, res);  
+      }
 
       await trx.commit();
       res.status(201).json({ message: 'Message sent successfully' });
