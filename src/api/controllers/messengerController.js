@@ -289,14 +289,7 @@ async function addUserInGroup(trx, groupId, ...userIds) {
     await trx('user_group')
       .insert(usersInGroup);
   }
-  if(groupId) {
-    const usersInGroup = userIds.map(userId => ({ userId, groupId }));
-
-    console.log('Adding users to group:', usersInGroup);
-
-    await trx('user_group')
-      .insert(usersInGroup);
-  }
+  
 }
 
 // Create a new group
