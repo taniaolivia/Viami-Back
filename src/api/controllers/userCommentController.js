@@ -9,7 +9,7 @@ exports.getAllUsersComments = (req, res) => {
         .then(data => res.status(200).json({data}))
         .catch(error => {
             res.status(401);
-            console.log(error);
+           
             res.json({message: "Server error"});
         });
 }
@@ -26,7 +26,7 @@ exports.getUserCommentsById = (req, res) => {
         .then(data => res.status(200).json({"userComments": data}))
         .catch(error => {
             res.status(401);
-            console.log(error);
+           
             res.json({message: "Server error"});
         });
 }
@@ -52,12 +52,12 @@ exports.addCommentToUserProfile = (req, res) => {
             res.status(200).json({ message: 'Comment added successfully' });
           })
           .catch(error => {
-            console.error(error);
+         
             res.status(500).json({ message: 'Internal server error' });
           });
       })
       .catch(error => {
-        console.error(error);
+       
         res.status(500).json({ message: 'Internal server error' });
       });
   };
@@ -95,7 +95,7 @@ exports.hasUserLeftComment = (req, res) => {
       res.status(200).json(userStatus);
     })
     .catch(error => {
-      console.error(error);
+     
       res.status(500).json({ message: 'Internal server error' });
     });
 };

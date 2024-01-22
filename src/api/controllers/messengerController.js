@@ -289,6 +289,7 @@ async function addUserInGroup(trx, groupId, ...userIds) {
     await trx('user_group')
       .insert(usersInGroup);
   }
+  
 }
 
 // Create a new group
@@ -301,15 +302,20 @@ async function createNewGroup(trx, userIds) {
 exports.sendMessage = async (req, res) => {
   const { groupId, message, senderId, responderId } = req.body;
   
-
   try {
     await db.transaction(async (trx) => {
-      const finalGroupId = groupId || await createNewGroup(trx, [responderId, senderId]);
-      const userIds = [responderId, senderId];
-      await addUserInGroup(trx, finalGroupId, ...userIds);
-      await sendGroupMessage(trx, finalGroupId, message, senderId, responderId);
-      await sendNotificationToGroup(finalGroupId, senderId, message, res);
-
+      if(groupId){
+        const finalGroupId = groupId;
+        await sendGroupMessage(trx, finalGroupId, message, senderId, responderId);
+        await sendNotificationToGroup(finalGroupId, senderId, message, res);
+      }
+      else if(!groupId) {
+        const finalGroupId = await createNewGroup(trx, [responderId, senderId]);
+        const userIds = [responderId, senderId];
+        await addUserInGroup(trx, finalGroupId, ...userIds);
+        await sendGroupMessage(trx, finalGroupId, message, senderId, responderId);
+        await sendNotificationToGroup(finalGroupId, senderId, message, res);  
+      }
 
       await trx.commit();
       res.status(201).json({ message: 'Message sent successfully' });
@@ -402,6 +408,7 @@ exports.getMessagesBetweenUsers = (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     });
 };
+
 // Add a user to an existing group or create a new group
 exports.addUserToGroup = (req, res) => {
   const userToAddId = req.params.userToAddId;
