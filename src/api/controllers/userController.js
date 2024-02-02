@@ -471,7 +471,7 @@ exports.verifiedEmailUserByToken = (req, res) => {
 // Send an email to user when email is verified successfully
 exports.sendEmailVerified = async(to) =>{
 
-    const emailTemplatePath = path.join(currentModuleDir, '../email/sendVerifyEmail.html');
+    const emailTemplatePath = path.join(currentModuleDir, '../email/sendEmailVerified.html');
     const htmlContent = fs.readFileSync(emailTemplatePath, 'utf-8');
     const html = htmlContent
         .replace('${process.env.CDN_URL}', process.env.CDN_URL);
