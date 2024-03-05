@@ -1,4 +1,4 @@
-/*const db = require("../knex");
+const db = require("../knex");
 const activityCommentController = require("../controllers/activityCommentController");
 
 describe('Activity Comment Controller Tests', () => {
@@ -13,4 +13,3 @@ describe('Activity Comment Controller Tests', () => {
 
     // Add more tests for different scenarios
 });
-*/

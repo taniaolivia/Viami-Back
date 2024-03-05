@@ -4,15 +4,15 @@ services:
     image: node:lts
     build:
       context: .
-      dockerfile: ./src/api/Dockerfile-dev
+      dockerfile: ./Dockerfile
     env_file: ./src/.env
     working_dir: /home/node/app
     volumes:
-      - ./src/api:/home/node/app
+      - ./src/api:/home/node/app/src/api
     command: > 
       bash -c 
         'npm i &&
-         npm run dev'
+         npm run watch'
     ports:
       - 3333:3000
     depends_on:
@@ -47,7 +47,7 @@ services:
     image: node:lts
     build:
       context: .
-      dockerfile: ./src/api/Dockerfile-dev
+      dockerfile: ./Dockerfile
     env_file: ./src/.env
     working_dir: /home/node/app
     volumes:
