@@ -4,37 +4,41 @@ FROM node:lts
 # Define the environment as development
 ENV NODE_ENV=development
 
-# Set the user as root
+# Remove and create a group 'admins'
 USER root
+RUN groupdel admins || true
+RUN groupadd -g 1005 admins
 
-# Use the repository /app
-WORKDIR /app
+# Remove and create a user not root named 'viami' and add it to the group 'admins'
+RUN userdel viami || true
+RUN useradd -m -u 1001 viami
+RUN usermod -aG admins viami
 
-# Create a non-root user
-RUN groupadd -r app && useradd -r -g app -s /bin/false app
+# Create a repository for the application
+RUN mkdir -p /home/viami/app
+RUN mkdir -p /home/viami/app/api
+RUN mkdir -p /home/viami/app/tests
 
-# Change ownership of the /app directory to the non-root user
-#RUN chown -R app:app /app
-
-RUN chown -R app:app /app && chmod -R 755 /app
+# Use the repository as a work repository
+WORKDIR /home/viami/app
 
 # Copy the package file to the project
 COPY ["./package.json", "./package-lock.json", "./"]
 
+# Copy the rest of the code of the application inside the container
+COPY ./ /home/viami/app
+
+# Making sure that the user 'viami' has the permission to the directory of the application
+RUN chown -R viami:viami /home/viami/app
+
+# Switch to the non-root user
+USER viami
+
 # Install all the dependencies needed
-RUN npm ci --only=production
-
-# Install nodemon package so that the project can run using the command run watch
-RUN npm install -g nodemon
-
-# Copy the source code
-COPY . .
+RUN npm ci
 
 # Expose the port 3000 for the application
 EXPOSE 3000
-
-# Switch to the non-root user
-USER app
 
 # Run and watch the project
 CMD ["npm", "run", "watch"]
