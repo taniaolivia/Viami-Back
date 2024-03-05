@@ -12,7 +12,7 @@ services:
     command: > 
       bash -c 
         'npm i &&
-         npm run watch'
+         npm run dev'
     ports:
       - 3333:3000
     depends_on:
@@ -39,6 +39,23 @@ services:
     volumes:
       - db:/var/lib/mysql
       - ./src/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - viami_back
+
+  viami_test:
+    container_name: viami_test
+    image: node:lts
+    build:
+      context: .
+      dockerfile: ./src/api/Dockerfile-dev
+    env_file: ./src/.env
+    working_dir: /home/node/app
+    volumes:
+      - ./tests:/home/node/app/tests
+    command: >
+      bash -c 'npm run test'
+    depends_on:
+      - viami_db
     networks:
       - viami_back
 

@@ -19,6 +19,9 @@ RUN npm install --production
 # Install nodemon package so that the project can run using the command run watch
 RUN npm install -g nodemon
 
+# Install Jest globally
+RUN npm install -g jest
+
 # Copy the source code
 COPY . .
 

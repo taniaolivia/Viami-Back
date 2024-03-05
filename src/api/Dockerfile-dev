@@ -14,7 +14,10 @@ WORKDIR /app
 RUN groupadd -r app && useradd -r -g app -s /bin/false app
 
 # Change ownership of the /app directory to the non-root user
-RUN chown -R app:app /app
+#RUN chown -R app:app /app
+
+RUN chown -R app:app /app && chmod -R 755 /app
+
 
 # Copy the package file to the project
 COPY ["./src/api/package.json", "./src/api/package-lock.json", "./"]
@@ -24,6 +27,9 @@ RUN npm ci --only=production
 
 # Install nodemon package so that the project can run using the command run watch
 RUN npm install -g nodemon
+
+# Install Jest globally
+RUN npm install -g jest
 
 # Copy the source code
 COPY . .
