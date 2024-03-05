@@ -4,7 +4,7 @@ services:
     image: node:lts
     build:
       context: .
-      dockerfile: ./src/api/Dockerfile-dev
+      dockerfile: Dockerfile-dev
     env_file: ./src/.env
     working_dir: /home/node/app
     volumes:
@@ -12,7 +12,7 @@ services:
     command: > 
       bash -c 
         'npm i &&
-         npm run dev'
+         npm run watch'
     ports:
       - 3333:3000
     depends_on:
@@ -47,11 +47,10 @@ services:
     image: node:lts
     build:
       context: .
-      dockerfile: ./src/api/Dockerfile-dev
-    env_file: ./src/.env
+      dockerfile: Dockerfile-test
     working_dir: /home/node/app
     volumes:
-      - ./tests:/home/node/app/tests
+      - ./tests:/home/node/app
     command: >
       bash -c 'npm run test'
     depends_on:

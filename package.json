@@ -2,15 +2,14 @@
   "name": "viami",
   "version": "0.0.0",
   "private": true,
-  "main": "app.js",
+  "main": "src/api/app.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest tests",
     "test:controllers": "jest tests/api/controllers",
     "test:routes": "jest tests/api/routes",
     "coverage": "jest --coverage",
-    "start": "node app.js",
-    "dev": "npm-run-all --parallel watch:*",
-    "watch": "nodemon app.js",
+    "start": "node src/api/app.js",
+    "watch": "nodemon src/api/app.js",
     "watch:test": "nodemon --exec 'npm test'"
   },
   "dependencies": {

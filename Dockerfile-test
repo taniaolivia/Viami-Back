@@ -1,0 +1,28 @@
+FROM node:lts
+
+# Set the environment to test
+ENV NODE_ENV=test
+
+# Set the user as root
+USER root
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the package files
+COPY ["package.json", "package-lock.json", "./"]
+
+# Install all dependencies including development dependencies
+RUN npm ci --unsafe-perm=true
+
+# Copy the source code
+COPY ./src/api ./src/api
+
+# Copy the tests directory
+COPY ./tests ./tests
+
+# Switch to the non-root user
+USER app
+
+# Command to run the tests
+CMD ["npm", "run", "test"]

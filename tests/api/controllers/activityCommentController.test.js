@@ -1,5 +1,5 @@
-/*const db = require("../knex");
-const activityCommentController = require("../controllers/activityCommentController");
+/*const db = require("../../../src/api/knex");
+const activityCommentController = require("../../../src/api/controllers/activityCommentController");
 
 describe('Activity Comment Controller Tests', () => {
     test('hasUserLeftComment should return true if user has left a comment', async () => {
@@ -12,5 +12,4 @@ describe('Activity Comment Controller Tests', () => {
     });
 
     // Add more tests for different scenarios
-});
-*/
+});*/
