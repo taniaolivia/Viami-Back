@@ -1,5 +1,6 @@
 const db = require("../knex");
 
+// Get the list of cities available in forum
 exports.getListCitiesForum = (req, res) => {
     db("forum_cities")
       .select("*")
@@ -12,6 +13,7 @@ exports.getListCitiesForum = (req, res) => {
       });
 }
 
+// Get all posts posted in forum by city
 exports.getAllPostsByCity = (req, res) => {
     let cityId = req.params.cityId;
 
@@ -64,6 +66,7 @@ exports.getAllPostsByCity = (req, res) => {
       });
 }
 
+// Get add a post in forum by city
 exports.addPostByCity = (req, res) => {
     let post = req.body.post;
     let cityId = req.params.cityId;
@@ -84,6 +87,7 @@ exports.addPostByCity = (req, res) => {
       });
 }
 
+// Get all posts posted in forum
 exports.getAllPosts = (req, res) => {
     db("forum")
       .select("*")
@@ -123,6 +127,7 @@ exports.getAllPosts = (req, res) => {
       });
 }
 
+// Get all comments of a post in forum
 exports.getCommentsPostById = (req, res) => {
     let postId = req.params.postId;
 
@@ -165,6 +170,7 @@ exports.getCommentsPostById = (req, res) => {
       });
 }
 
+// Add a new post in forum
 exports.addPost = (req, res) => {
     let post = req.body.post;
     let userId = req.body.userId;
@@ -203,6 +209,7 @@ exports.addCommentToPostById = (req, res) => {
       });
 }
 
+// Get all the posts in forum ordered by the newest posts
 exports.getAllNewestPosts = (req, res) => {
     db("forum")
       .select("*")
@@ -242,6 +249,7 @@ exports.getAllNewestPosts = (req, res) => {
       });
 }
 
+// Get all the posts in forum ordered by the oldest posts
 exports.getAllOldestPosts = (req, res) => {
     db("forum")
       .select("*")
