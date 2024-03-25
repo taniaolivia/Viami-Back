@@ -356,3 +356,54 @@ CREATE TABLE `user_premium_plan` (
   CONSTRAINT `user_premium_plan_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
   CONSTRAINT `user_premium_plan_ibfk_2` FOREIGN KEY (`planId`) REFERENCES `premium_plan` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `forum`;
+CREATE TABLE `forum` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `post` varchar(200) NOT NULL,
+  `userId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `postedOn` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `userId` (`userId`),
+  CONSTRAINT `forum_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `forum_cities`;
+CREATE TABLE `forum_cities` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `city` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `forum_comment`;
+CREATE TABLE `forum_comment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `forumId` int(11) NOT NULL,
+  `comment` varchar(200) NOT NULL,
+  `userId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `commentedOn` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `forumId` (`forumId`),
+  KEY `userId` (`userId`),
+  CONSTRAINT `forum_comment_ibfk_1` FOREIGN KEY (`forumId`) REFERENCES `forum` (`id`),
+  CONSTRAINT `forum_comment_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `forum_posts_city`;
+CREATE TABLE `forum_posts_city` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `post` int(11) NOT NULL,
+  `cityId` int(11) NOT NULL,
+  `userId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `postedOn` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `userId` (`userId`),
+  KEY `cityId` (`cityId`),
+  CONSTRAINT `forum_posts_city_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
+  CONSTRAINT `forum_posts_city_ibfk_2` FOREIGN KEY (`cityId`) REFERENCES `forum_cities` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
