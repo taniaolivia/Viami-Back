@@ -396,7 +396,7 @@ CREATE TABLE `forum_comment` (
 DROP TABLE IF EXISTS `forum_posts_city`;
 CREATE TABLE `forum_posts_city` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `post` int(11) NOT NULL,
+  `post` varchar(200) NOT NULL,
   `cityId` int(11) NOT NULL,
   `userId` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `postedOn` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
