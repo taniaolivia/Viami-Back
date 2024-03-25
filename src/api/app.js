@@ -21,14 +21,12 @@ const swaggerOptions={
             contact:{
                 name:'OLIVIA Tania',
                 email:'tania.olivia@my-digital-school.org', 
-                
+                name:'OUANASSI Nihel',
+                email:'nihel.ouanassi@my-digital-school.org', 
             },
             servers:[process.env.SWAGGER_SERVER],
-           
-            
         },
 
-    
         components:{
             securitySchemes:{
                 ApiKeyAth:{
@@ -42,7 +40,6 @@ const swaggerOptions={
         security:[{
             ApiKeyAth:[]
         }]
-        
         
     },
     apis:["./routes/*.js"]
@@ -125,6 +122,9 @@ premiumPlanRoute(server);
 
 const userPremiumPlanRoute = require("./routes/userPremiumPlanRoute");
 userPremiumPlanRoute(server);
+
+const forumRoute = require("./routes/forumRoute");
+forumRoute(server);
   
 server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);

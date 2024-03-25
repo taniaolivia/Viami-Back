@@ -1,9 +1,5 @@
-const { initializeApp } = require('firebase-admin/app');
 const { getMessaging } = require("firebase-admin/messaging");
-const admin = require("firebase-admin");
-const firebaseConfig = require("../viami-402918-firebase-adminsdk-6nvif-9e01aebec8.js").firebase;
 const db = require("../knex");
-const io = require('../socket');
 
 // Set a message read
 exports.setMessageRead = (req, res) => {
