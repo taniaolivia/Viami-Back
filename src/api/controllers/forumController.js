@@ -3,7 +3,7 @@ const db = require("../knex");
 exports.getListCitiesForum = (req, res) => {
     db("forum_cities")
       .select("*")
-      .orderBy("name", "asc")
+      .orderBy("city", "asc")
       .then(data => res.status(200).json({"forum_cities": data}))
       .catch(error => {
           res.status(401);
@@ -19,36 +19,43 @@ exports.getAllPostsByCity = (req, res) => {
       .select("*")
       .where({"cityId": cityId})
       .then(data => {
-        db("forum_cities")
-        .select("*")
-        .where({"cityId": cityId})
-        .then(cities => {
-            db("user")
-            .select("*")
-            .where({"id": data[0].userId})
-            .then(user => res.status(200).json({"forum_posts_city": {
-                id: data[0].id,
-                post: data[0].post,
-                user: {
-                    id: user[0].id,
-                    firstName: user[0].firstName,
-                    lastName: user[0].lastName,
-                    email: user[0].email
-                },
-                city: cities,
-                postedOn: data[0].postedOn
-            }}))
-            .catch(error => {
-                res.status(401);
-                console.log(error);
-                res.json({message: "Server error"});
-            });
-        })
-        .catch(error => {
-            res.status(401);
-            console.log(error);
-            res.json({message: "Server error"});
-        });
+        const postsCitiesPromises = data.map((post) => {
+            return db("forum_cities")
+                .select("*")
+                .where({"id": cityId})
+                .then(cities => {
+                    return db("user")
+                        .select("*")
+                        .where({"id": post.userId})
+                        .then(user => ({
+                            id: post.id,
+                            post: post.post,
+                            user: {
+                                id: user[0].id,
+                                firstName: user[0].firstName,
+                                lastName: user[0].lastName,
+                                email: user[0].email
+                            },
+                            city: cities,
+                            postedOn: post.postedOn
+                        }))
+                    .catch(error => {
+                        res.status(401);
+                        console.log(error);
+                        res.json({message: "Server error"});
+                    });
+                })
+                .catch(error => {
+                    res.status(401);
+                    console.log(error);
+                    res.json({message: "Server error"});
+                });
+         })
+
+         Promise.all(postsCitiesPromises)
+         .then(postsCities => {
+            return res.status(200).json({"forum_posts_cities": postsCities});
+         })
       })
       .catch(error => {
           res.status(401);
@@ -58,7 +65,7 @@ exports.getAllPostsByCity = (req, res) => {
 }
 
 exports.addPostByCity = (req, res) => {
-    let post = req.boy.post;
+    let post = req.body.post;
     let cityId = req.params.cityId;
     let userId = req.body.userId;
 
@@ -81,25 +88,33 @@ exports.getAllPosts = (req, res) => {
     db("forum")
       .select("*")
       .then(data => {
-        db("user")
-            .select("*")
-            .where({"id": data[0].userId})
-            .then(user => res.status(200).json({"forum": {
-                id: data[0].id,
-                post: data[0].post,
-                user: {
-                    id: user[0].id,
-                    firstName: user[0].firstName,
-                    lastName: user[0].lastName,
-                    email: user[0].email
-                },
-                postedOn: data[0].postedOn
-            }}))
-            .catch(error => {
-                res.status(401);
-                console.log(error);
-                res.json({message: "Server error"});
-            });
+         const postsPromises = data.map((post) => {
+            return db("user")
+                .select("*")
+                .where({"id": post.userId})
+                .then(user => ({
+                    id: post.id,
+                    post: post.post,
+                    user: {
+                        id: user[0].id,
+                        firstName: user[0].firstName,
+                        lastName: user[0].lastName,
+                        email: user[0].email
+                    },
+                    postedOn: post.postedOn
+                }))
+                .catch(error => {
+                    res.status(401);
+                    console.log(error);
+                    res.json({message: "Server error"});
+                });
+         })
+
+         Promise.all(postsPromises)
+         .then(posts => {
+            return res.status(200).json({"forum": posts});
+         })
+
       })
       .catch(error => {
           res.status(401);
@@ -113,28 +128,35 @@ exports.getCommentsPostById = (req, res) => {
 
     db("forum_comment")
       .select("*")
-      .where({"postId": postId})
+      .where({"forumId": postId})
       .then(data => {
-        db("user")
-            .select("*")
-            .where({"id": data[0].userId})
-            .then(user => res.status(200).json({"forum": {
-                id: data[0].id,
-                forumId: data[0].forumId,
-                comment: data[0].comment,
-                user: {
-                    id: user[0].id,
-                    firstName: user[0].firstName,
-                    lastName: user[0].lastName,
-                    email: user[0].email
-                },
-                commentedOn: data[0].commentedOn
-            }}))
-            .catch(error => {
-                res.status(401);
-                console.log(error);
-                res.json({message: "Server error"});
-            });
+        const postCommentsPromises = data.map((post) => {
+            return db("user")
+                .select("*")
+                .where({"id": post.userId})
+                .then(user => ({
+                    id: post.id,
+                    forumId: post.forumId,
+                    comment: post.comment,
+                    user: {
+                        id: user[0].id,
+                        firstName: user[0].firstName,
+                        lastName: user[0].lastName,
+                        email: user[0].email
+                    },
+                    commentedOn: post.commentedOn
+                }))
+                .catch(error => {
+                    res.status(401);
+                    console.log(error);
+                    res.json({message: "Server error"});
+                });
+         })
+
+         Promise.all(postCommentsPromises)
+         .then(postComments => {
+            return res.status(200).json({"forum_comment": postComments});
+         })
       })
       .catch(error => {
           res.status(401);
@@ -166,9 +188,9 @@ exports.addCommentToPostById = (req, res) => {
     let comment = req.body.comment;
     let userId = req.body.userId;
 
-    db("forum")
+    db("forum_comment")
       .insert({
-        "postId": postId,
+        "forumId": postId,
         "comment": comment,
         "userId": userId,
         "commentedOn": new Date()
@@ -186,25 +208,32 @@ exports.getAllNewestPosts = (req, res) => {
       .select("*")
       .orderBy("postedOn", "desc")
       .then(data => {
-        db("user")
-            .select("*")
-            .where({"id": data[0].userId})
-            .then(user => res.status(200).json({"forum": {
-                id: data[0].id,
-                post: data[0].post,
-                user: {
-                    id: user[0].id,
-                    firstName: user[0].firstName,
-                    lastName: user[0].lastName,
-                    email: user[0].email
-                },
-                postedOn: data[0].postedOn
-            }}))
-            .catch(error => {
-                res.status(401);
-                console.log(error);
-                res.json({message: "Server error"});
-            });
+        const postsPromises = data.map((post) => {
+            return db("user")
+                .select("*")
+                .where({"id": post.userId})
+                .then(user => ({
+                    id: post.id,
+                    post: post.post,
+                    user: {
+                        id: user[0].id,
+                        firstName: user[0].firstName,
+                        lastName: user[0].lastName,
+                        email: user[0].email
+                    },
+                    postedOn: post.postedOn
+                }))
+                .catch(error => {
+                    res.status(401);
+                    console.log(error);
+                    res.json({message: "Server error"});
+                });
+         })
+
+         Promise.all(postsPromises)
+         .then(posts => {
+            return res.status(200).json({"forum": posts});
+         })
       })
       .catch(error => {
           res.status(401);
@@ -218,25 +247,32 @@ exports.getAllOldestPosts = (req, res) => {
       .select("*")
       .orderBy("postedOn", "asc")
       .then(data => {
-        db("user")
-            .select("*")
-            .where({"id": data[0].userId})
-            .then(user => res.status(200).json({"forum": {
-                id: data[0].id,
-                post: data[0].post,
-                user: {
-                    id: user[0].id,
-                    firstName: user[0].firstName,
-                    lastName: user[0].lastName,
-                    email: user[0].email
-                },
-                postedOn: data[0].postedOn
-            }}))
-            .catch(error => {
-                res.status(401);
-                console.log(error);
-                res.json({message: "Server error"});
-            });
+        const postsPromises = data.map((post) => {
+            return db("user")
+                .select("*")
+                .where({"id": post.userId})
+                .then(user => ({
+                    id: post.id,
+                    post: post.post,
+                    user: {
+                        id: user[0].id,
+                        firstName: user[0].firstName,
+                        lastName: user[0].lastName,
+                        email: user[0].email
+                    },
+                    postedOn: post.postedOn
+                }))
+                .catch(error => {
+                    res.status(401);
+                    console.log(error);
+                    res.json({message: "Server error"});
+                });
+         })
+
+         Promise.all(postsPromises)
+         .then(posts => {
+            return res.status(200).json({"forum": posts});
+         })
       })
       .catch(error => {
           res.status(401);
