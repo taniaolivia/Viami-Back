@@ -24,8 +24,6 @@ const swaggerOptions={
                 
             },
             servers:[process.env.SWAGGER_SERVER],
-           
-            
         },
 
     
