@@ -4,7 +4,7 @@ services:
     image: node:lts
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./Dockerfile-dev
     env_file: ./src/.env
     working_dir: /home/node/app
     volumes:
@@ -47,15 +47,16 @@ services:
     image: node:lts
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./Dockerfile-dev
     env_file: ./src/.env
     working_dir: /home/node/app
     volumes:
-      - ./tests:/home/node/app/tests
-    command: >
-      bash -c 'npm run test'
-    depends_on:
-      - viami_db
+      - ./src/api:/home/node/app/src/api
+      - ./test:/home/node/app/test  # Ajout du volume pour les tests
+    command: > 
+      bash -c 
+        'npm i &&
+         npm test'  # Commande pour exécuter les tests
     networks:
       - viami_back
 
