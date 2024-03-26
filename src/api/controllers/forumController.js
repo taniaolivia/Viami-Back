@@ -5,7 +5,32 @@ exports.getListCitiesForum = (req, res) => {
     db("forum_cities")
       .select("*")
       .orderBy("city", "asc")
-      .then(data => res.status(200).json({"forum_cities": data}))
+      .then(data => {
+        const citiesPromises = data.map((city) => {
+            return db("image")
+                .select("*")
+                .where({"id": city.image})
+                .then(image => ({
+                    id: city.id,
+                    city: city.city,
+                    image: {
+                        id: image[0].id,
+                        image: image[0].image
+                    }
+                }))
+                .catch(error => {
+                    res.status(401);
+                    console.log(error);
+                    res.json({message: "Server error"});
+                });
+         })
+
+         Promise.all(citiesPromises)
+         .then(cities => {
+            return res.status(200).json({"forum_cities": cities});
+         })
+        
+      })
       .catch(error => {
           res.status(401);
           console.log(error);
