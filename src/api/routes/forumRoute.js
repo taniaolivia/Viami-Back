@@ -107,8 +107,10 @@ server.route("/api/forum/posts")
  *                 forum:
  *                   - id: 1
  *                     city: "Paris"
+ *                     image: "paris.jpg"
  *                   - id: 2
  *                     city: "Barcelone"
+ *                     image: "barcelone.jpg"
  *         '401':
  *           description: "Unauthorized. User not authenticated or server error."
  *           content:
