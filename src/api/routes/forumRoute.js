@@ -26,6 +26,7 @@ module.exports = (server) => {
  *                       firstName: "John"
  *                       lastName: "Doe"
  *                       email: "example@email.com"
+ *                       profileImage: "profile.jpg"
  *                     postedOn: 2023-12-23
  *                   - id: 2
  *                     post: "Post 2"
@@ -34,6 +35,7 @@ module.exports = (server) => {
  *                       firstName: "John"
  *                       lastName: "Dawson"
  *                       email: "example@email.com"
+ *                       profileImage: "profile.jpg"
  *                     postedOn: 2023-12-24
  *         '401':
  *           description: "Unauthorized. User not authenticated or server error."
@@ -159,6 +161,7 @@ server.route("/api/forum/cities")
  *                       firstName: "John"
  *                       lastName: "Doe"
  *                       email: "example@email.com"
+ *                       profileImage: "profile.jpg"
  *                     postedOn: 2023-02-11
  *                   - id: 2
  *                     post: "Post 2"
@@ -168,6 +171,7 @@ server.route("/api/forum/cities")
  *                       firstName: "John"
  *                       lastName: "Dawson"
  *                       email: "example@email.com"
+ *                       profileImage: "profile.jpg"
  *                     postedOn: 2023-02-11
  *         '401':
  *           description: "Unauthorized. User not authenticated or server error."
@@ -255,6 +259,7 @@ server.route("/api/forum/posts_cities/:cityId")
  *                       firstName: "John"
  *                       lastName: "Doe"
  *                       email: "example@email.com"
+ *                       profileImage: "profile.jpg"
  *                     commentedOn: 2023-02-11
  *                   - id: 2
  *                     forumId: 1
@@ -264,6 +269,7 @@ server.route("/api/forum/posts_cities/:cityId")
  *                       firstName: "John"
  *                       lastName: "Dawson"
  *                       email: "example@email.com"
+ *                       profileImage: "profile.jpg"
  *                     commentedOn: 2023-02-11
  *         '401':
  *           description: "Unauthorized. User not authenticated or server error."
@@ -343,6 +349,7 @@ server.route("/api/forum/posts/:postId/comments")
  *                       firstName: "John"
  *                       lastName: "Dawson"
  *                       email: "example@email.com"
+ *                       profileImage: "profile.jpg"
  *                     postedOn: 2023-12-24
  *                   - id: 1
  *                     post: "Post 1"
@@ -351,6 +358,7 @@ server.route("/api/forum/posts/:postId/comments")
  *                       firstName: "John"
  *                       lastName: "Doe"
  *                       email: "example@email.com"
+ *                       profileImage: "profile.jpg"
  *                     postedOn: 2023-12-23
  *         '401':
  *           description: "Unauthorized. User not authenticated or server error."
@@ -392,6 +400,7 @@ server.route("/api/forum/posts/newest")
  *                       firstName: "John"
  *                       lastName: "Doe"
  *                       email: "example@email.com"
+ *                       profileImage: "profile.jpg"
  *                     postedOn: 2023-12-23
  *                   - id: 2
  *                     post: "Post 2"
@@ -400,6 +409,7 @@ server.route("/api/forum/posts/newest")
  *                       firstName: "John"
  *                       lastName: "Dawson"
  *                       email: "example@email.com"
+ *                       profileImage: "profile.jpg"
  *                     postedOn: 2023-12-24
  *         '401':
  *           description: "Unauthorized. User not authenticated or server error."
