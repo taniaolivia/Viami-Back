@@ -5,7 +5,32 @@ exports.getListCitiesForum = (req, res) => {
     db("forum_cities")
       .select("*")
       .orderBy("city", "asc")
-      .then(data => res.status(200).json({"forum_cities": data}))
+      .then(data => {
+        const citiesPromises = data.map((city) => {
+            return db("image")
+                .select("*")
+                .where({"id": city.image})
+                .then(image => ({
+                    id: city.id,
+                    city: city.city,
+                    image: {
+                        id: image[0].id,
+                        image: image[0].image
+                    }
+                }))
+                .catch(error => {
+                    res.status(401);
+                    console.log(error);
+                    res.json({message: "Server error"});
+                });
+         })
+
+         Promise.all(citiesPromises)
+         .then(cities => {
+            return res.status(200).json({"forum_cities": cities});
+         })
+        
+      })
       .catch(error => {
           res.status(401);
           console.log(error);
@@ -29,23 +54,44 @@ exports.getAllPostsByCity = (req, res) => {
                     return db("user")
                         .select("*")
                         .where({"id": post.userId})
-                        .then(user => ({
-                            id: post.id,
-                            post: post.post,
-                            user: {
-                                id: user[0].id,
-                                firstName: user[0].firstName,
-                                lastName: user[0].lastName,
-                                email: user[0].email
-                            },
-                            city: cities,
-                            postedOn: post.postedOn
-                        }))
-                    .catch(error => {
-                        res.status(401);
-                        console.log(error);
-                        res.json({message: "Server error"});
-                    });
+                        .then(user => {
+                            return db("user_image")
+                                .select("*")
+                                .where({"userId": post.userId})
+                                .then(userImages => {
+                                    return db("image")
+                                            .select("*")
+                                            .where({"id": userImages[0].imageId})
+                                            .then(images => ({
+                                                    id: post.id,
+                                                    post: post.post,
+                                                    user: {
+                                                        id: user[0].id,
+                                                        firstName: user[0].firstName,
+                                                        lastName: user[0].lastName,
+                                                        email: user[0].email,
+                                                        profileImage: images[0].image
+                                                    },
+                                                    city: cities,
+                                                    postedOn: post.postedOn
+                                            }))
+                                            .catch(error => {
+                                                res.status(401);
+                                                console.log(error);
+                                                res.json({message: "Server error"});
+                                            })
+                                })
+                                .catch(error => {
+                                    res.status(401);
+                                    console.log(error);
+                                    res.json({message: "Server error"});
+                                })
+                        })
+                        .catch(error => {
+                            res.status(401);
+                            console.log(error);
+                            res.json({message: "Server error"});
+                        });
                 })
                 .catch(error => {
                     res.status(401);
@@ -96,17 +142,38 @@ exports.getAllPosts = (req, res) => {
             return db("user")
                 .select("*")
                 .where({"id": post.userId})
-                .then(user => ({
-                    id: post.id,
-                    post: post.post,
-                    user: {
-                        id: user[0].id,
-                        firstName: user[0].firstName,
-                        lastName: user[0].lastName,
-                        email: user[0].email
-                    },
-                    postedOn: post.postedOn
-                }))
+                .then(user => {
+                    return db("user_image")
+                        .select("*")
+                        .where({"userId": post.userId})
+                        .then(userImages => {
+                            return db("image")
+                                    .select("*")
+                                    .where({"id": userImages[0].imageId})
+                                    .then(images => ({
+                                        id: post.id,
+                                        post: post.post,
+                                        user: {
+                                            id: user[0].id,
+                                            firstName: user[0].firstName,
+                                            lastName: user[0].lastName,
+                                            email: user[0].email,
+                                            profileImage: images[0].image
+                                        },
+                                        postedOn: post.postedOn
+                                    }))
+                                    .catch(error => {
+                                        res.status(401);
+                                        console.log(error);
+                                        res.json({message: "Server error"});
+                                    })
+                        })
+                        .catch(error => {
+                            res.status(401);
+                            console.log(error);
+                            res.json({message: "Server error"});
+                        })
+                })
                 .catch(error => {
                     res.status(401);
                     console.log(error);
@@ -139,18 +206,39 @@ exports.getCommentsPostById = (req, res) => {
             return db("user")
                 .select("*")
                 .where({"id": post.userId})
-                .then(user => ({
-                    id: post.id,
-                    forumId: post.forumId,
-                    comment: post.comment,
-                    user: {
-                        id: user[0].id,
-                        firstName: user[0].firstName,
-                        lastName: user[0].lastName,
-                        email: user[0].email
-                    },
-                    commentedOn: post.commentedOn
-                }))
+                .then(user => {
+                    return db("user_image")
+                        .select("*")
+                        .where({"userId": post.userId})
+                        .then(userImages => {
+                            return db("image")
+                                    .select("*")
+                                    .where({"id": userImages[0].imageId})
+                                    .then(images => ({
+                                        id: post.id,
+                                        forumId: post.forumId,
+                                        comment: post.comment,
+                                        user: {
+                                            id: user[0].id,
+                                            firstName: user[0].firstName,
+                                            lastName: user[0].lastName,
+                                            email: user[0].email,
+                                            profileImage: images[0].image
+                                        },
+                                        commentedOn: post.commentedOn
+                                    }))
+                                    .catch(error => {
+                                        res.status(401);
+                                        console.log(error);
+                                        res.json({message: "Server error"});
+                                    })
+                        })
+                        .catch(error => {
+                            res.status(401);
+                            console.log(error);
+                            res.json({message: "Server error"});
+                        })
+                })
                 .catch(error => {
                     res.status(401);
                     console.log(error);
@@ -219,17 +307,38 @@ exports.getAllNewestPosts = (req, res) => {
             return db("user")
                 .select("*")
                 .where({"id": post.userId})
-                .then(user => ({
-                    id: post.id,
-                    post: post.post,
-                    user: {
-                        id: user[0].id,
-                        firstName: user[0].firstName,
-                        lastName: user[0].lastName,
-                        email: user[0].email
-                    },
-                    postedOn: post.postedOn
-                }))
+                .then(user => {
+                    return db("user_image")
+                        .select("*")
+                        .where({"userId": post.userId})
+                        .then(userImages => {
+                            return db("image")
+                                    .select("*")
+                                    .where({"id": userImages[0].imageId})
+                                    .then(images => ({
+                                        id: post.id,
+                                        post: post.post,
+                                        user: {
+                                            id: user[0].id,
+                                            firstName: user[0].firstName,
+                                            lastName: user[0].lastName,
+                                            email: user[0].email,
+                                            profileImage: images[0].image
+                                        },
+                                        postedOn: post.postedOn
+                                    }))
+                                    .catch(error => {
+                                        res.status(401);
+                                        console.log(error);
+                                        res.json({message: "Server error"});
+                                    })
+                        })
+                        .catch(error => {
+                            res.status(401);
+                            console.log(error);
+                            res.json({message: "Server error"});
+                        })
+                })
                 .catch(error => {
                     res.status(401);
                     console.log(error);
@@ -259,24 +368,45 @@ exports.getAllOldestPosts = (req, res) => {
             return db("user")
                 .select("*")
                 .where({"id": post.userId})
-                .then(user => ({
-                    id: post.id,
-                    post: post.post,
-                    user: {
-                        id: user[0].id,
-                        firstName: user[0].firstName,
-                        lastName: user[0].lastName,
-                        email: user[0].email
-                    },
-                    postedOn: post.postedOn
-                }))
+                .then(user => {
+                    return db("user_image")
+                        .select("*")
+                        .where({"userId": post.userId})
+                        .then(userImages => {
+                            return db("image")
+                                    .select("*")
+                                    .where({"id": userImages[0].imageId})
+                                    .then(images => ({
+                                        id: post.id,
+                                        post: post.post,
+                                        user: {
+                                            id: user[0].id,
+                                            firstName: user[0].firstName,
+                                            lastName: user[0].lastName,
+                                            email: user[0].email,
+                                            profileImage: images[0].image
+                                        },
+                                        postedOn: post.postedOn
+                                    }))
+                                    .catch(error => {
+                                        res.status(401);
+                                        console.log(error);
+                                        res.json({message: "Server error"});
+                                    })
+                        })
+                        .catch(error => {
+                            res.status(401);
+                            console.log(error);
+                            res.json({message: "Server error"});
+                        })
+                })
                 .catch(error => {
                     res.status(401);
                     console.log(error);
                     res.json({message: "Server error"});
                 });
          })
-
+         
          Promise.all(postsPromises)
          .then(posts => {
             return res.status(200).json({"forum": posts});

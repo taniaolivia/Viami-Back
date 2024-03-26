@@ -374,8 +374,12 @@ DROP TABLE IF EXISTS `forum_cities`;
 CREATE TABLE `forum_cities` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `city` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`)
+  `image` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `image` (`image`),
+  CONSTRAINT `forum_cities_ibfk_1` FOREIGN KEY (`image`) REFERENCES `image` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 
 DROP TABLE IF EXISTS `forum_comment`;
