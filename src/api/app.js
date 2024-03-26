@@ -24,8 +24,6 @@ const swaggerOptions={
                 
             },
             servers:[process.env.SWAGGER_SERVER],
-           
-            
         },
 
     
@@ -108,8 +106,8 @@ themeActivityRoute(server);
 const activityImageRoute = require("./routes/activityImageRoute");
 activityImageRoute(server);
 
-const messengerRoute = require("./routes/messengerRoute");
-messengerRoute(server);
+//const messengerRoute = require("./routes/messengerRoute");
+//messengerRoute(server);
 
 const activityCommentRoute = require("./routes/activityCommentRoute");
 activityCommentRoute(server);
@@ -117,8 +115,8 @@ activityCommentRoute(server);
 const faqRoute = require("./routes/faqRoute");
 faqRoute(server);
 
-const demandSendMessageRoute = require("./routes/demandSendMessageRoute");
-demandSendMessageRoute(server);
+//const demandSendMessageRoute = require("./routes/demandSendMessageRoute");
+//demandSendMessageRoute(server);
 
 const premiumPlanRoute = require("./routes/premiumPlanRoute");
 premiumPlanRoute(server);

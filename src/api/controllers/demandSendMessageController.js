@@ -1,8 +1,8 @@
-const { initializeApp } = require('firebase-admin/app');
-const { getMessaging } = require("firebase-admin/messaging");
-const admin = require("firebase-admin");
+const { initializeApp } = require('firebase-admin/lib/app/index.js');
+const { getMessaging } = require("firebase-admin/lib/messaging/index.js");
+const admin = require("firebase-admin/lib/index.js");
 const firebaseConfig = require("../viami-402918-firebase-adminsdk-6nvif-9e01aebec8.js").firebase;
-const db = require("../knex");
+const db = require("../knex.js");
 
 const serviceAccount = JSON.parse(JSON.stringify(firebaseConfig));
 
