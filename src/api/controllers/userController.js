@@ -107,6 +107,8 @@ exports.userLogin = (req, res) => {
                                     .update("verifyEmailToken", token)
                                     .where("id", user[0].id)
                                     .then(data => {
+                                        console.log("newToken:", token);
+                                        console.log("token", data);
                                         exports.sendVerificationMail(user[0].email, token);
 
                                         res.status(200);
@@ -410,7 +412,6 @@ exports.sendVerificationMail = async(to, token) =>{
 
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-           
             res.status(401);
             res.json({message: `Error sending verification email`});
         } else {
@@ -453,7 +454,6 @@ exports.verifiedEmailUserByToken = (req, res) => {
                             res.send(htmlContent);
                         })
                         .catch((error) => {
-                           
                             res.status(401);
                             res.json({message: "User not found"});
                         })
