@@ -108,7 +108,6 @@ exports.userLogin = (req, res) => {
                                     .where("id", user[0].id)
                                     .then(data => {
                                         console.log("newToken:", token);
-                                        console.log("token", data);
                                         exports.sendVerificationMail(user[0].email, token);
 
                                         res.status(200);
@@ -389,6 +388,7 @@ exports.sendVerificationMail = async(to, token) =>{
 
     const emailTemplatePath = path.join(currentModuleDir, '../email/sendVerifyEmail.html');
     const htmlContent = fs.readFileSync(emailTemplatePath, 'utf-8');
+    console.log("Email token:" , token);
     const html = htmlContent
         .replace('${process.env.CDN_URL}', process.env.CDN_URL)
         .replace('${process.env.API_URL_2}', process.env.API_URL_2)
