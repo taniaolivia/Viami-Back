@@ -22,6 +22,15 @@ RUN mkdir -p /home/viami/app/tests
 # Use the repository /app
 WORKDIR /home/viami/app
 
+# Copy the package file to the project
+COPY ["./package.json", "./package-lock.json", "./"]
+
+# Copy the rest of the code of the application inside the container
+COPY ./ /home/viami/app
+
+# Making sure that the user 'viami' has the permission to the directory of the application
+RUN chown -R viami:viami /home/viami/app
+
 # Installe les dépendances
 RUN npm ci
 
@@ -37,14 +46,6 @@ RUN npm install -g jest
 # Use the repository as a work repository
 WORKDIR /home/viami/app
 
-# Copy the package file to the project
-COPY ["./package.json", "./package-lock.json", "./"]
-
-# Copy the rest of the code of the application inside the container
-COPY ./ /home/viami/app
-
-# Making sure that the user 'viami' has the permission to the directory of the application
-RUN chown -R viami:viami /home/viami/app
 
 # Switch to the non-root user
 USER viami
