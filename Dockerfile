@@ -43,10 +43,6 @@ RUN npm install -g nodemon
 # Install Jest globally
 RUN npm install -g jest
 
-# Use the repository as a work repository
-WORKDIR /home/viami/app
-
-
 # Switch to the non-root user
 USER viami
 
