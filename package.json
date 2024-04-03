@@ -2,10 +2,16 @@
   "name": "viami",
   "version": "0.0.0",
   "private": true,
-  "main": "app.js",
+  "main": "src/api/app.js",
   "scripts": {
-    "start": "node app.js",
-    "watch": "nodemon app.js"
+    "test": "jest tests",
+    "test:controllers": "jest tests/api/controllers",
+    "test:routes": "jest tests/api/routes",
+    "test:coverage": "jest --coverage",
+    "start": "node src/api/app.js",
+    "dev": "npm-run-all --parallel watch:*",
+    "watch": "nodemon src/api/app.js",
+    "watch:test": "nodemon --exec 'npm test'"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.449.0",
@@ -22,19 +28,20 @@
     "firebase-admin": "^11.11.1",
     "firebase-functions": "^4.5.0",
     "fs": "^0.0.1-security",
+    "jest": "^29.7.0",
     "jsonwebtoken": "^9.0.0",
     "knex": "~1.0.1",
     "morgan": "~1.9.1",
     "multer": "^1.4.5-lts.1",
     "mysql": "~2.18.1",
     "nodemailer": "^6.9.7",
-    "uuidv4": "^6.2.13",
-    "swagger-jsdoc": "^6.2.7",
-    "swagger-ui-express": "^4.6.0",
     "pako": "^2.1.0",
     "path": "^0.12.7",
     "socket.io": "^4.0.0",
-    "stripe": "^14.9.0"
+    "stripe": "^14.9.0",
+    "swagger-jsdoc": "^6.2.7",
+    "swagger-ui-express": "^4.6.0",
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "nodemon": "2.0.15"

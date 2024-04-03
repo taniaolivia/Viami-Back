@@ -1,0 +1,76 @@
+# User official image of Node.js
+FROM node:lts
+
+
+# Define the environment as development
+ENV NODE_ENV=development
+
+# Remove and create a group 'admins'
+USER root
+RUN groupdel admins || true
+RUN groupadd -g 1005 admins
+
+# Remove and create a user not root named 'viami' and add it to the group 'admins'
+RUN userdel viami || true
+RUN useradd -m -u 1001 viami
+RUN usermod -aG admins viami
+
+# Create a repository for the application
+RUN mkdir -p /home/viami/app
+RUN mkdir -p /home/viami/app/api
+RUN mkdir -p /home/viami/app/tests
+
+<<<<<<< HEAD
+# Use the repository /app
+<<<<<<< HEAD:Dockerfile-dev
+WORKDIR /home/node/app
+=======
+WORKDIR /home/viami/app
+>>>>>>> f7028917bf4f92ba4764141abf925fee371e5a4c:Dockerfile
+
+# Copy the package file to the project
+COPY ["package.json", "package-lock.json", "./"]
+
+<<<<<<< HEAD:Dockerfile-dev
+# Installe les dépendances
+RUN npm ci
+
+
+=======
+# Copy the rest of the code of the application inside the container
+COPY ./ /home/viami/app
+
+# Install all the dependencies needed 
+RUN npm install --production
+>>>>>>> f7028917bf4f92ba4764141abf925fee371e5a4c:Dockerfile
+
+# Install nodemon package so that the project can run using the command run watch
+RUN npm install -g nodemon
+
+# Install Jest globally
+RUN npm install -g jest
+=======
+# Use the repository as a work repository
+WORKDIR /home/viami/app
+
+# Copy the package file to the project
+COPY ["./package.json", "./package-lock.json", "./"]
+
+# Copy the rest of the code of the application inside the container
+COPY ./ /home/viami/app
+
+# Making sure that the user 'viami' has the permission to the directory of the application
+RUN chown -R viami:viami /home/viami/app
+
+# Switch to the non-root user
+USER viami
+
+# Install all the dependencies needed
+RUN npm ci
+>>>>>>> f7028917bf4f92ba4764141abf925fee371e5a4c
+
+# Expose the port 3000 for the application
+EXPOSE 3000
+
+# Run and watch the project
+CMD ["npm", "run", "watch"]

@@ -1,5 +1,7 @@
-const { getMessaging } = require("firebase-admin/messaging");
-const db = require("../knex");
+const { getMessaging } = require("firebase-admin/lib/messaging/index.js");
+const db = require("../knex.js");
+const io = require('../socket.js');
+
 
 // Set a message read
 exports.setMessageRead = (req, res) => {
