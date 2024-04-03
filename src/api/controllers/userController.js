@@ -389,7 +389,7 @@ exports.sendVerificationMail = async(to, token) =>{
     const htmlContent = fs.readFileSync(emailTemplatePath, 'utf-8');
     const html = htmlContent
         .replace('${process.env.CDN_URL}', process.env.CDN_URL)
-        .replace('${process.env.API_URL}', process.env.API_URL)
+        .replace('${process.env.API_URL_2}', process.env.API_URL_2)
         .replace('${token}', token);
 
     let mailOptions = ({
@@ -410,7 +410,6 @@ exports.sendVerificationMail = async(to, token) =>{
 
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-           
             res.status(401);
             res.json({message: `Error sending verification email`});
         } else {
@@ -453,7 +452,6 @@ exports.verifiedEmailUserByToken = (req, res) => {
                             res.send(htmlContent);
                         })
                         .catch((error) => {
-                           
                             res.status(401);
                             res.json({message: "User not found"});
                         })
@@ -514,7 +512,7 @@ exports.forgetPassword = async(req, res) => {
         const htmlContent = fs.readFileSync(emailTemplatePath, 'utf-8');
         const html = htmlContent
             .replace('${process.env.CDN_URL}', process.env.CDN_URL)
-            .replace('${process.env.API_URL}', process.env.API_URL)
+            .replace('${process.env.API_URL_2}', process.env.API_URL_2)
             .replace('${token}', token)
             .replace('${to}', to);
 
@@ -568,7 +566,7 @@ exports.newPasswordForm = (req, res) => {
             const emailTemplatePath = path.join(currentModuleDir, '../email/newPasswordForm.html');
             const htmlContent = fs.readFileSync(emailTemplatePath, 'utf-8');
             const html = htmlContent
-                .replace('${process.env.API_URL}', process.env.API_URL)
+                .replace('${process.env.API_URL_2}', process.env.API_URL_2)
                 .replace('${email}', email);
 
             db("user")
