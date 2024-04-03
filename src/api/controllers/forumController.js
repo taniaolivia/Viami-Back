@@ -62,42 +62,36 @@ exports.getAllPostsByCity = (req, res) => {
                                     return db("image")
                                             .select("*")
                                             .where({"id": userImages[0].imageId})
-                                            .then(images => ({
-                                                    id: post.id,
-                                                    post: post.post,
-                                                    user: {
-                                                        id: user[0].id,
-                                                        firstName: user[0].firstName,
-                                                        lastName: user[0].lastName,
-                                                        email: user[0].email,
-                                                        profileImage: images[0].image
-                                                    },
-                                                    city: cities,
-                                                    postedOn: post.postedOn
-                                            }))
+                                            .then(images => {
+                                                return db("image")
+                                                    .select("*")
+                                                    .where({"id": cities[0].image})
+                                                    .then(cityImage => ({
+                                                            id: post.id,
+                                                            post: post.post,
+                                                            user: {
+                                                                id: user[0].id,
+                                                                firstName: user[0].firstName,
+                                                                lastName: user[0].lastName,
+                                                                email: user[0].email,
+                                                                profileImage: images[0].image
+                                                            },
+                                                            city: {
+                                                                id: cities[0].id,
+                                                                city: cities[0].city,
+                                                                image: cityImage[0].image
+                                                            },
+                                                            postedOn: post.postedOn
+                                                    }))
+                                            })
                                             .catch(error => {
                                                 res.status(401);
                                                 console.log(error);
                                                 res.json({message: "Server error"});
                                             })
                                 })
-                                .catch(error => {
-                                    res.status(401);
-                                    console.log(error);
-                                    res.json({message: "Server error"});
-                                })
                         })
-                        .catch(error => {
-                            res.status(401);
-                            console.log(error);
-                            res.json({message: "Server error"});
-                        });
                 })
-                .catch(error => {
-                    res.status(401);
-                    console.log(error);
-                    res.json({message: "Server error"});
-                });
          })
 
          Promise.all(postsCitiesPromises)
@@ -168,17 +162,7 @@ exports.getAllPosts = (req, res) => {
                                         res.json({message: "Server error"});
                                     })
                         })
-                        .catch(error => {
-                            res.status(401);
-                            console.log(error);
-                            res.json({message: "Server error"});
-                        })
                 })
-                .catch(error => {
-                    res.status(401);
-                    console.log(error);
-                    res.json({message: "Server error"});
-                });
          })
 
          Promise.all(postsPromises)
@@ -233,17 +217,7 @@ exports.getCommentsPostById = (req, res) => {
                                         res.json({message: "Server error"});
                                     })
                         })
-                        .catch(error => {
-                            res.status(401);
-                            console.log(error);
-                            res.json({message: "Server error"});
-                        })
                 })
-                .catch(error => {
-                    res.status(401);
-                    console.log(error);
-                    res.json({message: "Server error"});
-                });
          })
 
          Promise.all(postCommentsPromises)
@@ -333,17 +307,7 @@ exports.getAllNewestPosts = (req, res) => {
                                         res.json({message: "Server error"});
                                     })
                         })
-                        .catch(error => {
-                            res.status(401);
-                            console.log(error);
-                            res.json({message: "Server error"});
-                        })
                 })
-                .catch(error => {
-                    res.status(401);
-                    console.log(error);
-                    res.json({message: "Server error"});
-                });
          })
          
          Promise.all(postsPromises)
@@ -368,22 +332,33 @@ exports.getAllOldestPosts = (req, res) => {
             return db("user")
                 .select("*")
                 .where({"id": post.userId})
-                .then(user => ({
-                    id: post.id,
-                    post: post.post,
-                    user: {
-                        id: user[0].id,
-                        firstName: user[0].firstName,
-                        lastName: user[0].lastName,
-                        email: user[0].email
-                    },
-                    postedOn: post.postedOn
-                }))
-                .catch(error => {
-                    res.status(401);
-                    console.log(error);
-                    res.json({message: "Server error"});
-                });
+                .then(user => {
+                    return db("user_image")
+                        .select("*")
+                        .where({"userId": post.userId})
+                        .then(userImages => {
+                            return db("image")
+                                    .select("*")
+                                    .where({"id": userImages[0].imageId})
+                                    .then(images => ({
+                                        id: post.id,
+                                        post: post.post,
+                                        user: {
+                                            id: user[0].id,
+                                            firstName: user[0].firstName,
+                                            lastName: user[0].lastName,
+                                            email: user[0].email,
+                                            profileImage: images[0].image
+                                        },
+                                        postedOn: post.postedOn
+                                    }))
+                                    .catch(error => {
+                                        res.status(401);
+                                        console.log(error);
+                                        res.json({message: "Server error"});
+                                    })
+                        })
+                })
          })
 
          Promise.all(postsPromises)
