@@ -3,6 +3,7 @@ const db = require("../knex.js");
 const io = require('../socket.js');
 const messengerService = require('../services/messengerService');
 
+
 // Set a message read
 exports.setMessageRead = async (req, res) => {
   try {
