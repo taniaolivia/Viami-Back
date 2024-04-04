@@ -1,39 +1,30 @@
 const db = require("../knex");
+const travelService = require('../services/travelService');
 
 // Get the travel information
-exports.getTravelById = (req, res) => {
-    const id = req.params.travelId;
-
-    db("travel")
-        .select("*")
-        .where("id", id)
-        .then(data => {
-            res.status(200);
-            res.json({message: `Travel found`, travel: data});
-        })
-        .catch(error => {
-            res.status(500);
-            res.json({message: "Server error"});
-        });   
-}
-
+exports.getTravelById = async (req, res) => {
+    try {
+        const id = req.params.travelId;
+        const data = await travelService.getTravelById(id);
+        if (!data) {
+            return res.status(404).json({ message: 'Travel not found' });
+        }
+        return res.status(200).json({ message: 'Travel found', travel: data });
+    } catch (error) {
+        return res.status(500).json({ message: 'Server error' });
+    }
+};
 // Get a travel compatible with user's search
-exports.searchTravels = (req, res) => {
-    let location = req.query.location;
+exports.searchTravels = async (req, res) => {
+    try {
+        let location = req.query.location;
+        const data = await travelService.searchTravels(location);
+        return res.status(200).json({ message: 'List of travels found', travels: data });
+    } catch (error) {
+        return res.status(500).json({ message: 'Server error' });
+    }
+};
 
-    db("travel")
-        .select("*")
-        .where("location", location)
-        .orderBy("name", "asc")
-        .then(data => {
-            res.status(200);
-            res.json({message: `List of travels found`, travels: data});
-        })
-        .catch(error => {
-            res.status(500);
-            res.json({message: "Server error"});
-        });   
-}
 
 // Get the number of participants of searched travel
 exports.getDateLocationUsers = (req, res) => {
@@ -145,37 +136,29 @@ exports.joinTravel = (req, res) => {
 }
 
 // Get all travels
-exports.listAllTravels = (req, res) => {
-    db("travel")
-        .select("*")
-        .orderBy("name", "asc")
-        .then(data => res.status(200).json({"travels": data}))
-        .catch(error => {
-            res.status(401);
-            res.json({message: "Server error"});
-        });   
-}
+exports.listAllTravels = async (req, res) => {
+    try {
+        const data = await travelService.listAllTravels();
+        res.status(200).json({ "travels": data });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
 // Add new travel
-exports.saveTravel = (req,res) => {
-    const {name, description, location} = req.body;
+exports.saveTravel = async (req, res) => {
+    try {
+        const { name, description, location } = req.body;
+        
+        if (!name || !description || !location) {
+            return res.status(400).json({ message: "Please fill all the required fields ! (name, description and location)" });
+        }
 
-    if (!name || !description || !location) {
-        return res.status(400).json({ message: "Please fill all the required fields ! (name, description and location)" });
+        const response = await travelService.saveNewTravel(name, description, location);
+        res.status(201).json(response);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-
-    db("travel")
-        .insert({
-            name: name,
-            description: description,
-            location: location,
-            nbParticipant: 0 
-        })
-        .then(() => res.status(201).json({ message: "New travel is successfully saved." }))
-        .catch(error => {
-           
-            res.status(500).json({ message: "Error while saving the new travel." });
-        });
-}
+};
 
 

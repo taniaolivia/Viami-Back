@@ -1,32 +1,32 @@
 const db = require("../knex");
+const faqService = require('../services/faqService');
 
 
 //list all faq 
-exports.listAllFaq = (req, res) => {
-    db("faq")
-    .select("*")
-    .orderBy("question", "asc")
-    .then(data => res.status(200).json({"faq": data}))
-    .catch(error => {
-        res.status(401);
-        res.json({message: "Server error"});
-    });   
-}
+exports.listAllFaq = async (req, res) => {
+    try {
+        const data = await faqService.getAllFaq();
+        res.status(200).json({ "faq": data });
+    } catch (error) {
+        res.status(401).json({ message: "Server error" });
+    }
+};
+
+
 // Get the top five frequented faq
-exports.getTopFiveFrequentedFaq = (req, res) => {
-    db("faq")
-        .select("*")
-        .where("isFrequented", 1)
-        .orderBy("question", "asc")
-        .limit(5)
-        .offset(0)
-        .then(data => res.status(200).json({"faq": data}))
-        .catch(error => {
-            res.status(401);
-            console.log(error);
-            res.json({message: "Server error"});
-        });   
-}
+exports.getTopFiveFrequentedFaq = async (req, res) => {
+    try {
+        const faq = await faqService.getTopFiveFrequentedFaq();
+        res.status(200).json({ faq });
+    } catch (error) {
+        
+        res.status(401).json({message: "Server error"});
+    }
+    }
+
+
+
+
 // get faq by id
 exports.getFaqById = (req, res) => {
     const id = req.params.faqId;

@@ -1,38 +1,31 @@
 const db = require("../knex");
+const themeActivityService = require('../services/themeActivityService');
 
 // Get all activities by theme id
-exports.listActivitiesByTheme = (req, res) => {
-    const themeId = req.params.themeId;
+exports.listActivitiesByTheme = async (req, res) => {
+    try {
+        const themeId = req.params.themeId;
+        const data = await themeActivityService.listActivitiesByTheme(themeId);
 
-    db("theme_activity")
-        .select("*")
-        .where("themeId", themeId)
-        .join("activity", "activity.id", "=", "theme_activity.activityId")
-        .join("theme", "theme.id", "=", "theme_activity.themeId")
-        .orderBy("activity.name", "asc")
-        .then(data => res.status(200).json({'activities' : data }))
-        .catch(error => {
-            res.status(401); 
-            res.json({ message: "Server error" });
-        });
-}
+        if (!data || data.length === 0) {
+            return res.status(404).json({ message: 'No activities found for this theme' });
+        }
+
+        return res.status(200).json({ 'activities': data });
+    } catch (error) {
+        return res.status(500).json({ message: 'Server error' });
+    }
+};
+
 
 // Get first five activities by theme id
-exports.getFirstFiveActivitiesByTheme = (req, res) => {
-    const themeId = req.params.themeId;
-
-    db("theme_activity")
-        .select("*")
-        .where("themeId", themeId)
-        .join("activity", "activity.id", "=", "theme_activity.activityId")
-        .join("theme", "theme.id", "=", "theme_activity.themeId")
-        .orderBy("activity.name", "asc")
-        .limit(5)
-        .offset(0)
-        .then(data => res.status(200).json({'activities' : data }))
-        .catch(error => {
-            res.status(401);
-            res.json({ message: "Server error" });
-        });
-}
+exports.getFirstFiveActivitiesByTheme = async (req, res) => {
+    try {
+        const themeId = req.params.themeId;
+        const data = await themeActivityService.getFirstFiveActivitiesByTheme(themeId);
+        return res.status(200).json({ 'activities': data });
+    } catch (error) {
+        return res.status(500).json({ message: 'Server error' });
+    }
+};
 
