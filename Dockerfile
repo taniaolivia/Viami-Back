@@ -7,24 +7,25 @@ ENV NODE_ENV=production
 # Set the user to root
 USER root
 
-# Create a group 'admins' and a user not root named 'viami' and add it to the group 'admins'
-RUN addgroup -g 1005 admins && \
-    adduser -D -u 1001 -G admins viami
-
-# Use the repository /app
-WORKDIR /home/viami/app
+# Remove and create a group 'admins' and a user not root named 'viami' and add it to the group 'admins'
+RUN groupdel admins || true && \
+    groupadd -g 1005 admins && \
+    userdel viami || true && \
+    useradd -m -u 1001 -g admins viami
 
 # Create a repository for the application
-RUN mkdir -p /home/viami/app/api /home/viami/app/tests
+RUN mkdir -p mkdir -p /home/viami/app /home/viami/app/api /home/viami/app/tests
 
 # Copy the package file to the project
 COPY package.json package-lock.json ./
 
+# Use the repository /app
+WORKDIR /home/viami/app
+
 # Installe les dépendances
 RUN npm ci --only=production
 
-# Install nodemon package so that the project can run using the command run watch
-# Install Jest globally
+# Install nodemon package and Jest globally so that the project can run using the command run watch
 RUN npm install -g nodemon jest
 
 # Copy the rest of the code
