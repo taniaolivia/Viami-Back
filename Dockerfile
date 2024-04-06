@@ -12,10 +12,12 @@ RUN groupdel admins || true && \
     groupadd -g 1005 admins && \
     userdel viami || true && \
     useradd -m -u 1001 viami && \
-    usermod -aG admins viami
+    usermod -aG admins viami && \
+    # Create a repository for the application
+    mkdir -p /home/viami/app /home/viami/app/api /home/viami/app/tests
 
 # Create a repository for the application
-RUN mkdir -p /home/viami/app /home/viami/app/api /home/viami/app/tests
+#RUN mkdir -p /home/viami/app /home/viami/app/api /home/viami/app/tests
 
 # Use the repository /app
 WORKDIR /home/viami/app

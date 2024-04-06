@@ -45,13 +45,18 @@ services:
   viami_test:
     container_name: viami_test
     image: node:lts
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    env_file: ./src/.env
     working_dir: /home/viami/app
     volumes:
+      - ./src/api:/home/viami/app/src/api
       - ./tests:/home/viami/app/tests
-    command: >
-      bash -c 'npm run test'
-    depends_on:
-      - viami_db
+    command: > 
+      bash -c 
+        'npm i &&
+         npm test'
     networks:
       - viami_back
 
