@@ -32,6 +32,9 @@ RUN chown -R viami:viami /home/viami/app
 # Installe les dépendances
 RUN npm ci
 
+# Install all the dependencies needed 
+RUN npm install --production
+
 # Install nodemon package and Jest globally so that the project can run using the command run watch
 RUN npm install -g nodemon jest
 
