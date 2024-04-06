@@ -8,7 +8,7 @@ services:
     env_file: ./src/.env
     working_dir: /home/viami/app
     volumes:
-      - ./src/api:/home/node/app/src/api
+      - ./src/api:/home/viami/app/src/api
     command: > 
       bash -c 
         'npm i &&
@@ -47,16 +47,16 @@ services:
     image: node:lts
     build:
       context: .
-      dockerfile: ./Dockerfile-dev
+      dockerfile: ./Dockerfile
     env_file: ./src/.env
-    working_dir: /home/node/app
+    working_dir: /home/viami/app
     volumes:
-      - ./src/api:/home/node/app/src/api
-      - ./test:/home/node/app/test  # Ajout du volume pour les tests
+      - ./src/api:/home/viami/app/src/api
+      - ./tests:/home/viami/app/tests
     command: > 
       bash -c 
         'npm i &&
-         npm test'  # Commande pour exécuter les tests
+         npm test'
     networks:
       - viami_back
 

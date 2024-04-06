@@ -21,7 +21,7 @@ RUN mkdir -p /home/viami/app /home/viami/app/api /home/viami/app/tests
 WORKDIR /home/viami/app
 
 # Copy the package file to the project
-COPY package.json package-lock.json ./
+COPY ["./package.json", "./package-lock.json", "./"]
 
 # Copy the rest of the code of the application inside the container
 COPY ./ /home/viami/app
