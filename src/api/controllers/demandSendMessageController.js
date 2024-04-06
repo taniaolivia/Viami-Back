@@ -1,12 +1,10 @@
-const { initializeApp } = require('firebase-admin/lib/app/index.js');
-const { getMessaging } = require("firebase-admin/lib/messaging/index.js");
-const admin = require("firebase-admin/lib/index.js");
+const admin = require("firebase-admin");
 const firebaseConfig = require("../viami-402918-firebase-adminsdk-6nvif-9e01aebec8.js").firebase;
 const db = require("../knex.js");
 
 const serviceAccount = JSON.parse(JSON.stringify(firebaseConfig));
 
-initializeApp({
+admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     projectId: process.env.FIREBASE_PROJECT_ID,
 });
@@ -25,7 +23,7 @@ exports.sendNotificationPush = (fcmToken, titleNotif, contentNotif, res) => {
     token: receivedToken
   };
   
-  getMessaging()
+  admin.messaging()
     .send(message)
     .then((response) => {
       res.status(200).json({message: "Successfully sent request message to a user"})
