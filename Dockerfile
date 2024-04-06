@@ -18,7 +18,7 @@ WORKDIR /home/viami/app
 RUN mkdir -p /home/viami/app/api /home/viami/app/tests
 
 # Copy the package file to the project
-COPY package.json*.json ./
+COPY package.json package-lock.json ./
 
 # Installe les dépendances
 RUN npm ci --only=production
