@@ -16,23 +16,23 @@ RUN groupdel admins || true && \
 # Create a repository for the application
 RUN mkdir -p mkdir -p /home/viami/app /home/viami/app/api /home/viami/app/tests
 
+# Use the repository /app
+WORKDIR /home/viami/app
+
 # Copy the package file to the project
 COPY package.json package-lock.json ./
 
-# Use the repository /app
-WORKDIR /home/viami/app
+# Copy the rest of the code of the application inside the container
+COPY ./ /home/viami/app
+
+# Making sure that the user 'viami' has the permission to the directory of the application
+RUN chown -R viami:viami /home/viami/app
 
 # Installe les dépendances
 RUN npm ci --only=production
 
 # Install nodemon package and Jest globally so that the project can run using the command run watch
 RUN npm install -g nodemon jest
-
-# Copy the rest of the code
-COPY . .
-
-# Making sure that the user 'viami' has the permission to the directory of the application
-RUN chown -R viami:viami /home/viami/app
 
 # Switch to the non-root user
 USER viami
