@@ -44,7 +44,7 @@ RUN npm install -g nodemon
 RUN npm install -g jest
 
 # Switch to the non-root user
-#USER viami
+USER viami
 
 # Expose the port 3000 for the application
 EXPOSE 3000
