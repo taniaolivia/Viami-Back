@@ -11,7 +11,7 @@ USER root
 RUN groupdel admins || true && \
     groupadd -g 1005 admins && \
     userdel viami || true && \
-    useradd -m -u 1001 -g admins viami && \
+    useradd -m -u 1001 viami && \
     usermod -aG admins viami
 
 # Create a repository for the application
@@ -27,7 +27,7 @@ COPY package.json package-lock.json ./
 COPY ./ /home/viami/app
 
 # Making sure that the user 'viami' has the permission to the directory of the application
-RUN chown -R viami:admins /home/viami/app
+RUN chown -R viami:viami /home/viami/app
 
 # Installe les dépendances
 RUN npm ci
