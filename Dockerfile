@@ -4,13 +4,12 @@ FROM node:lts
 # Define the environnement as production
 ENV NODE_ENV=production
 
-# Remove and create a group 'admins'
-# Remove and create a user not root named 'viami' and add it to the group 'admins'
+# Set the user to root
 USER root
-RUN groupdel admins || true && \
-    groupadd -g 1005 admins && \
-    userdel viami || true && \
-    useradd -m -u 1001 -g admins viami
+
+# Create a group 'admins' and a user not root named 'viami' and add it to the group 'admins'
+RUN addgroup -g 1005 admins && \
+    adduser -D -u 1001 -G admins viami
 
 # Use the repository /app
 WORKDIR /home/viami/app
