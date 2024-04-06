@@ -4,7 +4,7 @@ services:
     image: node:lts
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./Dockerfile
     env_file: ./src/.env
     working_dir: /home/viami/app
     volumes:

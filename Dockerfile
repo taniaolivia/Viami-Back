@@ -16,9 +16,6 @@ RUN groupdel admins || true && \
     # Create a repository for the application
     mkdir -p /home/viami/app /home/viami/app/api /home/viami/app/tests
 
-# Create a repository for the application
-#RUN mkdir -p /home/viami/app /home/viami/app/api /home/viami/app/tests
-
 # Use the repository /app
 WORKDIR /home/viami/app
 
@@ -29,13 +26,13 @@ COPY ["./package.json", "./package-lock.json", "./"]
 COPY ./ /home/viami/app
 
 # Making sure that the user 'viami' has the permission to the directory of the application
-RUN chown -R viami:viami /home/viami/app
+RUN chown -R viami:admins /home/viami/app
 
 # Installe les dépendances
 RUN npm ci
 
 # Install all the dependencies needed 
-RUN npm install --production
+RUN npm install --omit=dev
 
 # Install nodemon package and Jest globally so that the project can run using the command run watch
 RUN npm install -g nodemon jest
