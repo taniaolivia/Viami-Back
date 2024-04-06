@@ -26,7 +26,7 @@ COPY package.json package-lock.json ./
 COPY ./ /home/viami/app
 
 # Making sure that the user 'viami' has the permission to the directory of the application
-RUN chown -R viami:viami /home/viami/app
+RUN chown -R viami:admins /home/viami/app
 
 # Installe les dépendances
 RUN npm ci --only=production
