@@ -15,7 +15,7 @@ RUN groupdel admins || true && \
     usermod -aG admins viami
 
 # Create a repository for the application
-RUN mkdir -p mkdir -p /home/viami/app /home/viami/app/api /home/viami/app/tests
+RUN mkdir -p /home/viami/app /home/viami/app/api /home/viami/app/tests
 
 # Use the repository /app
 WORKDIR /home/viami/app
