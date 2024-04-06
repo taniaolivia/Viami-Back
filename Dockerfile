@@ -2,46 +2,37 @@
 FROM node:lts
 
 # Define the environnement as production
-ENV NODE_ENV=development
+ENV NODE_ENV=production
 
 # Remove and create a group 'admins'
-USER root
-RUN groupdel admins || true
-RUN groupadd -g 1005 admins
-
 # Remove and create a user not root named 'viami' and add it to the group 'admins'
-RUN userdel viami || true
-RUN useradd -m -u 1001 viami
-RUN usermod -aG admins viami
-
-# Create a repository for the application
-RUN mkdir -p /home/viami/app
-RUN mkdir -p /home/viami/app/api
-RUN mkdir -p /home/viami/app/tests
+USER root
+RUN groupdel admins || true && \
+    groupadd -g 1005 admins && \
+    userdel viami || true && \
+    useradd -m -u 1001 -g admins viami
 
 # Use the repository /app
 WORKDIR /home/viami/app
 
-# Copy the package file to the project
-COPY ["./package.json", "./package-lock.json", "./"]
+# Create a repository for the application
+RUN mkdir -p /home/viami/app/api /home/viami/app/tests
 
-# Copy the rest of the code of the application inside the container
-COPY ./ /home/viami/app
+# Copy the package file to the project
+COPY package.json*.json ./
+
+# Installe les dépendances
+RUN npm ci --only=production
+
+# Install nodemon package so that the project can run using the command run watch
+# Install Jest globally
+RUN npm install -g nodemon jest
+
+# Copy the rest of the code
+COPY . .
 
 # Making sure that the user 'viami' has the permission to the directory of the application
 RUN chown -R viami:viami /home/viami/app
-
-# Installe les dépendances
-RUN npm ci
-
-# Install all the dependencies needed 
-RUN npm install --production
-
-# Install nodemon package so that the project can run using the command run watch
-RUN npm install -g nodemon
-
-# Install Jest globally
-RUN npm install -g jest
 
 # Switch to the non-root user
 USER viami
