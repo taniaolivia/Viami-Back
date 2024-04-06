@@ -11,7 +11,8 @@ USER root
 RUN groupdel admins || true && \
     groupadd -g 1005 admins && \
     userdel viami || true && \
-    useradd -m -u 1001 -g admins viami
+    useradd -m -u 1001 -g admins viami && \
+    usermod -aG admins viami
 
 # Create a repository for the application
 RUN mkdir -p mkdir -p /home/viami/app /home/viami/app/api /home/viami/app/tests
@@ -29,7 +30,7 @@ COPY ./ /home/viami/app
 RUN chown -R viami:admins /home/viami/app
 
 # Installe les dépendances
-RUN npm ci --only=production
+RUN npm ci
 
 # Install nodemon package and Jest globally so that the project can run using the command run watch
 RUN npm install -g nodemon jest
