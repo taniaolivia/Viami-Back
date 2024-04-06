@@ -1,5 +1,5 @@
 const admin = require("firebase-admin");
-const firebaseConfig = require("../viami-402918-firebase-adminsdk-6nvif-9e01aebec8.js").firebase;
+const firebaseConfig = require("../viami-402918-firebase-adminsdk-6nvif-b8893ec7f9.js").firebase;
 const db = require("../knex.js");
 
 const serviceAccount = JSON.parse(JSON.stringify(firebaseConfig));
