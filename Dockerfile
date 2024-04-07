@@ -1,10 +1,10 @@
-# User official image of Node.js
+# Use the official Node.js LTS image
 FROM node:lts
 
-# Define the environnement as production
+# Define the environment as production
 ENV NODE_ENV=production
 
-# Set the user to root
+# Set the user to root for setup tasks
 USER root
 
 # Remove and create a group 'admins' and a user not root named 'viami' and add it to the group 'admins'
@@ -14,31 +14,24 @@ RUN groupdel admins || true && \
     useradd -m -u 1001 viami && \
     usermod -aG admins viami && \
     # Create a repository for the application
-    mkdir -p /home/viami/app /home/viami/app/api /home/viami/app/tests
-
-# Use the repository /app
-WORKDIR /home/viami/app
-
-# Copy the package file to the project
-COPY ["./package.json", "./package-lock.json", "./"]
-
-# Copy the rest of the code of the application inside the container
-COPY ./ /home/viami/app
-
-# Making sure that the user 'viami' has the permission to the directory of the application
-RUN chown -R viami:admins /home/viami/app
-
-# Installe les dépendances
-RUN npm ci
-
-# Install all the dependencies needed 
-RUN npm install --omit=dev
-
-# Install nodemon package and Jest globally so that the project can run using the command run watch
-RUN npm install -g nodemon jest
+    mkdir -p /home/viami/app /home/viami/app/api /home/viami/app/tests && \
+    # Copy the package file and the rest of the code of the application inside the container
+    cp ./package.json ./package-lock.json /home/viami/app/ && \
+    cp -R ./ /home/viami/app/ && \
+    # Change ownership to the non-root user
+    chown -R viami:admins /home/viami/app
 
 # Switch to the non-root user
 USER viami
+
+# Set the working directory
+WORKDIR /home/viami/app
+
+# Install dependencies, excluding dev dependencies
+RUN npm ci && npm install --only=production
+
+# Install nodemon package and Jest globally
+RUN npm install -g nodemon jest
 
 # Expose the port 3000 for the application
 EXPOSE 3000
