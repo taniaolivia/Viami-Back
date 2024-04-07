@@ -1,32 +1,35 @@
-# Use the official Node.js LTS image
-FROM node:lts
-
-# Define the environment as production
-ENV NODE_ENV=production
-
-# Set the user to root for setup tasks
-USER root
-
-# Create a repository for the application
-RUN mkdir -p /home/viami/app /home/viami/app/api /home/viami/app/tests
+# Stage 1: Build stage
+FROM node:lts AS build
 
 # Set the working directory
 WORKDIR /home/viami/app
 
-# Copy the package file to the project
-COPY ["./package.json", "./package-lock.json", "./"]
+# Copy package files
+COPY package*.json ./
 
-# Copy the rest of the code of the application inside the container
-COPY ./ /home/viami/app
+# Install dependencies
+RUN npm ci --only=production
 
-# Install dependencies, excluding dev dependencies
-RUN npm ci && npm install --only=production
+# Copy application code
+COPY . .
 
-# Install nodemon package and Jest globally
-#RUN npm install -g nodemon jest
+# Stage 2: Production stage
+FROM node:lts AS production
 
-# Expose the port 3000 for the application
+# Set the working directory
+WORKDIR /home/viami/app
+
+# Copy built files from the build stage
+COPY --from=build /home/viami/app .
+
+# Install only production dependencies
+RUN npm install --only=production
+
+# Install nodemon and Jest globally (if needed)
+# RUN npm install -g nodemon jest
+
+# Expose port
 EXPOSE 3000
 
-# Run and watch the project
+# Run the application
 CMD ["npm", "run", "watch"]
