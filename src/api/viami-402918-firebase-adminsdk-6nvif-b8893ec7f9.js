@@ -1,4 +1,7 @@
 const firebasePrivateKey = process.env.FIREBASE_PRIVATE_KEY_1 + process.env.FIREBASE_PRIVATE_KEY_2 + process.env.FIREBASE_PRIVATE_KEY_3 + process.env.FIREBASE_PRIVATE_KEY_4 + process.env.FIREBASE_PRIVATE_KEY_5 + process.env.FIREBASE_PRIVATE_KEY_6 + process.env.FIREBASE_PRIVATE_KEY_7;
+const test = firebasePrivateKey.replace('/\\n/g', '\n');
+const firebase_private_key_b64 = Buffer.from(firebasePrivateKey, 'base64');
+const firebase_private_key = firebase_private_key_b64.toString('utf8');
 
 module.exports = {
   firebase: {
@@ -12,6 +15,6 @@ module.exports = {
     "auth_provider_x509_cert_url": process.env.FIREBASE_AUTH_PROVIDER_CERT,
     "client_x509_cert_url": process.env.FIREBASE_CLIENT_CERT,
     "universe_domain": process.env.FIREBASE_UNIVERSE_DOMAIN,
-    "private_key": firebasePrivateKey,
+    "private_key": test,
   }
 }

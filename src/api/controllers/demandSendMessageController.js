@@ -2,7 +2,7 @@ const admin = require("firebase-admin");
 const firebaseConfig = require("../viami-402918-firebase-adminsdk-6nvif-b8893ec7f9.js").firebase;
 const db = require("../knex.js");
 
-const serviceAccount = JSON.parse(JSON.stringify(firebaseConfig));
+const serviceAccount = firebaseConfig;
 console.log(serviceAccount)
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
