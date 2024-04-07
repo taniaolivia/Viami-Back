@@ -3,7 +3,7 @@ const firebaseConfig = require("../viami-402918-firebase-adminsdk-6nvif-b8893ec7
 const db = require("../knex.js");
 
 const serviceAccount = JSON.parse(JSON.stringify(firebaseConfig));
-
+console.log(serviceAccount)
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     projectId: process.env.FIREBASE_PROJECT_ID,

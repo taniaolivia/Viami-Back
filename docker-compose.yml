@@ -45,9 +45,6 @@ services:
   viami_test:
     container_name: viami_test
     image: node:lts
-    build:
-      context: .
-      dockerfile: ./Dockerfile
     env_file: ./src/.env
     working_dir: /home/viami/app
     volumes:
