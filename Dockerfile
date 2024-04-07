@@ -26,7 +26,7 @@ COPY --from=build /home/viami/app .
 RUN npm install --only=production
 
 # Install nodemon and Jest globally (if needed)
-# RUN npm install -g nodemon jest
+RUN npm install -g nodemon jest
 
 # Expose port
 EXPOSE 3000
