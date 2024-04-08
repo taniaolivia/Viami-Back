@@ -7,6 +7,9 @@ WORKDIR /home/viami/app
 # Copy package files
 COPY package*.json ./
 
+# Clear npm cache
+RUN npm cache clean --force
+
 # Install dependencies
 RUN npm ci --only=production
 
