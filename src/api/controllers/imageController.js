@@ -30,9 +30,13 @@ exports.getImageById = async (req, res) => {
 
     try {
         const data = await imageService.getImageById(imageId);
-        res.status(200).json({ data });
+        if (data) {
+            res.status(200).json({ data });
+        } else {
+            res.status(404).json({ message: 'Image not found' });
+        }
     } catch (error) {
-        res.status(404).json({ message: 'Image not found' });
+        res.status(500).json({ message: 'Server error' });
     }
 };
 // Add new image

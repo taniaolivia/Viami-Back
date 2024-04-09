@@ -42,6 +42,7 @@ describe('getImageById', () => {
         const req = { params: { imageId: 1 } };
         const res = {
             status: jest.fn().mockReturnThis(), 
+            json: jest.fn()
         };
 
         await imageController.getImageById(req, res);
@@ -63,5 +64,20 @@ describe('getImageById', () => {
 
         expect(res.status).toHaveBeenCalledWith(404);
         expect(res.json).toHaveBeenCalledWith({ message: 'Image not found' });
+    });
+
+    it('should return 500 if server error', async () => {
+        imageService.getImageById.mockRejectedValueOnce(new Error('Server error'));
+
+        const req = { params: { imageId: 1 } };
+        const res = {
+            status: jest.fn().mockReturnThis(), 
+            json: jest.fn()
+        };
+
+        await imageController.getImageById(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ message: 'Server error' });
     });
 });
