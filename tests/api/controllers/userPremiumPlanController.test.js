@@ -2,7 +2,7 @@ const userPremiumPlanController = require('../../../src/api/controllers/userPrem
 const userPremiumPlanService = require('../../../src/api/services/userPremiumPlanService');
 const jwt = require("jsonwebtoken");
 jest.mock('../../../src/api/services/userPremiumPlanService');
-const request = require('supertest');
+
 jest.mock('jsonwebtoken', () => ({
     sign: jest.fn(),
   }));

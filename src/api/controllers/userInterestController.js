@@ -12,29 +12,24 @@ exports.getAllUsersInterests = async (req, res) => {
 };
 
 // Get all interests of a user by id
-exports.getUserInterestsById = (req, res) => {
-    let id = req.params.userId;
+exports.getUserInterestsById = async (req, res) => {
+    try {
+        let id = req.params.userId;
 
-    db("user_interest")
-        .select("*")
-        .where({ userId: id })
-        .join("user", "user.id", "=", "user_interest.userId")
-        .join("interest", "interest.id", "=", "user_interest.interestId")
-        .then(data => res.status(200).json({ "userInterests": data }))
-        .catch(error => {
-            res.status(401);
-            console.log(error);
-            res.json({ message: "Server error" });
-        });
+        const data = await userInterestService.getUserInterestsById(id);
+
+        res.status(200).json({ "userInterests": data });
+    } catch (error) {
+        res.status(500).json({ message: "Server error" });
+    }
 }
 
 // Get all users with the same interest by id
-
-exports.getUserInterestsById = async (req, res) => {
+exports.getInterestUsersById = async (req, res) => {
     try {
         let id = req.params.interestId;
 
-        const data = await userInterestService.getUserInterestsById(id);
+        const data = await userInterestService.getInterestUsersById(id);
 
         res.status(200).json({ "userInterests": data });
     } catch (error) {
