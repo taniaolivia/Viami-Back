@@ -1,8 +1,7 @@
-const { getMessaging } = require("firebase-admin/lib/messaging/index.js");
+const admin = require("firebase-admin");
 const db = require("../knex.js");
 const io = require('../socket.js');
 const messengerService = require('../services/messengerService');
-
 
 // Set a message read
 exports.setMessageRead = async (req, res) => {
@@ -222,7 +221,7 @@ exports.sendNotificationPushMessage = (fcmToken, text,name,res) => {
     token: receivedToken
   };
   
-  getMessaging()
+  admin.messaging()
     .send(message)
     .then((response) => {
       res.status(200).json({message: "Successfully sent message notification"})
