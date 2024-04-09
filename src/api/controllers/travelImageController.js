@@ -1,56 +1,27 @@
 
 const db = require("../knex");
+const travelImageService = require("../services/travelImageService");
 
 // Get all images with their travel
-exports.getAllTravelsImages = (req, res) => {
-    db("travel_image")
-        .select([
-            "travel_image.id as id",
-            "travel_image.idImage as idImage",
-            "travel_image.idTravel as idTravel",
-            "travel.name as name",
-            "travel.description as travelDescription",
-            "travel.location as location",
-            "travel.nbParticipant as nbParticipant",
-            "image.image as imageName",
-            
-        ])
-        .join("travel", "travel.id", "=", "travel_image.idTravel")
-        .join("image", "image.id", "=", "travel_image.idImage")
-        .then(data => res.status(200).json({data}))
-        .catch(error => {
-            res.status(401);
-          
-            res.json({message: "Server error"});
-        });
-}
+exports.getAllTravelsImages = async (req, res) => {
+    try {
+        const data = await travelImageService.getAllTravelsImages();
+        res.status(200).json({ data });
+    } catch (error) {
+        res.status(401).json({ message: "Server error" });
+    }
+};
 
 // Get all images of a travel by id
-exports.getTravelImagesById = (req, res) => {
-    let id = req.params.travelId;
-
-    db("travel_image")
-    .select([
-        "travel_image.id as id",
-        "travel_image.idImage as idImage",
-        "travel_image.idTravel as idTravel",
-        "travel.name as name",
-        "travel.description as travelDescription",
-        "travel.location as location",
-        "travel.nbParticipant as nbParticipant",
-        "image.image as imageName",
-    ])
-    .where({idTravel: id})
-    .join("travel", "travel.id", "=", "travel_image.idTravel")
-    .join("image", "image.id", "=", "travel_image.idImage")
-    .then(data => res.status(200).json({"travelImages": data}))
-    .catch(error => {
-        res.status(401);
-      
-        res.json({message: "Server error"});
-    });
-
-}
+exports.getTravelImagesById = async (req, res) => {
+    try {
+        const travelId = req.params.travelId;
+        const data = await travelImageService.getTravelImagesById(travelId);
+        res.status(200).json({ "travelImages": data });
+    } catch (error) {
+        res.status(401).json({ message: "Server error" });
+    }
+};
 
 // Add image to travel's data
 exports.addImageToTravel = (req, res) => {

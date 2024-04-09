@@ -1,6 +1,7 @@
 const db = require("../knex");
 const { S3Client, PutObjectCommand, PutObjectAclCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const crypto = require('crypto');
+const imageService = require('../services/imageService');
 
 const s3Client = new S3Client({
     region: process.env.REGION,
@@ -14,32 +15,30 @@ const bucketName = process.env.BUCKET_NAME;
 const directoryPath = process.env.AWS_PATH;
 
 // Get a list of images
-exports.listAllImages = (req, res) => {
-    db("image")
-        .select("*")
-        .then(data => res.status(200).json({"images": data}))
-        .catch(error => {
-            res.status(401);
-            console.log(error);
-            res.json({message: "Server error"});
-        });
-}
+exports.listAllImages = async (req, res) => {
+    try {
+        const data = await imageService.listAllImages();
+        res.status(200).json({"images": data});
+    } catch (error) {
+        res.status(401).json({message: "Server error"});
+    }
+};
 
 // Get an image by id
-exports.getImageById = (req, res) => {
-    let id = req.params.imageId;
+exports.getImageById = async (req, res) => {
+    const imageId = req.params.imageId;
 
-    db("image")
-        .select("*")
-        .where({id: id})
-        .then(data => res.status(200).json({data}))
-        .catch(error => {
-            res.status(401);
-            console.log(error);
-            res.json({message: "Server error"});
-        });
-}
-
+    try {
+        const data = await imageService.getImageById(imageId);
+        if (data) {
+            res.status(200).json({ data });
+        } else {
+            res.status(404).json({ message: 'Image not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};
 // Add new image
 exports.addImage =  (req, res) => {
     let newImage = req.file;
@@ -209,3 +208,4 @@ exports.updateImageById =  async (req, res) => {
          console.error("Error deleting image:", error);
      }
 }
+
