@@ -51,7 +51,7 @@ describe("Interest's users Controller - getInterestUsersById", () => {
 
         expect(userInterestService.getInterestUsersById).toHaveBeenCalledWith(req.params.interestId);
         expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.json).toHaveBeenCalledWith({ userInterests: mockUserInterests });
+        expect(res.json).toHaveBeenCalledWith({ userInterests: mockInterestUsers });
     });
 
     it("should return 500 if failed to get user interests by interest ID", async () => {
