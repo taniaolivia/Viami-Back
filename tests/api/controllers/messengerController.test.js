@@ -1,4 +1,4 @@
-/*const messageController = require("../../../src/api/controllers/messengerController");
+const messageController = require("../../../src/api/controllers/messengerController");
 const messageService = require("../../../src/api/services/messengerService");
 
 jest.mock("../../../src/api/services/messengerService");
@@ -60,7 +60,7 @@ describe("Message Controller - getMessageById", () => {
         };
 
         const mockMessage = { id: 1, content: "Test message" };
-        messengerService.getMessageById.mockResolvedValueOnce(mockMessage);
+        messageService.getMessageById.mockResolvedValueOnce(mockMessage);
 
         await messageController.getMessageById(req, res);
 
@@ -77,11 +77,11 @@ describe("Message Controller - getMessageById", () => {
             json: jest.fn()
         };
 
-        messengerService.getMessageById.mockRejectedValueOnce(new Error("Message not found"));
+        messageService.getMessageById.mockRejectedValueOnce(new Error("Message not found"));
 
         await messageController.getMessageById(req, res);
 
         expect(res.status).toHaveBeenCalledWith(401);
         expect(res.json).toHaveBeenCalledWith({ message: "Message not found" });
     });
-});*/
+});

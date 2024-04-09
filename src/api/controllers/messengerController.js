@@ -1,6 +1,6 @@
 const admin = require("firebase-admin");
 const db = require("../knex.js");
-const io = require('../socket.js');
+const initializeSocketServer = require('../socket.js');
 const messengerService = require('../services/messengerService');
 
 // Set a message read
