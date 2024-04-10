@@ -180,6 +180,19 @@ exports.getMessageById = async (req, res) => {
   }
 };
 
+// Get messages by senders
+exports.getMessagesbyUserId = async (req, res) => {
+  try {
+      const userId = req.params.userId;
+      
+      const data = await messengerService.getMessagesbyUserId(userId);
+      res.status(200).json({ message: "Messages found", data });
+  } catch (error) {
+      res.status(401).json({message: "Messages not found" });
+  }
+};
+
+
 // Get users by group id
 exports.getUsersGroup = (req, res) => {
   let groupId = req.params.groupId;
