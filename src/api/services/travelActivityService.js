@@ -60,7 +60,7 @@ exports.getTravelActivitiesById = async (travelId) => {
             "activity.language as activityLanguage",
             "activity.accessibility as accessibility"
         ])
-        .where({idTravel: id})
+        .where({idTravel: travelId})
         .join("travel", "travel.id", "=", "travel_activity.idTravel")
         .join("activity", "activity.id", "=", "travel_activity.idActivity");
         return data;
