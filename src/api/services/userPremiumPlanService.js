@@ -1,4 +1,6 @@
 const db = require("../knex");
+const jwt = require("jsonwebtoken");
+
 exports.getUserLastPremiumPlan = async (userId) => {
     try {
         return await db("user_premium_plan")
@@ -23,6 +25,7 @@ exports.addUserPremiumPlan = async (userId, planId) => {
         await db("user").update("plan", "premium").where({ id: userId });
         return { message: "Premium plan added successfully" };
     } catch (error) {
+        console.log(error)
         throw new Error("Server error");
     }
 };
