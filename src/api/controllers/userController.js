@@ -367,13 +367,17 @@ exports.updateUserDescriptionById = (req, res) => {
         });
 }
 
+// delete user language, user image, user interest, user premium plan, user date location, 
+// user comment, request message user, message user read, message, image,group
+// forum posts city, forum comment, forum, comment
 // Delete user by id
 exports.deleteUserById =(req,res) => {
     const userId = req.params.userId;
-    const deleteQuery = `DELETE FROM user 
-                        WHERE id = ?`;
-    db.raw(deleteQuery, [userId])
-      .then(() => {
+
+    db("user")
+    .delete("userId", userId)
+    .where("id", id)      
+    .then(() => {
         res.status(200).json({ message: ` The user with ID ${userId} has been deleted ` });
       })
       .catch((error) => {

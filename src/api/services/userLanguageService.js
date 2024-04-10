@@ -72,3 +72,16 @@ exports.deleteUserLanguage = async (userId, languageId) => {
         throw new Error("Invalid request");
     }
 };
+
+exports.deleteAllLanguagesByUserId = async (userId) => {
+    try {
+        await db("user_language")
+            .delete("*")
+            .where({
+                userId: userId
+            });
+        return { message: "All languages are deleted from user's data" };
+    } catch (error) {
+        throw new Error("Invalid request");
+    }
+};
