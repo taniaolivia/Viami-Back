@@ -13,6 +13,20 @@ exports.getAllUsersInterests = async () => {
     }
 };
 
+exports.getInterestUsersById = async (interestId) => {
+    try {
+        const userInterests = await db("user_interest")
+            .select("*")
+            .where({interestId: interestId})
+            .join("user", "user.id", "=", "user_interest.userId")
+            .join("interest", "interest.id", "=", "user_interest.interestId")
+
+        return userInterests;
+    } catch (error) {
+        throw new Error("Server error");
+    }
+};
+
 exports.getUserInterestsById = async (userId) => {
     try {
         const userInterests = await db("user_interest")

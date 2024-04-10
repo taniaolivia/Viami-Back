@@ -34,37 +34,73 @@ describe("User Interest Controller - getAllUsersInterests", () => {
 });
 
 
-describe("User Interest Controller - getUserInterestsById", () => {
+describe("Interest's users Controller - getInterestUsersById", () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
 
-    it("should return user interests by interest ID", async () => {
-        const req = { params: { interestId: "123" } };
+    it("should return interest users by interest ID", async () => {
+        const req = { params: { interestId: "1" } };
         const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
 
-        const mockUserInterests = [{ id: 1, name: "Interest 1" }, { id: 2, name: "Interest 2" }];
+        const mockInterestUsers = [{ id: 1, userId: "1", interestId: "1", interest: "Interest 1" }, { id: 2, userId: "2", interestId: "1", interest: "Interest 1" }];
+
+        userInterestService.getInterestUsersById.mockResolvedValueOnce(mockInterestUsers);
+
+        await userInterestController.getInterestUsersById(req, res);
+
+        expect(userInterestService.getInterestUsersById).toHaveBeenCalledWith(req.params.interestId);
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({ userInterests: mockInterestUsers });
+    });
+
+    it("should return 500 if failed to get user interests by interest ID", async () => {
+        const req = { params: { interestId: "1" } };
+        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+
+        const errorMessage = "Failed to get interest's users by interest ID";
+
+        userInterestService.getInterestUsersById.mockRejectedValueOnce(new Error(errorMessage));
+
+        await userInterestController.getInterestUsersById(req, res);
+
+        expect(userInterestService.getInterestUsersById).toHaveBeenCalledWith(req.params.interestId);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ message: "Server error" });
+    });
+});
+
+describe("User's interests Controller - getUserInterestsById", () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it("should return user's interests by user ID", async () => {
+        const req = { params: { userId: "1" } };
+        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+
+        const mockUserInterests = [{ id: 1, userId: "1", interestId: "1", interest: "Interest 1" }, { id: 2, userId: "1", interestId: "2", interest: "Interest 2" }];
 
         userInterestService.getUserInterestsById.mockResolvedValueOnce(mockUserInterests);
 
         await userInterestController.getUserInterestsById(req, res);
 
-        expect(userInterestService.getUserInterestsById).toHaveBeenCalledWith(req.params.interestId);
+        expect(userInterestService.getUserInterestsById).toHaveBeenCalledWith(req.params.userId);
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({ userInterests: mockUserInterests });
     });
 
-    it("should return 500 if failed to get user interests by interest ID", async () => {
-        const req = { params: { interestId: "123" } };
+    it("should return 500 if failed to get user's interests by user ID", async () => {
+        const req = { params: { userId: "1" } };
         const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
 
-        const errorMessage = "Failed to get user interests by interest ID";
+        const errorMessage = "Failed to get user's interests by user ID";
 
         userInterestService.getUserInterestsById.mockRejectedValueOnce(new Error(errorMessage));
 
         await userInterestController.getUserInterestsById(req, res);
 
-        expect(userInterestService.getUserInterestsById).toHaveBeenCalledWith(req.params.interestId);
+        expect(userInterestService.getUserInterestsById).toHaveBeenCalledWith(req.params.userId);
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.json).toHaveBeenCalledWith({ message: "Server error" });
     });
