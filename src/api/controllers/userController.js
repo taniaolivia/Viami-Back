@@ -6,6 +6,8 @@ let { AgeFromDateString } = require('age-calculator');
 const nodemailer = require('nodemailer')
 const fs = require('fs');
 const path = require('path');
+const userLanguageService = require("../services/userLanguageService");
+const userImageService = require("../services/userImageService");
 
 const currentModuleDir = __dirname;
 
@@ -367,14 +369,96 @@ exports.updateUserDescriptionById = (req, res) => {
         });
 }
 
-// delete user language, user image, user interest, user premium plan, user date location, 
+// delete user image, user interest, user premium plan, user date location, 
 // user comment, request message user, message user read, message, image,group
 // forum posts city, forum comment, forum, comment
 // Delete user by id
-exports.deleteUserById =(req,res) => {
+exports.deleteUserById = async (req,res) =>  {
     const userId = req.params.userId;
+    //let imageId = req.body.imageId;
+    //let image = req.body.image;
+    //let user = req.params.userId;
 
-    db("user")
+    /*const params = {
+        Bucket: bucketName,
+        Key: `${process.env.AWS_PATH_USER_IMAGES}/${image.split("/")[7]}`
+    };*/
+
+    try{
+    const userImages = await userImageService.getUserImagesById(userId);
+    
+        userImages.map((u) => {
+            /*const params = {
+                Bucket: bucketName,
+                Key: `${process.env.AWS_PATH_USER_IMAGES}/${u.image.split("/")[7]}`
+            };
+            const deleteCommand = new DeleteObjectCommand(params);
+            await s3Client.send(deleteCommand);*/
+
+            return db("user_image")
+                .delete("*")
+                .where({
+                    imageId: u.imageId,
+                    userId: u.user
+                })
+                .then(data => {
+                    return db("image")
+                        .delete("*")
+                        .where({
+                            id: u.imageId
+                        })
+                })
+            
+    
+
+        })
+
+    }
+    catch (error) {
+        console.log(error)
+        res.status(401).json({ message: 'Invalid request' });
+    }
+    /*try {
+        await userLanguageService.deleteAllLanguagesByUserId(userId);
+        const deleteCommand = new DeleteObjectCommand(params);
+        await s3Client.send(deleteCommand);
+    
+        db("user_image")
+            .delete("*")
+            .where({
+                imageId: imageId,
+                userId: user
+            })
+            .then(data => {
+                db("image")
+                    .delete("*")
+                    .where({
+                        id: imageId
+                    })
+                    .then(data => {
+                        res.status(200).json({
+                            message: `Image is deleted from user's data`,
+                        });
+                    })
+                    .catch(error => {
+                        res.status(401);
+                      
+                        res.json({message: "Invalid request"});
+                    })
+            })
+            .catch(error => {
+                res.status(401);
+               
+                res.json({message: "Invalid request"});
+            })
+        
+    } catch (error) {
+        console.log(error)
+        res.status(401).json({ message: 'Invalid request' });
+    }*/
+
+   
+   /* db("user")
     .delete("userId", userId)
     .where("id", id)      
     .then(() => {
@@ -383,7 +467,7 @@ exports.deleteUserById =(req,res) => {
       .catch((error) => {
       
         res.status(500).json({ message: 'Server error' });
-      });
+      });*/
 }
 
 // Send email to user for email verification
