@@ -145,7 +145,6 @@ exports.getAllRequestsMessagesByUser = (req, res) => {
       "request_message_user.chat as chat"
     ])
     .where("receiverId", receiverId)
-    .andWhere("accept", null)
     .leftJoin("user as requester", "requester.id", "=", "request_message_user.requesterId")
     .leftJoin("user as receiver", "receiver.id", "=", "request_message_user.receiverId")
     .then((requests) => {
