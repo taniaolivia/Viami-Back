@@ -18,14 +18,14 @@ server.route("/politique-de-confidentialite")
 /**
  * @openapi
  * paths:
- *   /suppression-compte:
+ *   /supprimer-compte:
  *      get:
  *       tags:
  *         - Suppression du compte
  *       summary: "Suppression du compte d'utilisateur"
  *       description: "Les informations sur les étapes pour supprimer un compte"
  */
-server.route("/suppression-compte")
+server.route("/supprimer-compte")
 .get(cors(), documentController.getInformationDeleteAccount);
 
 }
