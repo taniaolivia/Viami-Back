@@ -23,7 +23,6 @@ exports.addUserPremiumPlan = async (req, res) => {
         const response = await userPremiumPlanService.addUserPremiumPlan(userId, planId);
         res.status(201).json(response);
     } catch (error) {
-        console.log(error)
         res.status(401).json({ message: "Server error" });
     }
 };

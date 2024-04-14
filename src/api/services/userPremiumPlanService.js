@@ -25,13 +25,9 @@ exports.addUserPremiumPlan = async (userId, planId) => {
         await db("user").update("plan", "premium").where({ id: userId });
         return { message: "Premium plan added successfully" };
     } catch (error) {
-        console.log(error)
         throw new Error("Server error");
     }
 };
-
-
-
 
 const generateToken = (userId) => {
     return new Promise((resolve, reject) => {
