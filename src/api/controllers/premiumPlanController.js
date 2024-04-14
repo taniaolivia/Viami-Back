@@ -1,35 +1,26 @@
 const db = require("../knex");
+const premiumPlanService = require('../services/premiumPlanService');
 
-// Get all details of all premium plans
-exports.getAllPremiumPlans = (req, res) => {
+exports.getAllPremiumPlans = async (req, res) => {
+    try {
+        const response = await premiumPlanService.getAllPremiumPlans();
+        res.status(200).json({ plans: response });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};
 
-    db("premium_plan")
-        .select("*")
-        .then((response) => {
-            res.status(200);
-            res.json({plans: response});
-        })
-        .catch((error) => {
-           
-            res.status(401);
-            res.json({message: "Server error"});
-        })
-}
 
 // Get all details of a premium plan by id
-exports.getPremiumPlanById = (req, res) => {
-    const planId = req.params.planId;
-
-    db("premium_plan")
-        .select("*")
-        .where("id", planId)
-        .then((response) => {
-            res.status(200);
-            res.json(response);
-        })
-        .catch((error) => {
-           
-            res.status(401);
-            res.json({message: "Server error"});
-        })
-}
+exports.getPremiumPlanById = async (req, res) => {
+    try {
+        const planId = req.params.planId;
+        const response = await premiumPlanService.getPremiumPlanById(planId);
+        if (!response) {
+            return res.status(404).json({ message: 'Premium plan not found' });
+        }
+        return res.status(200).json(response);
+    } catch (error) {
+        return res.status(500).json({ message: 'Server error' });
+    }
+};

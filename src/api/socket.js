@@ -6,21 +6,25 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-io.on('connection', (socket) => {
-  console.log('A user connected');
+function initializeSocketServer() {
+  const server = http.createServer();
+  const io = socketIo(server);
 
-  socket.on('chat message', (message) => {
-    var discussionId = message['discussionId'];
-    io.emit('chat message', { ...message, discussionId });
+  io.on('connection', (socket) => {
+    console.log('A user connected');
+
+    socket.on('chat message', (message) => {
+      var discussionId = message['discussionId'];
+      io.emit('chat message', { ...message, discussionId });
+    });
+
+    socket.on('disconnect', () => {
+      console.log('User disconnected');
+    });
   });
 
-  socket.on('disconnect', () => {
-    console.log('User disconnected');
-  });
-});
+  return { server, io };
+}
 
-server.listen(3001, () => {
-  console.log('Socket.IO server listening on port 3001');
-});
 
-module.exports = io;
+module.exports = initializeSocketServer;

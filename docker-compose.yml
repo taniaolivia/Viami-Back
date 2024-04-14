@@ -4,11 +4,11 @@ services:
     image: node:lts
     build:
       context: .
-      dockerfile: ./src/api/Dockerfile-dev
+      dockerfile: ./Dockerfile-dev
     env_file: ./src/.env
-    working_dir: /home/node/app
+    working_dir: /home/viami/app
     volumes:
-      - ./src/api:/home/node/app
+      - ./src/api:/home/viami/app/src/api
     command: > 
       bash -c 
         'npm i &&
@@ -39,6 +39,21 @@ services:
     volumes:
       - db:/var/lib/mysql
       - ./src/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - viami_back
+
+  viami_test:
+    container_name: viami_test
+    image: node:lts
+    env_file: ./src/.env
+    working_dir: /home/viami/app
+    volumes:
+      - ./src/api:/home/viami/app/src/api
+      - ./tests:/home/viami/app/tests
+    command: > 
+      bash -c 
+        'npm i &&
+         npm test'
     networks:
       - viami_back
 

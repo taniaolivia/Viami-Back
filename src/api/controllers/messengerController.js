@@ -1,27 +1,20 @@
-const { initializeApp } = require('firebase-admin/app');
-const { getMessaging } = require("firebase-admin/messaging");
 const admin = require("firebase-admin");
-const firebaseConfig = require("../viami-402918-firebase-adminsdk-6nvif-9e01aebec8.js").firebase;
-const db = require("../knex");
-const io = require('../socket');
+const db = require("../knex.js");
+const initializeSocketServer = require('../socket.js');
+const messengerService = require('../services/messengerService');
 
 // Set a message read
-exports.setMessageRead = (req, res) => {
-    let messageId = req.params.messageId;
-    let userId = req.query.userId;
-
-    db("message_user_read")
-      .insert({
-        "messageId": messageId,
-        "userRead": userId
-      })
-      .then(data => res.status(200).json({"message": "Message is set to read successfully !"}))
-      .catch(error => {
-          res.status(401);
-          console.log(error);
-          res.json({message: "Server error"});
-      });
-}
+exports.setMessageRead = async (req, res) => {
+  try {
+      const messageId = req.params.messageId;
+      const userId = req.query.userId;
+      
+      const response = await messengerService.setMessageRead(messageId, userId);
+      res.status(200).json(response);
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+};
 
 // Search user by the inserted name in the search input
 exports.getSearchedUsers = (req, res) => {
@@ -176,21 +169,29 @@ exports.getSearchedUsers = (req, res) => {
 }
 
 // Get message by id 
-exports.getMessageById = (req, res) => {
-  const id = req.params.messageId;
+exports.getMessageById = async (req, res) => {
+  try {
+      const messageId = req.params.messageId;
+      
+      const data = await messengerService.getMessageById(messageId);
+      res.status(200).json({ message: "Message found", data });
+  } catch (error) {
+      res.status(401).json({message: "Message not found" });
+  }
+};
 
-  db("message")
-      .select("*")
-      .where("id", id)
-      .then(data => {
-          res.status(200);
-          res.json({message: `Message found`, data});
-      })
-      .catch(error => {
-          res.status(401);
-          res.json({message: "Message not found"});
-      });   
-}
+// Get messages by senders
+exports.getMessagesbyUserId = async (req, res) => {
+  try {
+      const userId = req.params.userId;
+      
+      const data = await messengerService.getMessagesbyUserId(userId);
+      res.status(200).json({ message: "Messages found", data });
+  } catch (error) {
+      res.status(401).json({message: "Messages not found" });
+  }
+};
+
 
 // Get users by group id
 exports.getUsersGroup = (req, res) => {
@@ -233,7 +234,7 @@ exports.sendNotificationPushMessage = (fcmToken, text,name,res) => {
     token: receivedToken
   };
   
-  getMessaging()
+  admin.messaging()
     .send(message)
     .then((response) => {
       res.status(200).json({message: "Successfully sent message notification"})

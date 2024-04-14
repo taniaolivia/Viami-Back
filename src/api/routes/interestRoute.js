@@ -73,12 +73,12 @@ module.exports = (server) => {
      *                 data:
      *                   - id: 1
      *                     interest: "Sports"
-     *         '401':
+     *         '404':
      *           description: "Unauthorized. User not authenticated or server error."
      *           content:
      *             application/json:
      *               example:
-     *                 message: "Server error"
+     *                 message: "Interest not found"
      *         '500':
      *           description: "Internal Server Error."
      *           content:
