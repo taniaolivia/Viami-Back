@@ -2,23 +2,24 @@
 <html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
+        <meta name="title" content="Viami">
+        <meta name="description" content="Rencontrez, Voyagez, Recommencez">
+        <meta property="og:title" content="Viami">
+        <meta property="og:description" content="Rencontrez, Voyagez, Recommencez">
+        <meta http-equiv="Content-Security-Policy">
+        <link rel="shortcut icon" href="https://d143cj5zpjuqvu.cloudfront.net/projects/viami/assets/favicon/favicon.ico">
         <title>Viami - Adresse mail vérifié</title>
-
-        <style>
-            html, body {
-                padding: 0;
-                margin: 0;
-            }
-        </style>
+        
+        <link rel="stylesheet" href="https://d143cj5zpjuqvu.cloudfront.net/projects/viami/assets/style.css">
     </head>
     <body>
-        <div style="font-family: Arial, sans-serif; text-align: justify; margin: 0 auto; background-color: #E5F3FF;">
-            <div style="background-color: #0081CF; text-align: center; padding: 10px; color: white">
-                <img src="${process.env.CDN_URL}/assets/logo.png" style="width: 150px; height: auto"/>
+        <div class="content">
+            <div class="header">
+                <img src="https://d143cj5zpjuqvu.cloudfront.net/projects/viami/assets/logo-blue.png" draggable="false"/>
             </div>
 
-            <div style="padding: 5px 20px;">
+            <div class="content-inside">
                 <h3>Bienvenue sur Viami !</h3> 
                 <br>
                 <p>
@@ -31,7 +32,29 @@
                 <p>Bon voyage et à bientôt sur Viami !</p>
                 <br>
                 <p>Cordialement,</p>
-                <p>L'équipe Viami</p>
+                <p class="bold">L'équipe Viami</p>
+            </div>
+
+            <div class="footer">
+                <div class="footer-top">
+                    <div class="footer-right">
+                        <img src="https://d143cj5zpjuqvu.cloudfront.net/projects/viami/assets/logo.png" draggable="false"/>
+                        
+                        <div class="footer-text">
+                            <p>Voyager, c'est mieux à plusieurs&nbsp;!</p>
+                            <p>Rencontrez des voyageurs passionnés et créez des souvenirs inoubliables grâce à VIAMI.</p>
+                        </div>
+                    
+                    </div>
+                    <div class="footer-left">
+                        <h3>Nous contacter</h3>
+                        <p><a href="mailto:contact@viamiappli.com">contact@viamiappli.com</a></p>
+                    </div>
+                </div>
+    
+                <div class="footer-bottom">
+                    <p>© 2024 Viami.</p>
+                </div>
             </div>
         </div>
     </body>
