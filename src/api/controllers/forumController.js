@@ -236,12 +236,16 @@ exports.getCommentsPostById = (req, res) => {
 exports.addPost = (req, res) => {
     let post = req.body.post;
     let userId = req.body.userId;
+    let options = { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', fractionalSecondDigits: 3, hour12: false };
+    let now = new Date().toLocaleString('fr-FR', options);
+    let formattedDateTime = now.substring(6, 10) + "-" + now.substring(3, 5) + "-" + now.substring(0, 2) + " " + now.substring(11);
+    let formattedDate = formattedDateTime.replace(",", '.');
 
     db("forum")
       .insert({
         "post": post,
         "userId": userId,
-        "postedOn": new Date()
+        "postedOn": formattedDate
       })
       .then(data => res.status(200).json({ message: 'Post added successfully' }))
       .catch(error => {

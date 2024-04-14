@@ -65,6 +65,7 @@ exports.updateActivityNote = (id, newNote) => {
 function calculateDistance(lat1, lon1, lat2, lon2) {
     const dLat = (lat2 - lat1) * (Math.PI / 180);
     const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const EARTH_RADIUS = 6371; // Earth's radius in kilometers
     const a =
         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
         Math.cos(lat1 * (Math.PI / 180)) *
@@ -92,6 +93,7 @@ exports.getAllActivitiesByUserPosition = async (userLat, userLon) => {
         const activities = await db("activity").select("*");
         return filterActivitiesByDistance(activities, userLat, userLon);
     } catch (error) {
+        console.log(error)
         throw new Error("Activity not found");
     }
 };

@@ -125,6 +125,9 @@ userPremiumPlanRoute(server);
 
 const forumRoute = require("./routes/forumRoute");
 forumRoute(server);
+
+const documentRoute = require("./routes/documentRoute");
+documentRoute(server);
   
 server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);

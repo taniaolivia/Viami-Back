@@ -29,4 +29,20 @@ exports.getMessageById = async (messageId) => {
     }
 };
 
+exports.getMessagesbyUserId = async (userId) => {
+    try {
+        const message = await db("message")
+            .select("*")
+            .where("senderId", userId);
+
+        if (!message) {
+            throw new Error("Messages not found");
+        }
+console.log(message)
+        return message;
+    } catch (error) {
+        throw new Error("Failed to get user's messages");
+    }
+};
+
 

@@ -197,6 +197,63 @@ server.route("/api/messages/:senderId/:responderId/messages")
  *   description: "Operations related to messages and discussions."
  * 
  * paths:
+ *   /api/users/{userId}/messages:
+ *     get:
+ *       summary: "Get all messages of a user"
+ *       description: "Retrieve all messages of a user."
+ *       tags: [Message]
+ *       
+ *       parameters:
+ *         - in: path
+ *           name: userId
+ *           schema:
+ *             type: integer
+ *           required: true
+ *           description: "ID of the user."
+ *       responses:
+ *         '200':
+ *           description: "Successful operation. Returns all messages of a user."
+ *           content:
+ *             application/json:
+ *               example:
+ *                 messages:
+ *                   - id: 1
+ *                     senderId: 123
+ *                     responderId: 456
+ *                     groupId: 789
+ *                     date: "2023-01-01T12:00:00Z"
+ *                     message: "Message content between sender and responder"
+ *                     read: 1
+ *                   - id: 2
+ *                     senderId: 123
+ *                     responderId: 426
+ *                     groupId: 456
+ *                     date: "2023-01-02T12:00:00Z"
+ *                     message: "Another message between sender and responder"
+ *                     read: 0
+ *         '404':
+ *           description: "Not Found. Messages not found."
+ *           content:
+ *             application/json:
+ *               example:
+ *                 message: "Messages not found"
+ *         '500':
+ *           description: "Internal Server Error."
+ *           content:
+ *             application/json:
+ *               example:
+ *                 message: "Internal server error"
+ */
+server.route("/api/users/:userId/messages")
+    .get(jwtMiddleware.authenticateUser, cors(), messengerController.getMessagesbyUserId);
+
+/**
+ * @openapi
+ * tags:
+ *   name: Message
+ *   description: "Operations related to messages and discussions."
+ * 
+ * paths:
  *   /api/messages/{messageId}:
  *     post:
  *       summary: "Set a message as read"
