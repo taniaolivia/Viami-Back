@@ -2,7 +2,6 @@
 const db = require("../knex");
 const  activityImageService = require('../services/activityImageService');
 
-
 // Get all images with their activities
 exports.getAllActivitiesImages = async (req, res) => {
     try {
@@ -42,6 +41,7 @@ exports.addImageToActivity = async (req, res) => {
         res.status(401).json({ message: "Invalid request" });
     }
 };
+
 // Delete an image in activity's data
 exports.deleteActivityImage = async (req, res) => {
     try {

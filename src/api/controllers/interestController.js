@@ -11,7 +11,6 @@ exports.listAllInterests = async (req, res) => {
     }
 }
 
-
 // Get an interest by id
 exports.getInterestById = async (req, res) => {
     try {

@@ -1,4 +1,5 @@
 const db = require("../knex");
+
 exports.listAllComments = () => {
     return db("comment").select("*");
 };

@@ -5,7 +5,7 @@ jest.mock('../../../src/api/services/activityImageService');
 
 describe('getAllActivitiesImages Controller', () => {
     it('should return all activities images', async () => {
-        const mockData = [{ id: 1, name: 'Activity 1', idImage: 1, /* other fields */ }, { id: 2, name: 'Activity 2', idImage: 2, /* other fields */ }];
+        const mockData = [{ id: 1, name: 'Activity 1', idImage: 1}, { id: 2, name: 'Activity 2', idImage: 2 }];
         activityImageService.getAllActivitiesImages.mockResolvedValue(mockData);
 
         const req = {};
@@ -40,7 +40,7 @@ describe('getAllActivitiesImages Controller', () => {
 describe('getActivityImagesById Controller', () => {
     it('should return activity images by id', async () => {
         const mockActivityId = 1;
-        const mockData = [{ id: 1, name: 'Image 1', idImage: 1, /* other fields */ }, { id: 2, name: 'Image 2', idImage: 2, /* other fields */ }];
+        const mockData = [{ id: 1, name: 'Image 1', idImage: 1 }, { id: 2, name: 'Image 2', idImage: 2 }];
         activityImageService.getActivityImagesById.mockResolvedValue(mockData);
 
         const req = { params: { activityId: mockActivityId } };
@@ -74,9 +74,9 @@ describe('getActivityImagesById Controller', () => {
 
 describe('addImageToActivity Controller', () => {
     it('should add image to activity data', async () => {
-        const mockImage = { id: 1, url: 'image_url', /* other fields */ };
+        const mockImage = { id: 1, url: 'image_url'};
         const mockActivityId = 1;
-        const mockActivityData = { id: 1, name: 'Activity 1', /* other fields */ };
+        const mockActivityData = { id: 1, name: 'Activity 1' };
 
         activityImageService.addImageToActivity.mockResolvedValueOnce({ imageId: 1, activityData: mockActivityData });
 
@@ -109,23 +109,17 @@ describe('addImageToActivity Controller', () => {
 
 describe('deleteActivityImage Controller', () => {
     it('should delete the image from activity data', async () => {
-        // Mock data
         const mockImageId = 1;
         const mockActivityId = 1;
 
-        // Mocking the service function
         activityImageService.deleteActivityImage.mockResolvedValueOnce();
 
-        // Mocking the request object
         const req = { body: { imageId: mockImageId }, params: { activityId: mockActivityId } };
 
-        // Mocking the response object
         const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
 
-        // Calling the controller function
         await activityImageController.deleteActivityImage(req, res);
 
-        // Assertions
         expect(activityImageService.deleteActivityImage).toHaveBeenCalledWith(mockImageId, mockActivityId);
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({ message: `Image is deleted from activity's data` });

@@ -24,77 +24,36 @@ exports.getTravelImagesById = async (req, res) => {
 };
 
 // Add image to travel's data
-exports.addImageToTravel = (req, res) => {
-    const {image} = req.body;
-    let travelId = req.params.travelId;
+exports.addImageToTravel = async (req, res) => {
+    try {
+        const { image } = req.body;
+        const travelId = req.params.travelId;
 
-    db("image")
-        .insert({
-           image:image
-        })
-        .then(data => {
-            db("travel_image")
-                .insert({
-                    idImage: data[0],
-                    idTravel: travelId
-                })
-                .then(travelActivity => {
-                    db("travel")
-                        .select("*")
-                        .where({id: travelId})
-                        .then(travelData => {
-                            res.status(200).json({
-                                message: `Image is added to travel's data`,
-                                travel: travelData,
-                                image: {
-                                    id: data[0],
-                                    image:image
-                                }
-                            }) 
-                        })
-                })
-                .catch(error => {
-                    res.status(401);
-                   
-                    res.json({message: "Invalid request"});
-                })
-        })
-        .catch(error => {
-            res.status(401);
-           
-            res.json({message: "Invalid request"});
+        const imageData = await travelImageService.addImageToTravel(image, travelId);
+        
+        // If image was successfully added
+        res.status(200).json({
+            message: `Image is added to travel's data`,
+            image: imageData
         });
-}
+    } catch (error) {
+        res.status(401).json({ message: "Invalid request" });
+    }
+};
 
-// Delete an image in travel's data
-exports.deleteTravelImage = (req, res) => {
-    let image = req.body.imageId;
-    let travel = req.params.travelId;
+// Delete an image from travel's data
+exports.deleteTravelImage = async (req, res) => {
+    try {
+        const imageId = req.body.imageId;
+        const travelId = req.params.travelId;
 
-    db("travel_activity")
-        .delete("*")
-        .where({
-            idImage: image,
-            idTravel: travel
-        })
-        .then(data => {
-            db("image")
-                .delete("*")
-                .where({
-                    id: image
-                })
-                .then(data => {
-                    res.status(200).json({
-                        message: `Image is deleted from travel's data`,
-                    });
-                })
-                .catch(error => {
-                    res.status(401);
-                    res.json({message: "Invalid request"});
-                })
-        })
-        .catch(error => {
-            res.status(401);
-            res.json({message: "Invalid request"});
-        })
-}
+        await travelImageService.deleteTravelImage(imageId, travelId);
+
+        // If image was successfully deleted
+        res.status(200).json({
+            message: `Image is deleted from travel's data`,
+        });
+    } catch (error) {
+        res.status(401).json({ message: "Invalid request" });
+    }
+};

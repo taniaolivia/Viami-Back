@@ -9,8 +9,6 @@ exports.listActivitiesByTheme = (themeId) => {
         .orderBy("activity.name", "asc");
 };
 
-
-
 exports.getFirstFiveActivitiesByTheme = async (themeId) => {
     try {
         const data = await db("theme_activity")

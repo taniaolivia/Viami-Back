@@ -10,23 +10,6 @@ exports.listAllComments = async (req, res) => {
     }
 };
 
-
-// Get a comment by id
-exports.getCommentById = async (req, res) => {
-    const commentId = req.params.commentId;
-    try {
-        const data = await commentService.getCommentById(commentId);
-        if (comment) {
-            res.status(200).json({ data });
-            return; 
-        }
-    } catch (error) {
-        res.status(401).json({ message: "Server error" });
-        return;
-    }
-    
-    res.status(401).json({ message: "Comment not found" });
-};
 // Get a comment by id
 exports.getCommentById = async (req, res) => {
     const commentId = req.params.commentId;

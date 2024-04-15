@@ -386,33 +386,27 @@ exports.deleteUserById = async (req,res) =>  {
         });
 
         comments.map(async (comment) => {
-             // Delete user comment
              await db("user_comment")
-             .where("id", comment)
-             .del();
+                .where("id", comment)
+                .del();
              
-            // Delete comment
             await db("comment")
                 .where("id",comment )
                 .del();
         })
     
-        // Delete user forum posts
         await db("forum")
           .where("userId", userId)
           .del();
     
-        // Delete user forum comments
         await db("forum_comment")
           .where("userId", userId)
           .del();
         
-        // Delete user forum posts city
         await db("forum_posts_city")
           .where("userId", userId)
           .del();
 
-        // Delete user images
         const userImages = await userImageService.getUserImagesById(userId);
     
         userImages.map(async (u) => {
@@ -428,87 +422,76 @@ exports.deleteUserById = async (req,res) =>  {
             .del();
         });
     
-        // Delete user languages
         await userLanguageService.deleteAllLanguagesByUserId(userId);
     
-        // Delete user premium plan
         await db("user_premium_plan")
           .where("userId", userId)
           .del();
     
-        // Delete user date location
         await db("user_date_location")
           .where("userId", userId)
           .del();
     
-        // Delete user interests
         await db("user_interest")
           .where("userId", userId)
           .del();
 
-         // Delete groups associated with the user
        const userGroups = await db("user_group")
          .where("userId", userId);
         
        const groups = [];
    
        userGroups.map(async (userGroup) => {
+            const messages = await db("message")
+                .where("groupId", userGroup.groupId);
 
-        const messages = await db("message")
-         .where("groupId", userGroup.groupId);
+            messages.map(async (message) => {
+                await db("message_user_read")
+                    .where("messageId", message.id)            
+                    .del();
 
-           messages.map(async (message) => {
-            // Delete user message read status
-            await db("message_user_read")
-            .where("messageId", message.id)            
-            .del();
+                await db("request_message_user")
+                    .where(function() {
+                        this.where("receiverId", message.responderId)
+                            .andWhere("requesterId", message.senderId);
+                    })
+                    .orWhere(function() {
+                        this.where("receiverId", message.senderId)
+                            .andWhere("requesterId", message.responderId);
+                    })
+                    .del();
 
-           // Delete user request messages
-            await db("request_message_user")
-            .where(function() {
-                this.where("receiverId", message.responderId)
-                    .andWhere("requesterId", message.senderId);
-              })
-              .orWhere(function() {
-                this.where("receiverId", message.senderId)
-                    .andWhere("requesterId", message.responderId);
-              })
-            .del();
-
-             // Delete group messages
-             await db("message")
-             .where("id", message.id)
-             .del();
-        })
+                await db("message")
+                    .where("id", message.id)
+                    .del();
+            })
        });
 
        userGroups.forEach((userGroup) => {
-        groups.push(userGroup.groupId);
+            groups.push(userGroup.groupId);
        });
 
        groups.map(async (group) => {      
-          // Delete group messages
-          await db("user_group")
-          .where("groupId", group)
-          .del();
+            await db("user_group")
+                .where("groupId", group)
+                .del();
 
-           // Delete group
-           await db("group")
-           .where("id", group)
-           .del();
+            await db("group")
+                .where("id", group)
+                .del();
         });
 
-        // Finally, delete the user
         await db("user")
           .where("id", userId)
           .del();
     
         res.status(200).json({ message: `The user with ID ${userId} has been deleted` });
-      } catch (error) {
+      } 
+      catch (error) {
         console.log(error);
         res.status(500).json({ message: "Server error" });
       }
-    };
+};
 
 // Send email to user for email verification
 exports.sendVerificationMail = async(to, token) =>{

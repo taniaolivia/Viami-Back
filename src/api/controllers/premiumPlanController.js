@@ -1,6 +1,7 @@
 const db = require("../knex");
 const premiumPlanService = require('../services/premiumPlanService');
 
+// Get all premium plans
 exports.getAllPremiumPlans = async (req, res) => {
     try {
         const response = await premiumPlanService.getAllPremiumPlans();
