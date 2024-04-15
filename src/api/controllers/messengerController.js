@@ -326,20 +326,23 @@ exports.sendMessage = async (req, res) => {
 
 // Function to send the message to a group
 async function sendGroupMessage(trx, groupId, message, senderId, responderId) {
+  const date = new Date().toLocaleString("fr-FR", {
+    timeZone: 'Europe/Paris',
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric'
+  });
+  const dateString = date.slice(0, 10).split('/').reverse().join('-') + " " + date.slice(11, 19);
+
   const groupMessage = {
     message: message,
     senderId: senderId,
     groupId: groupId,
     responderId: responderId,
-    date: new Date().toLocaleString("fr-FR", {
-      timeZone: 'Europe/Paris',
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric'
-    }),
+    date: dateString,
     read: '0',
   };
 
