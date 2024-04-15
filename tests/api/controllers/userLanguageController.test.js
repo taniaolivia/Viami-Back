@@ -232,3 +232,50 @@ describe('User Language Controller - deleteUserLanguage', () => {
         expect(res.json).toHaveBeenCalledWith({ message: 'Invalid request' });
     });
 });
+
+describe('User Language Controller - deleteAllLanguagesByUserId', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it("should delete all languages from a user's data", async () => {
+        const userId = 1;
+        const req = {
+            params: { userId }
+        };
+        
+        const res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        };
+
+        userLanguageService.deleteAllLanguagesByUserId.mockResolvedValueOnce({ message: "All languages are deleted from user's data" });
+
+        await userLanguageController.deleteAllLanguagesByUserId(req, res);
+
+        expect(userLanguageService.deleteAllLanguagesByUserId).toHaveBeenCalledWith(userId);
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({ message: "All languages are deleted from user's data" });
+    });
+
+    it("should return 401 if failed to delete languages from user's data", async () => {
+        const userId = 1;
+        const req = {
+            params: { userId }
+        };
+        
+        const res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        };
+
+        userLanguageService.deleteAllLanguagesByUserId.mockRejectedValueOnce(new Error('Invalid request'));
+
+        await userLanguageController.deleteAllLanguagesByUserId(req, res);
+
+        
+        expect(userLanguageService.deleteAllLanguagesByUserId).toHaveBeenCalledWith(userId);
+        expect(res.status).toHaveBeenCalledWith(401);
+        expect(res.json).toHaveBeenCalledWith({ message: 'Invalid request' });
+    });
+});

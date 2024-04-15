@@ -6,6 +6,8 @@ let { AgeFromDateString } = require('age-calculator');
 const nodemailer = require('nodemailer')
 const fs = require('fs');
 const path = require('path');
+const userLanguageService = require("../services/userLanguageService");
+const userImageService = require("../services/userImageService");
 
 const currentModuleDir = __dirname;
 
@@ -367,20 +369,129 @@ exports.updateUserDescriptionById = (req, res) => {
         });
 }
 
+// delete user image, user interest, user premium plan, user date location, 
+// user comment, request message user, message user read, message, image,group
+// forum posts city, forum comment, forum, comment
 // Delete user by id
-exports.deleteUserById =(req,res) => {
+exports.deleteUserById = async (req,res) =>  {
     const userId = req.params.userId;
-    const deleteQuery = `DELETE FROM user 
-                        WHERE id = ?`;
-    db.raw(deleteQuery, [userId])
-      .then(() => {
-        res.status(200).json({ message: ` The user with ID ${userId} has been deleted ` });
-      })
-      .catch((error) => {
-      
-        res.status(500).json({ message: 'Server error' });
-      });
-}
+    try {
+        const userComments = await db("user_comment")
+            .where("userId", userId);
+
+        const comments = [];
+
+        userComments.forEach((userComment) => {
+            comments.push(userComment.commentId)
+        });
+
+        comments.map(async (comment) => {
+             await db("user_comment")
+                .where("id", comment)
+                .del();
+             
+            await db("comment")
+                .where("id",comment )
+                .del();
+        })
+    
+        await db("forum")
+          .where("userId", userId)
+          .del();
+    
+        await db("forum_comment")
+          .where("userId", userId)
+          .del();
+        
+        await db("forum_posts_city")
+          .where("userId", userId)
+          .del();
+
+        const userImages = await userImageService.getUserImagesById(userId);
+    
+        userImages.map(async (u) => {
+          await db("user_image")
+            .where({
+              imageId: u.imageId,
+              userId: u.userId,
+            })
+            .del();
+    
+          await db("image")
+            .where("id", u.imageId)
+            .del();
+        });
+    
+        await userLanguageService.deleteAllLanguagesByUserId(userId);
+    
+        await db("user_premium_plan")
+          .where("userId", userId)
+          .del();
+    
+        await db("user_date_location")
+          .where("userId", userId)
+          .del();
+    
+        await db("user_interest")
+          .where("userId", userId)
+          .del();
+
+       const userGroups = await db("user_group")
+         .where("userId", userId);
+        
+       const groups = [];
+   
+       userGroups.map(async (userGroup) => {
+            const messages = await db("message")
+                .where("groupId", userGroup.groupId);
+
+            messages.map(async (message) => {
+                await db("message_user_read")
+                    .where("messageId", message.id)            
+                    .del();
+
+                await db("request_message_user")
+                    .where(function() {
+                        this.where("receiverId", message.responderId)
+                            .andWhere("requesterId", message.senderId);
+                    })
+                    .orWhere(function() {
+                        this.where("receiverId", message.senderId)
+                            .andWhere("requesterId", message.responderId);
+                    })
+                    .del();
+
+                await db("message")
+                    .where("id", message.id)
+                    .del();
+            })
+       });
+
+       userGroups.forEach((userGroup) => {
+            groups.push(userGroup.groupId);
+       });
+
+       groups.map(async (group) => {      
+            await db("user_group")
+                .where("groupId", group)
+                .del();
+
+            await db("group")
+                .where("id", group)
+                .del();
+        });
+
+        await db("user")
+          .where("id", userId)
+          .del();
+    
+        res.status(200).json({ message: `The user with ID ${userId} has been deleted` });
+      } 
+      catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Server error" });
+      }
+};
 
 // Send email to user for email verification
 exports.sendVerificationMail = async(to, token) =>{

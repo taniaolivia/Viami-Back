@@ -172,6 +172,93 @@ describe("Travel Controller - saveTravel", () => {
     });
 });
 
+/*describe("Travel Controller - getDateLocationUsers", () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it("should return number of participants and users for searched travel", async () => {
+        const req = {
+            query: { location: "Location", date: "2024-04-16" }
+        };
+        const res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        };
+
+        const userData = [{ userId: 1, firstName: "John" }, { userId: 2, firstName: "Emma" }];
+        const expectedResponse = { nbParticipant: userData.length, users: userData };
+
+        travelService.getDateLocationUsers.mockResolvedValueOnce(expectedResponse);
+
+        await travelController.getDateLocationUsers(req, res);
+
+        expect(travelService.getDateLocationUsers).toHaveBeenCalledWith("Location", "2024-04-16");
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({ userDateLocation: expectedResponse });
+    });
+
+    it("should handle error if failed to get date location users", async () => {
+        const req = {
+            query: { location: "Location", date: "2024-04-16" }
+        };
+        const res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        };
+
+        travelService.getDateLocationUsers.mockRejectedValueOnce(new Error("Failed to get date location users"));
+
+        await travelController.getDateLocationUsers(req, res);
+
+        expect(travelService.getDateLocationUsers).toHaveBeenCalledWith("Location", "2024-04-16");
+        expect(res.status).toHaveBeenCalledWith(401);
+        expect(res.json).toHaveBeenCalledWith({ message: "Failed to get date location users" });
+    });
+});
+
+describe("Travel Controller - joinTravel", () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it("should join the user to the travel if not already joined", async () => {
+        const req = {
+            body: { location: "Location", date: "2024-04-16", userId: 1 }
+        };
+        const res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        };
+
+        travelService.joinTravel.mockResolvedValueOnce("You've been added successfully to the trip!");
+
+        await travelController.joinTravel(req, res);
+
+        expect(travelService.joinTravel).toHaveBeenCalledWith("Location", "2024-04-16", 1);
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({ message: "You've been added successfully to the trip!" });
+    });
+
+    it("should handle error if failed to join the travel", async () => {
+        const req = {
+            body: { location: "Location", date: "2024-04-16", userId: 1 }
+        };
+        const res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        };
+    
+        travelService.joinTravel.mockRejectedValueOnce(new Error("Failed to join travel"));
+    
+        await travelController.joinTravel(req, res);
+    
+        expect(travelService.joinTravel).toHaveBeenCalledWith("Location", "2024-04-16", 1);
+        expect(res.status).toHaveBeenCalledWith(401);
+        expect(res.json).toHaveBeenCalledWith({ message: "Failed to join travel" });
+    });
+    
+});*/
 
 
 

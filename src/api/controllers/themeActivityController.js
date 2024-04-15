@@ -17,7 +17,6 @@ exports.listActivitiesByTheme = async (req, res) => {
     }
 };
 
-
 // Get first five activities by theme id
 exports.getFirstFiveActivitiesByTheme = async (req, res) => {
     try {

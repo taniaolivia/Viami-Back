@@ -264,9 +264,6 @@ async function sendNotificationToGroup(groupId, senderId, message, res) {
       // Exclure le sender de la notification
       if (user.userId !== senderId) {
         const { fcmToken } = user;
-        console.log("fcmToken");
-        console.log(fcmToken);
-        console.log(senderFirstName['firstName']);
         
         notifications.push(exports.sendNotificationPushMessage(fcmToken, message, senderFirstName['firstName'],res));
       }
@@ -329,6 +326,17 @@ exports.sendMessage = async (req, res) => {
 
 // Function to send the message to a group
 async function sendGroupMessage(trx, groupId, message, senderId, responderId) {
+  /*const date = new Date().toLocaleString("fr-FR", {
+    timeZone: 'Europe/Paris',
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric'
+  });
+  const dateString = date.slice(0, 10).split('/').reverse().join('-') + " " + date.slice(11, 19);*/
+
   const groupMessage = {
     message: message,
     senderId: senderId,
@@ -367,9 +375,6 @@ exports.getUserCountInGroup = (req, res) => {
       res.status(500).json({ success: false, message: 'Internal server error' });
     });
 };
-
-
-
 
 // Get All messages between sender and other user
 exports.getMessagesBetweenUsers = (req, res) => {
@@ -415,7 +420,6 @@ exports.addUserToGroup = (req, res) => {
   const userToAddId = req.params.userToAddId;
   const groupId = req.params.groupId;
 
-  
   db('user_group')
     .where({
       userId: userToAddId,
@@ -570,71 +574,63 @@ exports.getDiscussionsForGroup = (req, res) => {
           const senderId = messageDetails[0].senderId;
           const responderId = messageDetails[0].responderId;
           const groupId = messageDetails[0].groupId;
-          
-  
+        
           let messagesWithDetails = [];
-  
-       
-         
                     
-                    db('message')
-                        .select('*')
-                        .where('groupId', groupId)
-                        .orderBy('date', 'asc')
-                        .then(messages => {
-                         const promise = messages.map(message => {
-                          return db('user')
-                          .select('firstName', 'lastName')
-                          .where('id', message.senderId)
-                          .then(senderDetails => {
-                            if (senderDetails.length === 0) {
-                              res.status(404).json({ message: 'Sender not found' });
-                            } else {
-                           
-                              return db('user')
-                                .select('firstName', 'lastName')
-                                .where('id', message.responderId)
-                                .then(responderDetails => {
-                                  if (responderDetails.length === 0) {
-                                    res.status(404).json({ message: 'Responder not found' });
-                                  } else {
-                                    messagesWithDetails.push({
-                                      ...message,
-                                      senderFirstName: senderDetails[0].firstName,
-                                      senderLastName: senderDetails[0].lastName,
-                                      responderFirstName: responderDetails[0].firstName,
-                                      responderLastName: responderDetails[0].lastName,
-                                    })
-                                    return {
-                                      ...message,
-                                      senderFirstName: senderDetails[0].firstName,
-                                      senderLastName: senderDetails[0].lastName,
-                                      responderFirstName: responderDetails[0].firstName,
-                                      responderLastName: responderDetails[0].lastName,
-                                    };
-  
-                                   
-                                  }
-                                })
-                              }
-                            }
-                          )})
-                        
-                          Promise.all(promise)
-                          .then(messages => {
-                            res.status(200).json({ messages: messages });
+          db('message')
+              .select('*')
+              .where('groupId', groupId)
+              .orderBy('date', 'asc')
+              .then(messages => {
+                const promise = messages.map(message => {
+                return db('user')
+                .select('firstName', 'lastName')
+                .where('id', message.senderId)
+                .then(senderDetails => {
+                  if (senderDetails.length === 0) {
+                    res.status(404).json({ message: 'Sender not found' });
+                  } else {
+                  
+                    return db('user')
+                      .select('firstName', 'lastName')
+                      .where('id', message.responderId)
+                      .then(responderDetails => {
+                        if (responderDetails.length === 0) {
+                          res.status(404).json({ message: 'Responder not found' });
+                        } else {
+                          messagesWithDetails.push({
+                            ...message,
+                            senderFirstName: senderDetails[0].firstName,
+                            senderLastName: senderDetails[0].lastName,
+                            responderFirstName: responderDetails[0].firstName,
+                            responderLastName: responderDetails[0].lastName,
                           })
-                              
-                         
-                        })
-                        .catch(error => {
-                          console.error(error);
-                          res.status(500).json({ message: 'Internal server error' });
-                        });
+                          return {
+                            ...message,
+                            senderFirstName: senderDetails[0].firstName,
+                            senderLastName: senderDetails[0].lastName,
+                            responderFirstName: responderDetails[0].firstName,
+                            responderLastName: responderDetails[0].lastName,
+                          };
+
+                          
+                        }
+                      })
                     }
-          
+                  }
+                )})
+              
+                Promise.all(promise)
+                .then(messages => {
+                  res.status(200).json({ messages: messages });
+                })
+              })
+              .catch(error => {
+                console.error(error);
+                res.status(500).json({ message: 'Internal server error' });
+              });
+          }
       })
-      
       .catch(error => {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });

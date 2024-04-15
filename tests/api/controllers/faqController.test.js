@@ -68,3 +68,32 @@ describe('Faq Controller - getTopFiveFrequentedFaq', () => {
     });
 });
 
+
+describe('FAQ Service - getFaqById', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should return FAQ by id', async () => {
+        const faqId = 1;
+        const mockFaq = { id: 1, question: 'Question 1', answer: 'Answer 1' };
+
+        faqService.getFaqById.mockResolvedValueOnce(mockFaq);
+
+        const faq = await faqService.getFaqById(faqId);
+
+        expect(faqService.getFaqById).toHaveBeenCalledWith(faqId);
+        expect(faq).toEqual(mockFaq);
+    });
+
+    it('should throw an error if database operation fails', async () => {
+        const faqId = 1;
+        const errorMessage = 'Database error';
+
+        faqService.getFaqById.mockRejectedValueOnce(new Error(errorMessage));
+
+        await expect(faqService.getFaqById(faqId)).rejects.toThrow(errorMessage);
+
+        expect(faqService.getFaqById).toHaveBeenCalledWith(faqId);
+    });
+});

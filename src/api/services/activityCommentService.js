@@ -18,7 +18,6 @@ exports.hasUserLeftComment = (activityId, otherUserId) => {
     });
 };
 
-
 exports.addCommentToActivity = (activityId, commenterId, commentText) => {
     return new Promise((resolve, reject) => {
         db.transaction(trx => {

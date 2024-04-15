@@ -48,8 +48,6 @@ exports.addUserLanguage = async (req, res) => {
     }
 };
 
-
-
 // Delete a language in user's data
 exports.deleteUserLanguage = async (req, res) => {
     let language = req.body.languageId;
@@ -57,6 +55,18 @@ exports.deleteUserLanguage = async (req, res) => {
 
     try {
         const data = await userLanguageService.deleteUserLanguage(user, language);
+        res.status(200).json(data);
+    } catch (error) {
+        res.status(401).json({ message: 'Invalid request' });
+    }
+};
+
+// Delete all languages of a user
+exports.deleteAllLanguagesByUserId = async (req, res) => {
+    let user = req.params.userId;
+
+    try {
+        const data = await userLanguageService.deleteAllLanguagesByUserId(user);
         res.status(200).json(data);
     } catch (error) {
         res.status(401).json({ message: 'Invalid request' });

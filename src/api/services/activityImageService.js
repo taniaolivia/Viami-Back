@@ -56,7 +56,6 @@ exports.getActivityImagesById = (activityId) => {
     .join("image", "image.id", "=", "activity_image.idImage");
 };
 
-
 exports.addImageToActivity = async (image, activityId) => {
     try {
         const imageId = await db('image').insert(image).returning('id');
@@ -67,7 +66,6 @@ exports.addImageToActivity = async (image, activityId) => {
         throw new Error('Invalid request');
     }
 };
-
 
 exports.deleteActivityImage = async (imageId, activityId) => {
     try {

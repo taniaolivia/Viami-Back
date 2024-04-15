@@ -1,6 +1,5 @@
 const travelActivityService = require('../services/travelActivityService');
 
-
 // Get all activities with their travel
 exports.getAllTravelsActivities = async (req, res) => {
     try {
