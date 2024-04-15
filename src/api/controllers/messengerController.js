@@ -331,7 +331,15 @@ async function sendGroupMessage(trx, groupId, message, senderId, responderId) {
     senderId: senderId,
     groupId: groupId,
     responderId: responderId,
-    date: new Date(),
+    date: new Date().toLocaleString("fr-FR", {
+      timeZone: 'Europe/Paris',
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric'
+    }),
     read: '0',
   };
 
