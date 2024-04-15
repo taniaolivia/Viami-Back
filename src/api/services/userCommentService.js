@@ -1,7 +1,5 @@
 const db = require("../knex");
 
-
-
 exports.getAllUsersComments = async () => {
     try {
         const comments = await db("user_comment")
@@ -14,8 +12,6 @@ exports.getAllUsersComments = async () => {
         throw new Error("Failed to get all users comments");
     }
 };
-
-
 
 exports.getUserCommentsById = async (userId) => {
     try {

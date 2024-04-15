@@ -1,6 +1,7 @@
 const db = require("../knex");
 const { S3Client, PutObjectCommand, PutObjectAclCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const crypto = require('crypto');
+const userImageService = require("../services/userImageService");
 
 const s3Client = new S3Client({
     region: process.env.REGION,
@@ -14,35 +15,27 @@ const bucketName = process.env.BUCKET_NAME;
 const directoryPath = process.env.AWS_PATH_USER_IMAGES;
 
 // Get all images with their users
-exports.getAllUsersImages = (req, res) => {
-    db("user_image")
-        .select("*")
-        .join("user", "user.id", "=", "user_image.userId")
-        .join("image", "image.id", "=", "user_image.imageId")
-        .then(data => res.status(200).json({data}))
-        .catch(error => {
-            res.status(401);
-            
-            res.json({message: "Server error"});
-        });
+exports.getAllUsersImages = async (req, res) => {
+    try {
+        const data = await userImageService.getAllUsersImages();
+        res.status(200).json(data);
+    } catch (error) {
+        res.status(401).json({ message: "Server error" });
+    }
 }
 
 // Get all images of a user by id
-exports.getUserImagesById = (req, res) => {
-    let id = req.params.userId;
+exports.getUserImagesById = async (req, res) => {
+    try {
+        let userId = req.params.userId;
 
-    db("user_image")
-        .select("*")
-        .where({userId: id})
-        .join("user", "user.id", "=", "user_image.userId")
-        .join("image", "image.id", "=", "user_image.imageId")
-        .then(data => res.status(200).json({"userImages": data}))
-        .catch(error => {
-            res.status(401);
-            
-            res.json({message: "Server error"});
-        });
+        const data = await userImageService.getUserImagesById(userId);
+        res.status(200).json({"userImages": data});
+    } catch (error) {
+        res.status(401).json({ message: "Server error" });
+    }
 }
+
 
 // Add image to user's data
 exports.addUserImage = async (req, res) => {

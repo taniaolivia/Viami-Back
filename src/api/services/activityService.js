@@ -6,7 +6,6 @@ exports.fetchAllActivities = () => {
         .orderBy("name", "asc");
 }
 
-
 exports.findActivityById = (id) => {
     return db('activity')
         .select('*')
@@ -37,7 +36,7 @@ exports.findTopFivePopularActivities = () => {
         .orderBy('nbParticipant', 'desc')
         .orderBy('name', 'asc')
         .limit(5)
-        .offset(0); // Inclu pour clarifier que la récupération commence à partir de la première ligne
+        .offset(0); 
 };
 
 exports.findTopFiveRecommendedActivities = () => {
@@ -61,7 +60,6 @@ exports.updateActivityNote = (id, newNote) => {
         .where('id', id);
 };
 
-// Function to calculate distance between two points using Haversine formula
 function calculateDistance(lat1, lon1, lat2, lon2) {
     const dLat = (lat2 - lat1) * (Math.PI / 180);
     const dLon = (lon2 - lon1) * (Math.PI / 180);
@@ -78,7 +76,6 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
     return distance;
 }
 
-// Fonction pour filtrer les activités en fonction de la distance par rapport à la position de l'utilisateur
 const filterActivitiesByDistance = (activities, userLat, userLon) => {
     const nearbyActivities = activities.filter(activity => {
         const distance = calculateDistance(userLat, userLon, activity.latitude, activity.longitude);
@@ -87,7 +84,6 @@ const filterActivitiesByDistance = (activities, userLat, userLon) => {
     return nearbyActivities;
 };
 
-// Function to retrieve all activities near the user's location
 exports.getAllActivitiesByUserPosition = async (userLat, userLon) => {
     try {
         const activities = await db("activity").select("*");

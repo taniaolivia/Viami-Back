@@ -18,9 +18,8 @@ const activityCommentService = require('../services/activityCommentService');
   }
 };
 
-
-  // Function to add a comment to a traveler's profile
-  exports.addCommentToActivity = async (req, res) => {
+// Function to add a comment to a traveler's profile
+exports.addCommentToActivity = async (req, res) => {
     const activityId = req.params.activityId; 
     const commenterId = req.body.commenterId; 
     const commentText = req.body.commentText; 

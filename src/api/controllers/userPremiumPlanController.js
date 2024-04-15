@@ -14,7 +14,7 @@ exports.getUserLastPremiumPlan = async (req, res) => {
     }
 };
 
-
+// Add premium plan to user's account
 exports.addUserPremiumPlan = async (req, res) => {
     const userId = req.params.userId;
     const planId = req.body.planId;

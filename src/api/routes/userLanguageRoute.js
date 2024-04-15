@@ -87,9 +87,42 @@ server.route("/api/usersLanguages").get(jwtMiddleware.authenticateUser, cors(), 
  *             application/json:
  *               example:
  *                 message: "Server error during user languages retrieval."
+ *   delete:
+ *       tags:
+ *         - User
+ *       summary: "Delete all languages in user's data"
+ *       description: "Delete all languages from the user's data."
+ *       parameters:
+ *         - in: path
+ *           name: userId
+ *           description: "ID of the user to delete languages"
+ *           required: true
+ *           schema:
+ *             type: string
+ * 
+ *       responses:
+ *         '200':
+ *           description: "All languages deleted from user's data successfully."
+ *           content:
+ *             application/json:
+ *               example:
+ *                 message: "All languages are deleted from user's data"
+ *         '401':
+ *           description: "Unauthorized. User not authenticated or server error."
+ *           content:
+ *             application/json:
+ *               example:
+ *                 message: "Invalid request"
+ *         '500':
+ *           description: "Internal Server Error."
+ *           content:
+ *             application/json:
+ *               example:
+ *                 message: "Server error during deleting all languages from user's data."
  */
-server.route("/api/users/:userId/languages").get(jwtMiddleware.authenticateUser, cors(), userLanguageController.getUserLanguagesById);
-
+server.route("/api/users/:userId/languages")
+.get(jwtMiddleware.authenticateUser, cors(), userLanguageController.getUserLanguagesById)
+.delete(jwtMiddleware.authenticateUser, cors(), userLanguageController.deleteAllLanguagesByUserId);
 
 /**
  * @openapi

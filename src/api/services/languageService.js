@@ -1,7 +1,6 @@
 
 const db = require("../knex");
 
-// Get all languages
 exports.getAllLanguages = async () => {
     try {
         const languages = await db('language').select('*').orderBy('language', 'asc');
@@ -10,8 +9,6 @@ exports.getAllLanguages = async () => {
         throw new Error('Database error');
     }
 };
-
-
 
 exports.getLanguageById = async (id) => {
     try {

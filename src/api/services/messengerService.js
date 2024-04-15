@@ -38,7 +38,6 @@ exports.getMessagesbyUserId = async (userId) => {
         if (!message) {
             throw new Error("Messages not found");
         }
-console.log(message)
         return message;
     } catch (error) {
         throw new Error("Failed to get user's messages");

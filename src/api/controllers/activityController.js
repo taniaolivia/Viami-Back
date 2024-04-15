@@ -1,18 +1,16 @@
-const db = require("../knex");
-const EARTH_RADIUS = 6371; // Earth's radius in kilometers
 const activityService = require('../services/activityService');
 
-
+// Get a list of activities
 exports.listAllActivities = (req, res) => {
     activityService.fetchAllActivities()
         .then(data => res.status(200).json({ "activities": data }))
         .catch(error => {
             res.status(401);
-            console.log(error);
             res.json({ message: "Server error" });
         });
 }
 
+// Get an activity by it's id
 exports.getActivityById = (req, res) => {
     const id = req.params.activityId;
 
@@ -25,27 +23,23 @@ exports.getActivityById = (req, res) => {
             }
         })
         .catch(error => {
-            console.error(error);
             res.status(500).json({ message: "Server error" });
         });
 }
 
+// Save the activity
 exports.saveActivity = (req, res) => {
     const activity = req.body;
 
     activityService.saveActivity(activity)
         .then(() => {
-
             res.status(201).json({ message: "Activity is successfully saved." });
         })
         .catch(error => {
-
             res.status(500);
-
             res.json({ message: "Invalid request" });
         });
 };
-
 
 // Get all recommended activities
 exports.listRecommendedActivities = (req, res) => {
@@ -53,7 +47,6 @@ exports.listRecommendedActivities = (req, res) => {
         .then(data => res.status(200).json({ 'activities': data }))
         .catch(error => {
             res.status(401);
-
             res.json({ message: "Server error" });
         });
 }
@@ -64,7 +57,6 @@ exports.listPopularActivities = (req, res) => {
         .then(data => res.status(200).json({ 'activities': data }))
         .catch(error => {
             res.status(401);
-
             res.json({ message: "Server error" });
         });
 }
