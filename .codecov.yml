@@ -1,0 +1,7 @@
+comment:
+  layout: "comments, badge"
+  position: "after"
+
+paths:
+  exclude:
+    - "src/api/socket.js"
