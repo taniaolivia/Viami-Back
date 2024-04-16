@@ -28,16 +28,48 @@ exports.searchTravels = async (req, res) => {
 
 // Get the number of participants of searched travel
 exports.getDateLocationUsers = async (req, res) => {
-    try {
-        const location = req.query.location;
-        const date = req.query.date;
+    let location = req.query.location;
+    let date = req.query.date;
 
-        const data = await dateLocationService.getDateLocationUsers(location, date);
-
-        res.status(200).json({ userDateLocation: data });
-    } catch (error) {
-        res.status(401).json({ message: error.message });
-    }
+    db("date_location")
+        .select("*")
+        .where("location", location)
+        .where("date", date)
+        .orderBy("date", "asc")
+        .then(data => {
+            db("user_date_location")
+                .select("*")
+                .where("dateLocationId", data[0].id)
+                .join("user", "user.id", "=", "user_date_location.userId")
+                .join("date_location", "date_location.id", "=", "user_date_location.dateLocationId")
+                .orderBy("user.firstName", "asc")
+                .then(user => {
+                    res.status(200);
+                    res.json({userDateLocation: {
+                        nbParticipant: user.length,
+                        users: user
+                    }});
+                })
+                .catch(error => {
+                    res.status(401);
+                    res.json({message: "There's no participant yet for this travel"});
+                }); 
+        })
+        .catch(error => {
+            db("date_location")
+                .insert({
+                    location: location,
+                    date: date
+                })
+                .then(data => {
+                    res.status(200);
+                    res.json({message: "There's no participants yet for this travel"});
+                })
+                .catch(error => {
+                    res.status(500);
+                    res.json({message: "Server error"});
+                });   
+        });   
 };
 
 // Add user to a trip that user has searched
