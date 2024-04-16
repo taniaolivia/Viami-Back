@@ -7,6 +7,7 @@
     "test": "jest tests",
     "test:controllers": "jest tests/api/controllers",
     "test:routes": "jest tests/api/routes",
+    "test:service": "jest tests/api/services",
     "test:coverage": "jest --coverage",
     "start": "node src/api/app.js",
     "dev": "npm-run-all --parallel watch:*",
