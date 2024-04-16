@@ -89,7 +89,6 @@ exports.getAllActivitiesByUserPosition = async (userLat, userLon) => {
         const activities = await db("activity").select("*");
         return filterActivitiesByDistance(activities, userLat, userLon);
     } catch (error) {
-        console.log(error)
         throw new Error("Activity not found");
     }
 };
