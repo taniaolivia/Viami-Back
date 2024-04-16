@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1713297807141" clover="3.2.0">
-  <project timestamp="1713297807141" name="All files">
-    <metrics statements="1540" coveredstatements="733" conditionals="130" coveredconditionals="32" methods="404" coveredmethods="120" elements="2074" coveredelements="885" complexity="0" loc="1540" ncloc="1540" packages="3" files="44" classes="44"/>
+<coverage generated="1713297865021" clover="3.2.0">
+  <project timestamp="1713297865021" name="All files">
+    <metrics statements="1540" coveredstatements="732" conditionals="130" coveredconditionals="32" methods="404" coveredmethods="119" elements="2074" coveredelements="883" complexity="0" loc="1540" ncloc="1540" packages="3" files="44" classes="44"/>
     <package name="api">
       <metrics statements="19" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="0"/>
       <file name="knex.js" path="/Users/taniaolivia/Desktop/M2/mds/Viami-Back/src/api/knex.js">
         <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-        <line num="1" count="49" type="stmt"/>
-        <line num="15" count="49" type="stmt"/>
+        <line num="1" count="48" type="stmt"/>
+        <line num="15" count="48" type="stmt"/>
       </file>
       <file name="socket.js" path="/Users/taniaolivia/Desktop/M2/mds/Viami-Back/src/api/socket.js">
         <metrics statements="17" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="0"/>
@@ -1172,7 +1172,7 @@
       </file>
     </package>
     <package name="api.services">
-      <metrics statements="446" coveredstatements="190" conditionals="19" coveredconditionals="2" methods="98" coveredmethods="36"/>
+      <metrics statements="446" coveredstatements="189" conditionals="19" coveredconditionals="2" methods="98" coveredmethods="35"/>
       <file name="activityCommentService.js" path="/Users/taniaolivia/Desktop/M2/mds/Viami-Back/src/api/services/activityCommentService.js">
         <metrics statements="14" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="10" coveredmethods="4"/>
         <line num="1" count="2" type="stmt"/>
@@ -1429,11 +1429,11 @@
         <line num="17" count="1" type="stmt"/>
       </file>
       <file name="themeActivityService.js" path="/Users/taniaolivia/Desktop/M2/mds/Viami-Back/src/api/services/themeActivityService.js">
-        <metrics statements="8" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
-        <line num="1" count="2" type="stmt"/>
-        <line num="3" count="2" type="stmt"/>
-        <line num="4" count="1" type="stmt"/>
-        <line num="12" count="2" type="stmt"/>
+        <metrics statements="8" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="0" type="stmt"/>
+        <line num="12" count="1" type="stmt"/>
         <line num="13" count="0" type="stmt"/>
         <line num="14" count="0" type="stmt"/>
         <line num="22" count="0" type="stmt"/>
