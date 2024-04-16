@@ -46,6 +46,8 @@
     "uuidv4": "^6.2.13"
   },
   "devDependencies": {
+    "bluebird": "^3.7.2",
+    "jest-mock-knex": "^1.18.0",
     "nodemon": "^2.0.22"
   }
 }
