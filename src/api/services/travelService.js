@@ -45,31 +45,3 @@ exports.saveNewTravel = async (name, description, location) => {
         throw new Error("Error while saving the new travel.");
     }
 };
-
-exports.getDateLocationUsers = async (location, date) => {
-    try {
-        const data = await db("date_location")
-            .select("*")
-            .where("location", location)
-            .where("date", date)
-            .orderBy("date", "asc");
-
-        if (data.length === 0) {
-            throw new Error("There's no participant yet for this travel");
-        }
-
-        const user = await db("user_date_location")
-            .select("*")
-            .where("dateLocationId", data[0].id)
-            .join("user", "user.id", "=", "user_date_location.userId")
-            .join("date_location", "date_location.id", "=", "user_date_location.dateLocationId")
-            .orderBy("user.firstName", "asc");
-
-        return {
-            nbParticipant: user.length,
-            users: user
-        };
-    } catch (error) {
-        throw new Error("Failed to get date location users");
-    }
-};
