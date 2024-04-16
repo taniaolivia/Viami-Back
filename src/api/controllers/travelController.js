@@ -45,7 +45,7 @@ exports.joinTravel = async (req, res) => {
     try {
         const { location, date, userId } = req.body;
 
-        const message = await dateLocationService.joinTravel(location, date, userId);
+        const message = await travelService.joinTravel(location, date, userId);
 
         res.status(200).json({ message });
     } catch (error) {
