@@ -77,15 +77,7 @@ exports.joinTravel = (req, res) => {
     let location = req.body.location;
     let date = req.body.date;
     let userId = req.body.userId
-
-    db("date_location")
-    .select("*")
-    .where("location", location)
-    .where("date", date)
-    .orderBy("date", "asc")
-    .then(data => {
-        console.log("data", data)
-
+    
         db("user_date_location")
             .select("*")
             .where("dateLocationId", data[0].id)
