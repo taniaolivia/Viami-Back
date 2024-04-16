@@ -46,6 +46,9 @@
     "uuidv4": "^6.2.13"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "bluebird": "^3.7.2",
+    "jest-mock-knex": "^1.18.0",
+    "nodemon": "^2.0.22",
+    "socket.io-client": "^4.7.5"
   }
 }
