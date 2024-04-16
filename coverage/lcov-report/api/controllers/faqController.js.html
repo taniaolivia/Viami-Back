@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">45% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>9/20</span>
+                <span class='fraction'>20/20</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/3</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">45% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>9/20</span>
+                <span class='fraction'>20/20</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -106,11 +106,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -127,28 +127,28 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const db = require("../knex");
 const faqService = require('../services/faqService');
 &nbsp;
 // List all faq 
-exports.listAllFaq = <span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {
-<span class="cstat-no" title="statement not covered" >    try {</span>
-        const data = <span class="cstat-no" title="statement not covered" >await faqService.getAllFaq();</span>
-<span class="cstat-no" title="statement not covered" >        res.status(200).json({ "faq": data });</span>
+exports.listAllFaq = async (req, res) =&gt; {
+    try {
+        const data = await faqService.getAllFaq();
+        res.status(200).json({ "faq": data });
     } catch (error) {
-<span class="cstat-no" title="statement not covered" >        res.status(401).json({ message: "Server error" });</span>
+        res.status(401).json({ message: "Server error" });
     }
 };
 &nbsp;
@@ -164,18 +164,18 @@ exports.getTopFiveFrequentedFaq = async (req, res) =&gt; {
 }
 &nbsp;
 // Get faq by id
-exports.getFaqById = <span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {
-    const faqId = <span class="cstat-no" title="statement not covered" >req.params.faqId;</span>
+exports.getFaqById = async (req, res) =&gt; {
+    const faqId = req.params.faqId;
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    try {</span>
-        const faq = <span class="cstat-no" title="statement not covered" >await faqService.getFaqById(faqId);</span>
-<span class="cstat-no" title="statement not covered" >        if (faq) {</span>
-<span class="cstat-no" title="statement not covered" >            res.status(200).json({ message: "FAQ found", data: faq });</span>
+    try {
+        const faq = await faqService.getFaqById(faqId);
+        if (faq) {
+            res.status(200).json({ message: "FAQ found", data: faq });
         } else {
-<span class="cstat-no" title="statement not covered" >            res.status(404).json({ message: "FAQ not found" });</span>
+            res.status(404).json({ message: "FAQ not found" });
         }
     } catch (error) {
-<span class="cstat-no" title="statement not covered" >        res.status(500).json({ message: "Server error" });</span>
+        res.status(500).json({ message: "Server error" });
     }
 };</pre></td></tr></table></pre>
 
@@ -184,7 +184,7 @@ exports.getFaqById = <span class="fstat-no" title="function not covered" >as</sp
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-04-16T13:43:01.597Z
+                at 2024-04-16T20:03:27.071Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

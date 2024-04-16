@@ -3,11 +3,11 @@ const db = require("../knex");
 exports.hasUserLeftComment = (activityId, otherUserId) => {
     return new Promise((resolve, reject) => {
         db('activity_comment')
-            .count('* as count')
             .where({
                 activityId: activityId,
                 commenterId: otherUserId
             })
+            .count('* as count')
             .then(results => {
                 const hasLeftComment = results[0].count > 0;
                 resolve(hasLeftComment);
