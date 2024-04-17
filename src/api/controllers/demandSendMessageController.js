@@ -1,7 +1,6 @@
 const admin = require("firebase-admin");
 const firebaseConfig = require("../viami-402918-firebase-adminsdk-6nvif-b8893ec7f9.js").firebase;
 const db = require("../knex.js");
-
 const serviceAccount = firebaseConfig;
 
 admin.initializeApp({
@@ -163,26 +162,60 @@ exports.getAllRequestsMessagesByUser = (req, res) => {
 
 // Display all the accepted requests of a user
 exports.getAllAcceptedRequestsByUser = async (req, res) => {
-  const userId = req.params.userId;
+  let userId = req.params.userId;
+  
+  db("request_message_user")
+    .select([
+      "request_message_user.id as id",
+      "request_message_user.requesterId as requesterId",
+      "request_message_user.receiverId as receiverId",
+      "requester.firstName as requesterFirstName",
+      "requester.lastName as requesterLastName",
+      "receiver.firstName as receiverFirstName",
+      "receiver.lastName as receiverLastName",
+      "requester.fcmToken as requesterFcmToken",
+      "receiver.fcmToken as receiverFcmToken",
+      "request_message_user.accept as accept",
+      "request_message_user.chat as chat"
+    ])
+    .where(function () {
+      this.where("receiverId", userId)
+        .orWhere("requesterId", userId);
+    })
+    .andWhere("accept", 1)
+    .andWhere("chat", 0)
+    .leftJoin("user as requester", "requester.id", "=", "request_message_user.requesterId")
+    .leftJoin("user as receiver", "receiver.id", "=", "request_message_user.receiverId")
+    .then((requests) => {
+      res.status(200).json({
+        "requestsMessages": requests
+      })
+    })
+    .catch((error) => {
+      console.log(error);
 
-  try {
-      const requests = await requestService.getAllAcceptedRequestsByUser(userId);
-      res.status(200).json({ "requestsMessages": requests });
-  } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server error" });
-  }
+      res.status(400).json({
+        message: "Failed answering the request message of a user"
+      });
+    });
 };
 
 // Update the chat value of a request
 exports.setChat = async (req, res) => {
-  const requestId = req.params.requestId;
+  let requestId = req.params.requestId;
 
-  try {
-      const message = await requestService.setChat(requestId);
-      res.status(200).json({ message });
-  } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server error" });
-  }
+  db("request_message_user")
+    .update({"chat": "1"})
+    .where("id", requestId)
+    .then((response) => {
+      res.status(200).json({
+        message: "Successfully updating the chat variable"
+      });
+    })
+    .catch((error) => {
+      res.status(400).json({
+        message: "Failed updating the chat variable"
+      });
+      console.log(error);
+    });
 };
