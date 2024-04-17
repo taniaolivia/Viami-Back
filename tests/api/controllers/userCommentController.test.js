@@ -83,7 +83,7 @@ describe("Comment Controller - addCommentToUserProfile", () => {
     });
 
     it("should add comment to user profile successfully", async () => {
-        const req = { body: { userId: 1, commenterId: 2, commentText: "Test comment" } };
+        const req = { body: { commenterId: 2, commentText: "Test comment" }, params: { userId: 1} };
         const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
         const mockResponse = { message: 'Comment added successfully' };
 
@@ -96,7 +96,7 @@ describe("Comment Controller - addCommentToUserProfile", () => {
     });
 
     it("should return 500 if failed to add comment to user profile", async () => {
-        const req = { body: { userId: 1, commenterId: 2, commentText: "Test comment" } };
+        const req = { body: { commenterId: 2, commentText: "Test comment" }, params: { userId: 1} };
         const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
         const errorMessage = 'Internal server error';
 

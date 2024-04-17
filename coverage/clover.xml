@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1713310926239" clover="3.2.0">
-  <project timestamp="1713310926240" name="All files">
-    <metrics statements="1542" coveredstatements="864" conditionals="126" coveredconditionals="36" methods="416" coveredmethods="151" elements="2084" coveredelements="1051" complexity="0" loc="1542" ncloc="1542" packages="3" files="44" classes="44"/>
+<coverage generated="1713389994272" clover="3.2.0">
+  <project timestamp="1713389994272" name="All files">
+    <metrics statements="1543" coveredstatements="865" conditionals="126" coveredconditionals="36" methods="416" coveredmethods="151" elements="2085" coveredelements="1052" complexity="0" loc="1543" ncloc="1543" packages="3" files="44" classes="44"/>
     <package name="api">
       <metrics statements="19" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="0"/>
       <file name="knex.js" path="/Users/taniaolivia/Desktop/M2/mds/Viami-Back/src/api/knex.js">
@@ -31,7 +31,7 @@
       </file>
     </package>
     <package name="api.controllers">
-      <metrics statements="1097" coveredstatements="534" conditionals="115" coveredconditionals="30" methods="316" coveredmethods="84"/>
+      <metrics statements="1098" coveredstatements="535" conditionals="115" coveredconditionals="30" methods="316" coveredmethods="84"/>
       <file name="activityCommentController.js" path="/Users/taniaolivia/Desktop/M2/mds/Viami-Back/src/api/controllers/activityCommentController.js">
         <metrics statements="18" coveredstatements="17" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
@@ -1008,7 +1008,7 @@
         <line num="57" count="1" type="stmt"/>
       </file>
       <file name="userCommentController.js" path="/Users/taniaolivia/Desktop/M2/mds/Viami-Back/src/api/controllers/userCommentController.js">
-        <metrics statements="26" coveredstatements="26" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="4"/>
+        <metrics statements="27" coveredstatements="27" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="4"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="5" count="1" type="stmt"/>
@@ -1024,17 +1024,18 @@
         <line num="21" count="1" type="stmt"/>
         <line num="26" count="1" type="stmt"/>
         <line num="27" count="2" type="stmt"/>
-        <line num="29" count="2" type="stmt"/>
+        <line num="28" count="2" type="stmt"/>
         <line num="30" count="2" type="stmt"/>
-        <line num="31" count="1" type="stmt"/>
-        <line num="33" count="1" type="stmt"/>
-        <line num="39" count="1" type="stmt"/>
-        <line num="40" count="3" type="stmt"/>
+        <line num="31" count="2" type="stmt"/>
+        <line num="32" count="1" type="stmt"/>
+        <line num="34" count="1" type="stmt"/>
+        <line num="40" count="1" type="stmt"/>
         <line num="41" count="3" type="stmt"/>
-        <line num="43" count="3" type="stmt"/>
+        <line num="42" count="3" type="stmt"/>
         <line num="44" count="3" type="stmt"/>
-        <line num="45" count="2" type="stmt"/>
-        <line num="47" count="1" type="stmt"/>
+        <line num="45" count="3" type="stmt"/>
+        <line num="46" count="2" type="stmt"/>
+        <line num="48" count="1" type="stmt"/>
       </file>
       <file name="userImageController.js" path="/Users/taniaolivia/Desktop/M2/mds/Viami-Back/src/api/controllers/userImageController.js">
         <metrics statements="56" coveredstatements="20" conditionals="0" coveredconditionals="0" methods="13" coveredmethods="2"/>
