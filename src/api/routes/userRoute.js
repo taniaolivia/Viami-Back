@@ -352,22 +352,18 @@ server.route("/api/users/:userId")
 /**
  * @openapi
  * paths:
- *  /api/users/userFcmToken:
+ *  /api/users/userFcmToken/:fcmToken:
  *   get:
  *     tags:
  *       - User
  *     summary: "Get user by fcm token"
  *     description: "Retrieve information about a specific user by fcm token"."
  *     parameters:
- *      - in: body
+*      - in: path
  *        name: fcmToken
- *        description: "fcm token of the user to retrieve"
- *        required: true
+ *        description: "Fcm token of the user to retrieve"
  *        schema:
- *          type: object
- *          properties:
- *            fcmToken:
- *              type: string
+ *          type: string
  *     responses:
  *       200:
  *         description: "Successful operation. Returns the requested user."
@@ -390,7 +386,7 @@ server.route("/api/users/:userId")
  *       500:
  *         description: "Internal Server Error."
  */
-server.route("/api/users/userFcmToken")
+server.route("/api/users/userFcmToken/:fcmToken")
 .get(jwtMiddleware.authenticateUser, cors(), userController.getUserByFcmToken);
 
 
