@@ -23,8 +23,9 @@ exports.getUserCommentsById = async (req, res) => {
 };
 
 // Function to add a comment to a traveler's profile
-  exports.addCommentToUserProfile = async (req, res) => {
-    const { userId, commenterId, commentText } = req.body;
+exports.addCommentToUserProfile = async (req, res) => {
+    const { commenterId, commentText } = req.body;
+    const userId = req.params.userId;
 
     try {
         const response = await userCommentService.addCommentToUserProfile(userId, commenterId, commentText);
