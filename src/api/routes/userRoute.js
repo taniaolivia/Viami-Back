@@ -72,6 +72,7 @@ module.exports = (server) => {
  *                 message: An error occurred during registration.
  */
 server.post("/api/register", cors(), userController.userRegister);
+
 /**
  * @openapi
  * paths:
@@ -228,9 +229,6 @@ server.route("/api/users").get(jwtMiddleware.authenticateUser, cors(), userContr
  */
 server.route("/api/users/userStatus/:userId").get(jwtMiddleware.authenticateUser, cors(), userController.getUserStatus);
 
-
-
-
 /**
  * @openapi
  * paths:
@@ -350,6 +348,47 @@ server.route("/api/users/:userId")
 .put(jwtMiddleware.authenticateUser, cors(), userController.updateUserById)
 .patch(jwtMiddleware.authenticateUser, cors(), userController.updateUserPasswordById)
 .delete(jwtMiddleware.authenticateUser, cors(), userController.deleteUserById);
+
+/**
+ * @openapi
+ * paths:
+ *  /api/users/userFcmToken/:fcmToken:
+ *   get:
+ *     tags:
+ *       - User
+ *     summary: "Get user by fcm token"
+ *     description: "Retrieve information about a specific user by fcm token"."
+ *     parameters:
+*      - in: path
+ *        name: fcmToken
+ *        description: "Fcm token of the user to retrieve"
+ *        schema:
+ *          type: string
+ *     responses:
+ *       200:
+ *         description: "Successful operation. Returns the requested user."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 userId:
+ *                   type: string
+ *                 username:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                
+ *       401:
+ *         description: "Unauthorized. User not authenticated."
+ *       404:
+ *         description: "User not found."
+ *       500:
+ *         description: "Internal Server Error."
+ */
+server.route("/api/users/userFcmToken/:fcmToken")
+.get(jwtMiddleware.authenticateUser, cors(), userController.getUserByFcmToken);
+
 
 /**
  * @openapi

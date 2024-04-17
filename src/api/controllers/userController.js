@@ -234,6 +234,23 @@ exports.getUserById = (req, res) => {
         });   
 }
 
+// Get the user's information by it's fcm token
+exports.getUserByFcmToken = (req, res) => {
+    const fcmToken = req.params.fcmToken;
+
+    db("user")
+        .select("*")
+        .where("fcmToken", fcmToken)
+        .then(datas => {
+                res.status(200);
+                res.json({message: `User found`, user: datas[0]});
+        })
+        .catch(error => {
+            res.status(500);
+            res.json({message: "Server error"});
+        });    
+}
+
 // Update the user's information
 exports.updateUserById = (req, res) => {
     const id = req.params.userId;
@@ -773,8 +790,6 @@ exports.setFcmTokenUser = (req, res) => {
       res.status(400).json({
           message: "Failed updating the fcm token of a user"
       });
-    
-    
     });
 }
 
