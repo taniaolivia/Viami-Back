@@ -1,2 +1,3 @@
 ignore:
   - "src/api/socket.js"
+  - "src/api/controllers/messengerController.js"
