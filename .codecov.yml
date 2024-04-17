@@ -3,3 +3,4 @@ ignore:
   - "src/api/controllers/messengerController.js"
   - "src/api/controllers/imageController.js"
   - "src/api/controllers/userImageController.js"
+  - "src/api/controllers/demandSendMessageController.js"
