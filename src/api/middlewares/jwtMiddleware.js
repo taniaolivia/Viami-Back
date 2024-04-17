@@ -5,7 +5,7 @@ const jwtKey = process.env.JWT_KEY;
 exports.authenticateUser = (req, res, next) => {
     let token = req.headers['authorization'] || req.body.token || req.query.token;
 
-    console.log('Token:', token); // Vérifiez si le token est correctement récupéré
+   // console.log('Token:', token); // Vérifiez si le token est correctement récupéré
 
     if(token !== undefined){
         jwt.verify(token, jwtKey, (error, user) => {
@@ -15,7 +15,7 @@ exports.authenticateUser = (req, res, next) => {
                 res.json({message: "Forbidden access : Invalid token"})
             }
             else{
-                console.log('User:', user); // Log de l'utilisateur extrait du token
+                //console.log('User:', user); // Log de l'utilisateur extrait du token
                 next();
             }
         })
