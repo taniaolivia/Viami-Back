@@ -39,11 +39,10 @@ Create a `.env` file in the root directory of the project and add the necessary 
 Before using the API, ensure that the database is populated with the necessary data [localhost:8080]
 
 5. **Build the Docker image:**
-```docker-compose up --build```
+   ```docker-compose up --build```
 
-6. **Run the Docker container:**
-
-```docker-compose up```
+7. **Run the Docker container:**
+   ```docker-compose up```
 
 7. **API documentation:**
 Access the API documentation using Swagger UI at [http://localhost:3333/api/docs]
