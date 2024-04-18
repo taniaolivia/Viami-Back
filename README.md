@@ -28,7 +28,7 @@ Viami is an application aimed at solo travelers who seek to connect with other t
 
 ## Setup
 1. **Clone the repository:** 
-git clone https://github.com/taniaolivia/Viami-Back.git
+```git clone https://github.com/taniaolivia/Viami-Back.git```
 
 2. **Navigate to the project directory:**
     cd viami-back
@@ -39,11 +39,11 @@ Create a `.env` file in the root directory of the project and add the necessary 
 Before using the API, ensure that the database is populated with the necessary data [localhost:8080]
 
 5. **Build the Docker image:**
-docker-compose up --build
+```docker-compose up --build```
 
 6. **Run the Docker container:**
 
-docker-compose up 
+```docker-compose up```
 
 7. **API documentation:**
 Access the API documentation using Swagger UI at [http://localhost:3333/api/docs]
@@ -60,7 +60,7 @@ Before using the API, ensure that the database is populated with the necessary d
 
 To stop the Docker container running the API, use the following command:
 
-docker-compose down
+```docker-compose down```
 
 ## License
 
