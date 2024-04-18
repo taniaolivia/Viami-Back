@@ -33,7 +33,7 @@ git clone https://github.com/taniaolivia/Viami-Back.git
 ```
 
 2. **Navigate to the project directory:**
-    cd viami-back
+    cd Viami-Back
    
 3. **Environment variables:**
 Create a `.env` file in the root directory of the project and add the necessary environment variables. Refer to the `.env.example` file for required variables.
