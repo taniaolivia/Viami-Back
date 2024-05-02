@@ -18,13 +18,13 @@ const swaggerOptions={
             title: 'Viami Documentation API',
             version:'1.0.0',
             description:'Documentation for Viami API',
-            contact:{
-                name:'OLIVIA Tania',
-                email:'tania.olivia@my-digital-school.org', 
-                name:'OUANASSI Nihel',
-                email:'nihel.ouanassi@my-digital-school.org', 
+            contact: {
+                name: 'OLIVIA Tania & OUANASSI Nihel',
+                email: 'tania.olivia@my-digital-school.org & nihel.ouanassi@my-digital-school.org', 
             },
-            servers:[process.env.SWAGGER_SERVER],
+            servers:[
+               process.env.SWAGGER_SERVER 
+            ]
         },
 
         components:{
@@ -42,7 +42,7 @@ const swaggerOptions={
         }]
         
     },
-    apis:["./routes/*.js"]
+    apis:["src/api/routes/*.js"]
 }
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions)

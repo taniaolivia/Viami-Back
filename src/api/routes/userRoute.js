@@ -357,7 +357,7 @@ server.route("/api/users/:userId")
  *     tags:
  *       - User
  *     summary: "Get user by fcm token"
- *     description: "Retrieve information about a specific user by fcm token"."
+ *     description: "Retrieve information about a specific user by fcm token."
  *     parameters:
 *      - in: path
  *        name: fcmToken
